@@ -75,10 +75,10 @@ window.page_class = new class {
                     </div>
                 `)
 
-                tweaks.forEach(tweak => {
+                window.tweaks.forEach(tweak => {
                     $('.tweaks_insert')[0].insertAdjacentHTML('beforeend', `
                         <label>
-                            <input type='checkbox' data-name='${tweak.name}' name='tweak_toggle' ${window.site_params.get('ui.custom_css').indexOf(tweak.code) != -1 ? 'checked' : ''}>
+                            <input type='checkbox' data-name='${tweak.name}' name='tweak_toggle' ${(window.site_params.get('ui.custom_css') ?? '').indexOf(tweak.code) != -1 ? 'checked' : ''}>
                             ${escape_html(_(tweak.name))}
                         </label>
                     `)
