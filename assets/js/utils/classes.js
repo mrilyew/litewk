@@ -566,7 +566,7 @@ class ClassicListView {
             'count': null,
             'page': -1,
             'pagesCount': null,
-            'perPage': 1
+            'perPage': 10
         }
 
         this.template_function = template_function
@@ -581,8 +581,7 @@ class ClassicListView {
         this.inverse           = inverse
     }
 
-    async nextPage()
-    {
+    createNextPage() {
         let rand_id = random_int(0, 5000)
 
         let div_showmore = document.createElement('div')
@@ -596,18 +595,26 @@ class ClassicListView {
             $(`.show_more[data-rand=${rand_id}]`).remove()
         }
 
+        this.insert_node.insertAdjacentElement('beforeend', div_showmore)
+        showMoreObserver.observe($(`.show_more[data-rand=${rand_id}]`)[0])
+    }
+
+    async nextPage()
+    {
+        let page_condition = false
         // ой биляя накостылял я тут
         if(this.inverse) {
             if(!this.objects.count) {
-                setTimeout(() => {}, 3000)
-                let count = await window.vk_api.call(this.method_name, this.method_params)
+                await new Promise(pr => setTimeout(pr, 3000))
+                let count = await window.vk_api.call(this.method_name, this.method_params) 
 
                 this.objects.count = count.response.count
-                this.objects.pagesCount = Math.ceil(this.objects.count / this.objects.perPage)
+            }
 
-                if(this.objects.page == -1) {
-                    this.objects.page = this.objects.pagesCount - 1
-                }
+            this.objects.pagesCount = Math.ceil(this.objects.count / this.objects.perPage)
+
+            if(this.objects.page == -1) {
+                this.objects.page = this.objects.pagesCount - 1
             }
 
             if(this.objects.page < 0) {
@@ -617,12 +624,7 @@ class ClassicListView {
 
             await this.page(this.objects.page)
 
-            this.objects.page -= 1
-
-            if(this.objects.page >= 0) {
-                this.insert_node.insertAdjacentElement('beforeend', div_showmore)
-                showMoreObserver.observe($(`.show_more[data-rand=${rand_id}]`)[0])
-            }
+            page_condition = this.objects.page >= 0
         } else {
             if(this.objects.pagesCount < this.objects.page + 1) {
                 console.info('Last page reached. Do not care.')
@@ -634,24 +636,24 @@ class ClassicListView {
             }
 
             await this.page(this.objects.page)
-            this.objects.page += 1
 
-            if(this.objects.pagesCount > this.objects.page) {
-                this.insert_node.insertAdjacentElement('beforeend', div_showmore)
-                showMoreObserver.observe($(`.show_more[data-rand=${rand_id}]`)[0])
-            }
+            page_condition = this.objects.pagesCount > this.objects.page
         }
 
-        if(window.s_url.searchParams.has('page')) {
+        if(page_condition) {
+            this.createNextPage()
+        }
+
+        /*if(window.s_url.searchParams.has('page')) {
             window.s_url.searchParams.set('page', this.objects.page)
             history.pushState({}, '', window.s_url)
-        }
+        }*/
     }
 
     async page(number = 0)
     {
         let objects_data = null
-        this.method_params.offset = number * this.objects.perPage
+        this.method_params.offset = number * this.objects.perPage + (this.objects.special_offset ?? 0)
 
         let error = () => {
             this.objects.count = 0
@@ -668,15 +670,14 @@ class ClassicListView {
             error()
             return
         }
+
+        this.objects.count = objects_data.response.count
         
         if(objects_data.error) {
             error()
             return
         }
-
-        this.objects.count = objects_data.response.count
-        this.objects.pagesCount = Math.ceil(this.objects.count / this.objects.perPage)
-
+        
         if(this.objects.count < 1) {
             let messej = _('wall.no_posts_in_tab')
             if(this.method_name == 'wall.search') {
@@ -690,6 +691,8 @@ class ClassicListView {
 
         if(this.inverse) {
             objects_data.response.items = objects_data.response.items.reverse()
+        } else {
+            this.objects.pagesCount = Math.ceil(this.objects.count / this.objects.perPage)
         }
 
         let templates = ''
@@ -699,7 +702,20 @@ class ClassicListView {
             templates += post.getTemplate()
         })
 
+        if(this.inverse) {
+            this.objects.page = Number(number) - 1
+        } else {
+            this.objects.page = Number(number) + 1
+        }
+
         this.insert_node.insertAdjacentHTML('beforeend', templates)
+
+        if($('.paginator')[0]) {
+            let parent = $('.paginator')[0].parentNode
+            $('.paginator').remove()
+
+            parent.insertAdjacentHTML('beforeend', paginator_template(this.objects.pagesCount, number))
+        }
     }
 
     setSection(section, query = null) 
@@ -744,11 +760,11 @@ class ClassicListView {
 
         this.setParams('wall.search', temp_params)
 
-        let temp_url = window.s_url
+        /*let temp_url = window.s_url
         temp_url.searchParams.set('wall_section', 'search')
         temp_url.searchParams.set('wall_query', query)
         push_state(temp_url)
-        temp_url = null
+        temp_url = null*/
 
         this.clear()
         this.nextPage()
@@ -777,9 +793,7 @@ class VkApi {
 
         if(!force) {
             log(`NO FORCE, result: `)
-            log('_________________')
             log(result)
-            log('_________________\n\n')
             return result
         }
 
@@ -823,9 +837,7 @@ class VkApi {
             }
         } else {
             log(`SUCCESS, result: `)
-            log('_________________')
             log(result)
-            log('_________________\n\n')
             return result
         }
     }

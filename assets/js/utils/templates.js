@@ -1135,6 +1135,47 @@ async function wall_template(owner_id, tabs, default_tab = 'all')
 
 function paginator_template(pagesCount, activePage, stepCount = 3) 
 {
-    let template = ``
+    let template = `
+        <div class='paginator'></div>
+    `
+
+    let template_div = document.createElement('div')
+    template_div.innerHTML = template
+
+    let pages = []
+    let temp_url = new URL(location.href)
     
+    for(let t_page = (activePage - (stepCount - 1)); t_page <= (activePage + (stepCount - 1)); t_page++) {
+        if(t_page < 1 || t_page > pagesCount) {
+            continue
+        }
+
+        pages.push(t_page)
+    }
+
+    if(activePage > 1) {
+        let page = activePage - 1
+        temp_url.searchParams.set('page', activePage - 1)
+        template_div.querySelector('.paginator').innerHTML += `
+            <a data-ignore='1' data-page='${activePage - 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>&#60;</a>
+        `
+    }
+
+    pages.forEach(page => {
+        temp_url.searchParams.set('page', page)
+
+        template_div.querySelector('.paginator').innerHTML += `
+            <a data-ignore='1' data-page='${page}' data-page='${activePage + 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>${page}</a>
+        `
+    })
+
+    if(activePage < pagesCount) {
+        let page = activePage + 1
+        temp_url.searchParams.set('page', activePage + 1)
+        template_div.querySelector('.paginator').innerHTML += `
+            <a data-ignore='1' data-page='${activePage + 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>&#62;</a>
+        `
+    }
+
+    return template_div.innerHTML
 }

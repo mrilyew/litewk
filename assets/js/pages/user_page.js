@@ -42,12 +42,13 @@ window.page_class = new class {
             window.wall = new ClassicListView(post_template, $('.user_page_wrapper .wall_block .wall_block_insert')[0])
             window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             
+            window.wall.objects.count = user.info.counters.posts
+
             if(window.s_url.searchParams.has('page')) {
-                window.wall.objects.page = Number(window.s_url.searchParams.get('page'))
+                window.wall.objects.page = Number(window.s_url.searchParams.get('page')) - 1
             }
 
             if(wall_temp != 'search') {
-                window.wall.clear()
                 await window.wall.nextPage()
             } else {
                 // Reactjsing

@@ -29,7 +29,6 @@ window.page_class = new class {
                             ${section != 'search' ? `<span>${_('counters.posts_on_wall_count', 0)}</span>` : `
                                 <input type="query" placeholder="${_('wall.search')}">
                             `}
-                            
                         </div>
                         <div class='wall_wrapper_post'></div>
                     </div>
@@ -52,7 +51,7 @@ window.page_class = new class {
         window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
     
         if(window.s_url.searchParams.has('page')) {
-            window.wall.objects.page = Number(window.s_url.searchParams.get('page'))
+            window.wall.objects.page = Number(window.s_url.searchParams.get('page')) - 1
         }
 
         if(section != 'search') {
@@ -67,6 +66,25 @@ window.page_class = new class {
 
         try {
             $('.wall_wrapper span')[0].innerHTML = _('counters.posts_on_wall_count', window.wall.objects.count)
+            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, window.wall.objects.page))
         } catch(e) {}
+
+        $('.wall_wrapper_upper_panel').on('click', '.paginator a', async (e) => {
+            e.preventDefault()
+
+            if(e.target.classList.contains('active')) {
+                return
+            }
+
+            window.wall.clear()
+            await window.wall.page(e.target.dataset.page)
+
+            window.s_url = new URL(e.target.href)
+            push_state(window.s_url)
+
+            $('.paginator').remove()
+            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.wall.objects.page)))
+            window.wall.createNextPage()
+        })
     }
 }

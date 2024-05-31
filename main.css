@@ -89,6 +89,16 @@ input[type='button']:hover {
 
 input[type='radio'] {
     display: inline-block;
+    filter: grayscale(1);
+}
+
+input[type='checkbox'] {
+    outline: 1px solid white;
+    filter: invert(1);
+}
+
+input[type='checkbox']:checked {
+    filter: contrast(10) grayscale(1);
 }
 
 textarea {
@@ -152,6 +162,21 @@ ul li:last-child {
 
 /* Main classes. */
 
+.paginator a {
+    text-decoration: none;
+}
+
+.paginator a:hover {
+    background: var(--main-text-lighter-color);
+    color: var(--main-background-color);
+}
+
+.paginator a.active {
+    outline: 1px solid var(--main-text-lighter-color);
+    background: var(--main-text-lighter-color);
+    color: var(--main-background-color);
+}
+
 .wrapper .head_error {
     padding: 15px 15px 15px 30px;
     border-bottom: 1px solid red;
@@ -183,7 +208,7 @@ ul li:last-child {
     margin-left: 10px;
     padding: 0px !important;
     position: sticky;
-    top: 10px;
+    top: 0px;
 }
 
 .wall_wrapper .wall_wrapper_tabs .wall_additional_tabs {
@@ -195,6 +220,9 @@ ul li:last-child {
     position: sticky;
     top: 0px;
     z-index: 99;
+    
+    display: flex;
+    justify-content: space-between;
 }
 
 .wrapper .menu a, .wrapper #_actions .action, .wall_wrapper_tabs a {
@@ -748,7 +776,7 @@ body.dimmed > .dimmer {
     right: 0;
     margin-right: 6px;
     margin-top: 28px;
-    z-index: 100;
+    z-index: 90;
 }
 
 .page_content .comment_block {
