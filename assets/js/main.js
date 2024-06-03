@@ -94,4 +94,5 @@ document.addEventListener('DOMContentLoaded', () => {
     window.page_class.render_page()
 
     $('textarea').trigger('input')
+    $(document).trigger('scroll')
 })

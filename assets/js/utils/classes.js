@@ -764,8 +764,16 @@ class Comment extends PostLike {
         return comment_template(this, this.getOwner())
     }
 
+    getThreadCount() {
+        return this.info.thread.count
+    }
+
     hasAttachments() {
         return this.info.attachments && this.info.attachments.length > 0
+    }
+
+    hasThread() {
+        return this.info.thread && this.getThreadCount() > 0
     }
 }
 
@@ -887,7 +895,11 @@ class ClassicListView {
             return
         }
 
-        this.objects.count = objects_data.response.count
+        if(objects_data.response.current_level_count) {
+            this.objects.count = objects_data.response.current_level_count
+        } else {
+            this.objects.count = objects_data.response.count
+        }
         
         if(objects_data.error) {
             error()

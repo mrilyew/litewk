@@ -441,7 +441,7 @@ $(document).on('click', '#_invert_wall', (e) => {
     window.wall.nextPage()
 })
 
-$(document).on('click', '.wall_wrapper_upper_panel .paginator a', async (e) => {
+$(document).on('click', '.paginator a', async (e) => {
     e.preventDefault()
 
     if(e.target.classList.contains('active')) {
@@ -455,7 +455,7 @@ $(document).on('click', '.wall_wrapper_upper_panel .paginator a', async (e) => {
     push_state(window.s_url)
 
     $('.paginator').remove()
-    $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    e.target.parentNode.insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
     window.wall.createNextPage()
 })
 
@@ -475,6 +475,31 @@ $(document).on('click', '.like', async (e) => {
     } else {
         e.target.closest('.like').classList.remove('activated')
         e.target.closest('.like').querySelector('span').innerHTML = res.response.likes
+    }
+})
+
+$(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e) => {
+    e.target.setAttribute('id', 'fakenextcomms')
+
+    let comm_block = e.target.closest('.main_comment_block')
+    let insert = e.target.closest('.comments_thread_insert_block')
+
+    let cid = comm_block.dataset.cid
+    let offset = comm_block.dataset.offset ?? '3'
+    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': 'photo_50,photo_200', 'sort': 'asc'})
+
+    replies.response.items.forEach(element => {
+        let comm = new Comment(element, replies.response.profiles, replies.response.groups)
+        insert.insertAdjacentHTML('beforeend', comm.getTemplate())
+    })
+
+    if(Number(comm_block.dataset.commscount) > Number(offset) + 10) {
+        comm_block.setAttribute('data-offset', Number(offset) + 10)
+
+        e.target.setAttribute('id', 'shownextcomms')
+        insert.append(e.target)
+    } else {
+        $(e.target).remove()
     }
 })
 

@@ -65,6 +65,6 @@ window.page_class = new class {
         await window.wall.nextPage()
 
         $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.wall.objects.count)
-        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, window.wall.objects.page))
+        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
     }
 }

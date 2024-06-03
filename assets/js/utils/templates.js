@@ -1031,6 +1031,7 @@ function post_template(post, profiles, groups, additional_options = {})
                                 ${!post.canDelete() ? `<p>${_('wall.report_post')}</p>` : ''}
                                 ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
                                 ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
+                                <a href='https://vk.com/wall${post.getId()}' target='_blank'><p>${_('wall.go_to_vk')}</p></a>
                             </div>
                         </div>
                     </div>` : ''}
@@ -1097,35 +1098,36 @@ function post_template(post, profiles, groups, additional_options = {})
 function comment_template(object, owner)
 {
     let template = `
-        <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
-            <div class='comment_author'>
-                <div class='comment_avaname'>
-                    <a href='${owner.getUrl()}'>
-                        <img src='${owner.getAvatar(true)}'>
-                    </a>
-                </div>
-            </div>
-            <div class='comment_info'>
-                <div class='comment_upper_author'>
-                    <div>
-                        <b><a href='${owner.getUrl()}'>${owner.getName()}</a></b>
-                        ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
-                    </div>
-                    
-                    <div class='comment_upper_actions'>
-                        <div class='icons1' id='_reportComment'></div>
-                        <div class='icons1' id='_commentEdit'></div>
-                        <div class='icons1' id='_commentDelete'></div>
+        <div class='main_comment_block' ${object.hasThread() ? `data-commscount='${object.info.thread.count}'` : ''} data-ownerid='${object.info.owner_id}' data-cid='${object.getCorrectID()}'>
+            <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
+                <div class='comment_author'>
+                    <div class='comment_avaname'>
+                        <a href='${owner.getUrl()}'>
+                            <img src='${owner.getAvatar(true)}'>
+                        </a>
                     </div>
                 </div>
+                <div class='comment_info'>
+                    <div class='comment_upper_author'>
+                        <div>
+                            <b><a href='${owner.getUrl()}'>${owner.getName()}</a></b>
+                            ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
+                        </div>
+                        
+                        <div class='comment_upper_actions'>
+                            <div class='icons1' id='_reportComment'></div>
+                            <div class='icons1' id='_commentEdit'></div>
+                            <div class='icons1' id='_commentDelete'></div>
+                        </div>
+                    </div>
 
-                <div class='comment_content'>
-                    <p>${object.getText()}</p>
-                    ${object.hasAttachments() ? process_attachments(object.getAttachments()) : ''}
-                </div>
+                    <div class='comment_content'>
+                        <p>${object.getText()}</p>
+                        ${object.hasAttachments() ? process_attachments(object.getAttachments()) : ''}
+                    </div>
 
-                <div class='comment_bottom'>
-                    <span><a href='#'>${object.getDate()}</a></span>
+                    <div class='comment_bottom'>
+                        <span><a href='#'>${object.getDate()}</a></span>
                         <div class='post_actions_no_frame'>
                             <div class='like ${object.isLiked() ? 'activated' : '' }'>
                                 <div class='like_icon ${object.info.likes.user_likes == 1 ? 'activated' : '' } icons1'></div>
@@ -1135,10 +1137,35 @@ function comment_template(object, owner)
                     </div>
                 </div>
             </div>
+            ${object.hasThread() ? `
+            <div class='comment_thread_block'>
+                <div class='comment_thread_block_title'>
+                    <span>${_('wall.thread_count', object.getThreadCount())}</span>
+                </div>
+
+                <div class='comments_thread_insert_block'></div>
+            </div>
+            ` : ''}
         </div>
     `
 
-    return template
+    let temp_l = document.createElement('div')
+    temp_l.innerHTML = template
+
+    if(object.hasThread()) {
+        object.info.thread.items.forEach(el => {
+            let comment = new Comment(el, object.profiles, object.groups)
+            temp_l.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', comment.getTemplate())
+        })
+
+        if(object.info.thread.count > 3) {
+            temp_l.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', `
+                <span id='shownextcomms'>${_('wall.show_next_comments')}</span>
+            `)
+        }
+    }
+
+    return temp_l.innerHTML
 }
 
 async function wall_template(owner_id, tabs, default_tab = 'all')

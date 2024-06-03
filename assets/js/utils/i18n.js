@@ -445,6 +445,7 @@ window.langs = [
             'report_post': 'Пожаловаться на запись',
             'fave_post': 'Добавить в закладки',
             'unfave_post': 'Убрать из закладок',
+            'go_to_vk': 'Перейти в ВК',
     
             'all_posts': 'Все записи',
             'owner_posts': 'Свои записи',
@@ -473,6 +474,13 @@ window.langs = [
             'comments_count_one': '$1 комментарий',
             'comments_count_few': '$1 комментария',
             'comments_count_other': '$1 комментариев',
+            
+            'thread_count_zero': 'Нет ответов',
+            'thread_count_one': '$1 ответ',
+            'thread_count_few': '$1 ответа',
+            'thread_count_other': '$1 ответов',
+
+            'show_next_comments': 'Показать следующие комментарии',
         },
 
         'photos': {
