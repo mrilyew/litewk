@@ -512,6 +512,7 @@ window.langs = [
             'post_not_found': `Пост не найден.`,
             'not_authorized': 'Ты не авторизовался.',
             'error_getting_wall': 'Ошибка при получении стены. Текст: $1',
+            'error_getting_news': 'Ошибка при получении новостей. Текст: $1',
         },
     }
 ]

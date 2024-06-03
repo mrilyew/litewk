@@ -1009,6 +1009,51 @@ class ClassicListView {
     }
 }
 
+class Newsfeed extends ClassicListView {
+    constructor(type_class, insert_node) {
+        super(type_class, insert_node)
+        this.object_class = type_class
+        this.insert_node  = insert_node
+    }
+
+    setParams(method_name, method_params) 
+    {
+        this.method_name       = method_name
+        this.method_params     = method_params
+    }
+
+    async nextPage() {
+        let objects_data = null
+
+        let error = () => {
+            this.insert_node.insertAdjacentHTML('beforeend', `
+                <div class='bordered_block'>${_('errors.error_getting_news', objects_data.error.error_msg)}</div>
+            `)
+        }
+
+        try {
+            objects_data = await window.vk_api.call(this.method_name, this.method_params, false)
+        } catch(e) {
+            error()
+            return
+        }
+
+        let templates = ''
+        objects_data.response.items.forEach(obj => {
+            let ob_j = new this.object_class(obj, objects_data.response.profiles, objects_data.response.groups)
+            templates += ob_j.getTemplate()
+        })
+
+        this.method_params.start_from = objects_data.response.next_from
+
+        window.s_url.searchParams.set('start_hash', objects_data.response.next_from)
+        push_state(window.s_url)
+
+        this.insert_node.insertAdjacentHTML('beforeend', templates)
+        this.createNextPage()
+    }
+}
+
 class VkApi {
     constructor(url, token) {
         this.url = url
