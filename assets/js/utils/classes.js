@@ -17,6 +17,70 @@ class Faveable {
     }
 }
 
+class PostLike extends Faveable {
+    getTemplate() {
+        return ''
+    }
+
+    getId() {
+        return this.getOwnerID() + '_' + this.getCorrectID()
+    }
+
+    getCorrectID() {
+        return this.info.id
+    }
+
+    getOwnerID() {
+        if(this.info.from_id) {
+            return this.info.from_id
+        } else {
+            return this.info.owner_id
+        }
+    }
+
+    getOwner() {
+        if(this.getOwnerID() > 0) {
+            let uwser = find_owner(this.getOwnerID(), this.profiles, this.groups)
+            return new User(uwser)
+        } else {
+            let cwub = find_owner(this.getOwnerID(), this.profiles, this.groups)
+            return new Club(cwub)
+        }
+    }
+
+    getDate() {
+        return short_date(this.info.date)
+    }
+
+    getURL() {
+        return ''
+    }
+
+    getText() {
+        return format_text(this.info.text)
+    }
+
+    getAttachments() {
+        return this.info.attachments
+    }
+
+    getLikes() {
+        return this.info.likes.count
+    }
+
+    canEdit() {
+        return this.info.can_edit == 1
+    }
+
+    canDelete() {
+        return this.info.can_delete == 1
+    }
+
+    isLiked() {
+        return this.info.likes.user_likes == 1
+    }
+}
+
 class User extends Faveable {
     FRIEND_STATUS_NOT = 0
     FRIEND_STATUS_REQUEST_FROM_ME = 1
@@ -348,12 +412,12 @@ class Club extends Faveable {
         }
     }
 
-    getId() {
-        return Math.abs(this.info.id)
-    }
-    
     getUrl() {
         return 'site_pages/club_page.html?id=' + this.getId()
+    }
+
+    getId() {
+        return Math.abs(this.info.id)
     }
 
     getRealId() {
@@ -439,7 +503,7 @@ class Club extends Faveable {
     }
 }
 
-class Post extends Faveable {
+class Post extends PostLike {
     constructor(info, profiles, groups) {
         super(info)
         this.info = info
@@ -455,48 +519,6 @@ class Post extends Faveable {
         }
     }
 
-    getTemplate(additional_params = {}) {
-        return post_template(this, this.profiles, this.groups, additional_params)
-    }
-
-    getId() {
-        return this.info.owner_id + '_' + this.info.id
-    }
-
-    getOwnerID() {
-        if(this.info.from_id) {
-            return this.info.from_id
-        } else {
-            return this.info.owner_id
-        }
-    }
-
-    getOwner() {
-        if(this.getOwnerID() > 0) {
-            let uwser = find_owner(this.getOwnerID(), this.profiles, this.groups)
-            return new User(uwser)
-        } else {
-            let cwub = find_owner(this.getOwnerID(), this.profiles, this.groups)
-            return new Club(cwub)
-        }
-    }
-
-    getDate() {
-        return short_date(this.info.date)
-    }
-
-    getText() {
-        return format_text(this.info.text)
-    }
-
-    getAttachments() {
-        return this.info.attachments
-    }
-
-    getLikes() {
-        return this.info.likes.count
-    }
-
     getCommentsCount() {
         return this.info.comments.count
     }
@@ -509,8 +531,62 @@ class Post extends Faveable {
         return this.info.copy_history[0]
     }
 
+    getUpperText() {
+        let source = this.info.post_source
+
+        if(!source || !source.data) {
+            return null
+        }
+
+        switch(source.data) {
+            case 'profile_photo':
+                if(this.getOwnerID() < 0) {
+                    return _('wall.updated_photo_group')
+                } else {
+                    if(this.getOwner().info.sex == 2) {
+                        return _('wall.updated_photo_user_male')
+                    } else {
+                        return _('wall.updated_photo_user_female')
+                    }
+                }
+                
+            default:
+                return source.data
+        }
+    }
+
+    getSigner() {
+        if(!this.info.signer_id) {
+            return null
+        } else {
+            return new User(find_owner(this.info.signer_id, this.profiles, this.groups))
+        }
+    }
+
+    getSource() {
+        let copyright = this.info.copyright
+
+        if(copyright.type == "external_link") {
+            return `<a href='${copyright.link}' target='_blank'>${escape_html(copyright.name)}</a>`
+        } else {
+            let sub_link = ''
+            if(copyright.link.indexOf('wall')) {
+                let subid = (new URL(copyright.link).pathname).replace('/wall', '')
+                return `<a href='site_pages/post.html?post=${subid}'>${escape_html(copyright.link)}</a>`
+            }
+        }
+    }
+    
+    getTemplate(anything_else = {}) {
+        return post_template(this, this.profiles, this.groups, anything_else)
+    }
+
+    isAd() {
+        return this.info.marked_as_ads == 1
+    }
+
     isPinned() {
-        return this.info.is_pinned && this.is_pinned == 1
+        return this.info.is_pinned == 1
     }
 
     isntRepost() {
@@ -523,14 +599,6 @@ class Post extends Faveable {
 
     isCopy() {
         return this.info.copy_history
-    }
-
-    canEdit() {
-        return this.info.can_edit == 1
-    }
-
-    canDelete() {
-        return this.info.can_delete == 1
     }
 
     canArchive() {
@@ -548,6 +616,10 @@ class Post extends Faveable {
     canUp() {
         return this.info.comments && this.info.comments.can_open == 1
     }
+
+    hasSigner() {
+        return this.has('signer_id')
+    }
     
     hasAttachments() {
         return this.info.attachments && this.info.attachments.length > 0
@@ -556,11 +628,150 @@ class Post extends Faveable {
     hasViews() {
         return this.has('views') && this.info.views.count > 0
     }
+
+    hasUpperText() {
+        return this.has('post_source') && this.info.post_source.data
+    }
+
+    hasSource() {
+        return this.has('copyright')
+    }
+}
+
+class Photo extends PostLike {
+    constructor(info) {
+        super(info)
+        this.info = info
+    }
+
+    getURL() {
+        return this.getUrlBySize('p')
+    }
+
+    getFullSizeURL() {
+        if(this.hasSize('w')) {
+            return this.getUrlBySize('w')
+        } else if(this.hasSize('z')) {
+            return this.getUrlBySize('z')
+        } else if(this.hasSize('y')) {
+            return this.getUrlBySize('y')
+        } else if(this.hasSize('r')) {
+            return this.getUrlBySize('r')
+        } else {
+            return this.getUrlBySize('q')
+        }
+    }
+
+    getUrlBySize(type = 'q') {
+        if(!this.hasSize(type)) {
+            return this.info.sizes.find(size => size.type == 'x').url
+        }
+
+        return this.info.sizes.find(size => size.type == type).url
+    }
+
+    hasSize(type = 'z') {
+        return this.info.sizes.find(size => size.type == type)
+    }
+}
+
+class Video extends PostLike {
+    constructor(info) {
+        super(info)
+        this.info = info
+    }
+
+    getURL() {
+        return this.info.sizes[4].url
+    }
+
+    getDuration() {
+        return format_seconds(this.info.duration)
+    }
+
+    getPreview(num = 3) {
+        if(!this.hasPreview()) {
+            return ''
+        }
+
+        if(!this.info.image[num]) {
+            return this.info.image[6].url
+        } else {
+            return this.info.image[num].url
+        }
+    }
+
+    getTitle() {
+        return escape_html(this.info.title)
+    }
+
+    getViews() {
+        return this.info.views
+    }
+    
+    getLocalViews() {
+        return this.info.local_views
+    }
+
+    hasPreview() {
+        return this.has('image')
+    }
+}
+
+class Audio extends PostLike {
+    constructor(info) {
+        super(info)
+        this.info = info
+    }
+
+    getName() {
+        return escape_html(this.info.artist + ' — ' + this.info.title)
+    }
+
+    getDuration() {
+        return format_seconds(this.info.duration)
+    }
+}
+
+class Poll extends PostLike {
+    constructor(info) {
+        super(info)
+        this.info = info
+    }
+
+    getQuestion() {
+        return escape_html(this.info.question)
+    }
+
+    getAnswers() {
+        return this.info.answers
+    }
+}
+
+class Comment extends PostLike {
+    constructor(info, profiles, groups) {
+        super(info)
+        this.info = info
+        this.profiles = profiles
+        this.groups = groups
+    }
+
+    isAuthor() {
+        return this.info.is_from_post_author
+    }
+
+    getTemplate() {
+        return comment_template(this, this.getOwner())
+    }
+
+    hasAttachments() {
+        return this.info.attachments && this.info.attachments.length > 0
+    }
 }
 
 // Без дублирования кода никак.
 class ClassicListView {
-    constructor(template_function, insert_node)
+    constructor(object_class, insert_node)
     {
         this.objects = {
             'count': null,
@@ -569,8 +780,8 @@ class ClassicListView {
             'perPage': 10
         }
 
-        this.template_function = template_function
-        this.insert_node       = insert_node
+        this.object_class = object_class
+        this.insert_node  = insert_node
     }
 
     setParams(method_name, method_params, inverse = false) 
@@ -578,6 +789,7 @@ class ClassicListView {
         this.method_name       = method_name
         this.method_params     = method_params
         this.objects.perPage   = method_params.count ?? 10
+        method_params.count    = this.objects.perPage ?? 10
         this.inverse           = inverse
     }
 
@@ -652,6 +864,10 @@ class ClassicListView {
 
     async page(number = 0)
     {
+        if(number < 0) {
+            number = 0
+        }
+        
         let objects_data = null
         this.method_params.offset = number * this.objects.perPage + (this.objects.special_offset ?? 0)
 
@@ -677,8 +893,8 @@ class ClassicListView {
             error()
             return
         }
-        
-        if(this.objects.count < 1) {
+
+        if(this.method_name != 'wall.getComments' && this.objects.count < 1) {
             let messej = _('wall.no_posts_in_tab')
             if(this.method_name == 'wall.search') {
                 messej = _('wall.no_posts_in_search')
@@ -698,8 +914,8 @@ class ClassicListView {
         let templates = ''
         
         objects_data.response.items.forEach(obj => {
-            let post = new Post(obj, objects_data.response.profiles, objects_data.response.groups)
-            templates += post.getTemplate()
+            let ob_j = new this.object_class(obj, objects_data.response.profiles, objects_data.response.groups)
+            templates += ob_j.getTemplate()
         })
 
         if(this.inverse) {
@@ -707,14 +923,14 @@ class ClassicListView {
         } else {
             this.objects.page = Number(number) + 1
         }
-
+        
         this.insert_node.insertAdjacentHTML('beforeend', templates)
 
         if($('.paginator')[0]) {
             let parent = $('.paginator')[0].parentNode
             $('.paginator').remove()
 
-            parent.insertAdjacentHTML('beforeend', paginator_template(this.objects.pagesCount, number))
+            parent.insertAdjacentHTML('beforeend', paginator_template(this.objects.pagesCount, number + 1))
         }
     }
 
@@ -727,6 +943,7 @@ class ClassicListView {
         let temp_params = this.method_params
         temp_params.filter = section
         temp_params.offset = 0
+        this.objects.page = -1
 
         this.setParams('wall.get', temp_params)
         this.clear()
@@ -772,6 +989,7 @@ class ClassicListView {
 
     clear()
     {
+        this.method_params.offset = 0
         this.objects.count = null
         this.objects.pagesCount = 10000
 
@@ -893,6 +1111,38 @@ class MessageBox {
     }
 }
 
+class MessageWindow {
+    constructor(title, func, additional = {}) {
+        $('body').addClass('dimmed')
+        $('.wrapper')[0].insertAdjacentHTML('beforeend', 
+            `
+            <div class='fullscreen_view'>
+                <div class='fullscreen_view_title'>
+                    <span style='margin-top: 3px;'>${title}</span>
+
+                    <a href='#' data-ignore='1' id='_close'><span>${_('messagebox.close')}</span></a>
+                </div>
+                <div class='fullscreen_view_body'></div>
+            </div>
+            `
+        )
+
+        func($('.fullscreen_view')[0], additional)
+
+        $('#_close').on('click', (e) => {
+            e.preventDefault()
+
+            this.close()
+        })
+    }
+
+    close()
+    {
+        $('body').removeClass('dimmed')
+        $('.wrapper .fullscreen_view').remove()
+    }
+}
+
 class Accounts {
     constructor()
     {
@@ -995,10 +1245,10 @@ window.site_params = new class {
         localStorage.params = JSON.stringify(params)
     }
 
-    get(param) {
+    get(param, def = null) {
         let params = JSON.parse(localStorage.params ?? {})
 
-        return params[param]
+        return params[param] ? params[param] : def
     }
 
     has(param) {

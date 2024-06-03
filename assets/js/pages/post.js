@@ -10,17 +10,18 @@ window.page_class = new class {
 
         // Drawing user page
         let info = null
+        let post = null
 
         try {
             info = (await window.vk_api.call('wall.getById', {'posts': id, 'extended': 1})).response
+            post = new Post(info.items[0], info.profiles, info.groups)
         } catch(e) {}
-        
+
         if(!info) {
             add_onpage_error(_('errors.post_not_found', id))
             return
         }
 
-        let post = new Post(info.items[0], info.profiles, info.groups)
         let tabs = ['all', 'owner']
         let tabs_ = ''
 
@@ -37,6 +38,12 @@ window.page_class = new class {
                 <div class='default_wrapper wall_wrapper'>
                     <div class='wall_wrapper_post'>
                         ${post.getTemplate({'hide_comments': 1})}
+
+                        <div class='bordered_block comment_select_block'>
+                            <span>${_('wall.comments_count', 0)}</span>
+                        </div>
+
+                        <div class='wall_wrapper_comments'></div>
                     </div>
                     <div class='wall_wrapper_tabs bordered_block'>
                         ${tabs_}
@@ -46,5 +53,18 @@ window.page_class = new class {
                 </div>
             `
         )
+
+        window.wall = new ClassicListView(Comment, $('.wall_wrapper_post .wall_wrapper_comments')[0])
+        window.wall.setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'photo_50,photo_200'})
+            
+        if(window.s_url.searchParams.has('page')) {
+            window.wall.objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        }
+
+        window.wall.clear()
+        await window.wall.nextPage()
+
+        $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.wall.objects.count)
+        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, window.wall.objects.page))
     }
 }

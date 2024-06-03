@@ -42,6 +42,9 @@ window.langs = [
             'my_settings': 'Настройки',
             'logout': 'Выйти',
             'authorize': 'Авторизация',
+
+            'to_up': 'Наверх',
+            'come_back': 'Назад',
         },
 
         'pagination': {
@@ -93,7 +96,8 @@ window.langs = [
         },
 
         'settings_ui_tweaks': {
-            'vk_like_padding': 'Не расширять страницу на всю ширину монитора (станет уютненько)'
+            'vk_like_padding': 'Расширять страницу на всю ширину монитора',
+            'transitions_everywhere': 'Плавные переходы везде',
         },
 
         'settings_language': {
@@ -452,10 +456,34 @@ window.langs = [
             'post_has_unarchived': `Пост был возвращён из архива. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='0'>Архивировать?</a>`,
             'no_posts_in_tab': 'Постов не обнаружено.',
             'no_posts_in_search': 'По запросу ничего не найдено.',
+            'no_comments': 'Комментариев нет.',
             'posts_invert': 'Инвертировать',
 
             'post': 'Пост',
             'updated_photo': 'обновлено фото',
+            'updated_photo_group': 'обновили фото',
+            'updated_photo_user_male': 'обновил фото',
+            'updated_photo_user_female': 'обновила фото',
+            
+            'author': 'Автор',
+            'source': 'Источник',
+            'is_ad': 'Рекламная запись',
+
+            'comments_count_zero': 'Нет комментариев',
+            'comments_count_one': '$1 комментарий',
+            'comments_count_few': '$1 комментария',
+            'comments_count_other': '$1 комментариев',
+        },
+
+        'photos': {
+            'photo': 'Фотография',
+        },
+
+        'videos': {
+            'views_count_zero': 'Нет просмотров',
+            'views_count_one': '$1 просмотр',
+            'views_count_few': '$1 просмотра',
+            'views_count_other': '$1 просмотров',
         },
 
         'captcha': {

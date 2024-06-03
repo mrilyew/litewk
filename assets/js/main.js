@@ -7,6 +7,10 @@ window.main_class = new class {
         </style>
     
         <div class='dimmer'></div>
+        <div class='to_the_sky'>
+            <span class='to_up'>${_('navigation.to_up')}</span>
+            <span class='come_back'>${_('navigation.come_back')}</span>
+        </div>
         <div class="wrapper">
             <div class="menu">
                 <a href='site_pages/user_page.html'>${_('navigation.my_page')}</a>
@@ -42,6 +46,7 @@ window.main_class = new class {
         }
     
         window.active_account = window.accounts.getActiveAccount()
+        window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
         if(!window.active_account) {
             $('.wrapper .menu')[0].innerHTML = `
                 <a href='site_pages/auth.html'>${_('navigation.authorize')}</a>
@@ -55,6 +60,7 @@ window.main_class = new class {
     reset_page() {
         $('#_main_page_script').remove()
         $('.page_content')[0].innerHTML = ``
+        
         window.page_class = null
     }
 

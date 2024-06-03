@@ -1,14 +1,20 @@
 // AJAX-navigation
 
 $(document).on('click', 'a', async (e) => {
-    if(e.target.href && e.target.href != '#' && e.target.href.indexOf(window.s_url.origin) != -1) {
-        if(e.target.dataset.ignore) {
+    let target = e.target
+
+    if(e.target.tagName != 'a') {
+        target = e.target.closest('a')
+    }
+
+    if(target.href && target.href != '#' && target.href.indexOf(window.s_url.origin) != -1) {
+        if(target.dataset.ignore) {
             return
         }
         
         e.preventDefault()
 
-        await window.main_class.go_to(e.target.href)
+        await window.main_class.go_to(target.href)
     }
 })
 
@@ -18,6 +24,31 @@ window.addEventListener('popstate', async (e) => {
 
     await window.main_class.go_to(location.href, false)
 });
+
+$(document).on('click', '.to_the_sky', (e) => {
+    if(scrollY > 1000) {
+        window.temp_scroll = scrollY
+        window.scrollTo(0, 0)
+    } else {
+        if(window.temp_scroll) {
+            window.scrollTo(0, window.temp_scroll)
+        }
+    }
+
+    $(document).trigger('scroll')
+})
+
+$(document).on('scroll', () => {
+    if(scrollY < 1000) {
+        if(!window.temp_scroll) {
+            $('.to_the_sky').addClass('hidden')
+        } else {
+            $('.to_the_sky').addClass('down')
+        }
+    } else {
+        $('.to_the_sky').removeClass('hidden').removeClass('down')
+    }
+})
 
 // Others
 
@@ -410,28 +441,70 @@ $(document).on('click', '#_invert_wall', (e) => {
     window.wall.nextPage()
 })
 
+$(document).on('click', '.wall_wrapper_upper_panel .paginator a', async (e) => {
+    e.preventDefault()
+
+    if(e.target.classList.contains('active')) {
+        return
+    }
+
+    window.wall.clear()
+    await window.wall.page(e.target.dataset.page - 1)
+
+    window.s_url = new URL(e.target.href)
+    push_state(window.s_url)
+
+    $('.paginator').remove()
+    $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    window.wall.createNextPage()
+})
+
 $(document).on('click', '.like', async (e) => {
     e.preventDefault()
 
-    let id = e.target.closest('.like').closest('.post').dataset.postid.split('_')
-
-    if(!e.target.closest('.like').classList.contains('activated')) {
-        let res = await window.vk_api.call('likes.add', {'type': 'post', 'owner_id': id[0], 'item_id': id[1]})
-
-        if(res.error) {
-            return
-        } else {
-            e.target.closest('.like').classList.add('activated')
-            e.target.closest('.like').querySelector('span').innerHTML = res.response.likes
-        }
+    let like = e.target.closest('.like')
+    let post = like.closest('.main_info_block')
+    let id = post.dataset.postid.split('_')
+    let verb = !like.classList.contains('activated') ? 'add' : 'delete'
+    let entity = post.dataset.type
+    let res = await window.vk_api.call(`likes.${verb}`, {'type': entity, 'owner_id': id[0], 'item_id': id[1]})
+    
+    if(verb == 'add') {
+        e.target.closest('.like').classList.add('activated')
+        e.target.closest('.like').querySelector('span').innerHTML = res.response.likes
     } else {
-        let res = await window.vk_api.call('likes.delete', {'type': 'post', 'owner_id': id[0], 'item_id': id[1]})
-
-        if(res.error) {
-            return
-        } else {
-            e.target.closest('.like').classList.remove('activated')
-            e.target.closest('.like').querySelector('span').innerHTML = res.response.likes
-        }
+        e.target.closest('.like').classList.remove('activated')
+        e.target.closest('.like').querySelector('span').innerHTML = res.response.likes
     }
+})
+
+// Viewers
+
+$(document).on('click', '.photo_attachment', (e) => {
+    log(e)
+    e.preventDefault()
+
+    new MessageWindow(_('photos.photo'), (insert, additional) => {
+        insert.insertAdjacentHTML('beforeend', `
+            <div class='photo_viewer'>
+                <img src='${e.target.dataset.full}'>
+            </div>
+        `)
+    })
+})
+
+$(document).on('click', '.video_attachment_viewer_open', (e) => {
+    log(e)
+    e.preventDefault()
+
+    new MessageWindow(_('photos.photo'), async (insert, additional) => {
+        let id = e.target.closest('.ordinary_attachment').dataset.videoid
+        let video = await window.vk_api.call('video.get', {'videos': id})
+
+        insert.insertAdjacentHTML('beforeend', `
+            <div class='video_viewer'>
+                <iframe src='${video.response.items[0].player}'></iframe>
+            </div>
+        `)
+    })
 })

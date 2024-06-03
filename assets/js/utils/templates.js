@@ -43,32 +43,34 @@ async function user_page_template(user)
             ` : ''}
             <div class='user_page_wrapper_grid'>
                 <div class="left_block bordered_block">
-                    <img id='avatar_img' src='${user.getAvatar()}' alt='${_('user_page.user_avatar')}'>
-                    <div id='_actions'>
-                        ${user.isThisUser() ?
-                            `
-                            ${`<a class='action' href='site_pages/edit_page.html'> ${_('user_page.edit_page')}</a>`}
-                            ` :
-                            `
-                            ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0'> ${_('users_relations.start_friendship')}</a>` : ''}
-                            ${user.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1'> ${_('users_relations.cancel_friendship')}</a>` : ''}
-                            ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4'> ${_('users_relations.accept_friendship')}</a>` : ''}
-                            ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2'> ${_('users_relations.decline_friendship')}</a>` : ''}
-                            ${user.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3'> ${_('users_relations.destroy_friendship')}</a>` : ''}
-                            ${!user.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${user.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
-                            ${user.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${user.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
-                            ${!user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='0'> ${_('blacklist.add_to_blacklist')}</a>` : ''}
-                            ${user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='1'> ${_('blacklist.remove_from_blacklist')}</a>` : ''}
-                            
-                            ${user.isFriend() ? `
-                                ${!user.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='0'> ${_('user_page.hide_from_feed')}</a>` : ''}
-                                ${user.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='1'> ${_('user_page.unhide_from_feed')}</a>` : ''}
-                            ` : ''}
+                    <div class='block_parallax'>
+                        <img id='avatar_img' src='${user.getAvatar()}' alt='${_('user_page.user_avatar')}'>
+                        <div id='_actions'>
+                            ${user.isThisUser() ?
+                                `
+                                ${`<a class='action' href='site_pages/edit_page.html'> ${_('user_page.edit_page')}</a>`}
+                                ` :
+                                `
+                                ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0'> ${_('users_relations.start_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1'> ${_('users_relations.cancel_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4'> ${_('users_relations.accept_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2'> ${_('users_relations.decline_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3'> ${_('users_relations.destroy_friendship')}</a>` : ''}
+                                ${!user.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${user.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
+                                ${user.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${user.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
+                                ${!user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='0'> ${_('blacklist.add_to_blacklist')}</a>` : ''}
+                                ${user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='1'> ${_('blacklist.remove_from_blacklist')}</a>` : ''}
+                                
+                                ${user.isFriend() ? `
+                                    ${!user.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='0'> ${_('user_page.hide_from_feed')}</a>` : ''}
+                                    ${user.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='1'> ${_('user_page.unhide_from_feed')}</a>` : ''}
+                                ` : ''}
 
-                            ${!user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
-                            ${user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
-                            `
-                        }
+                                ${!user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
+                                ${user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
+                                `
+                            }
+                        </div>
                     </div>
                 </div>
                 <div class="right_block">
@@ -383,38 +385,34 @@ async function user_page_template(user)
                                 <div class='tilte_cover'>
                                     <b class='title'>${_('user_page.career')}</b>
                                     <hr class='hidden_line'>
-
-                                    <div class='insert_carerr' style='padding: 1px 3px 7px 3px;'></div>
                                 </div>
+                                <div class='insert_carerr' style='padding: 1px 3px 7px 3px;'></div>
                             </div>` : ''}
                             ${user.hasEducation() ? `<div class='mini_info_block' id='_carrerBlock'>
                                 <div class='tilte_cover'>
                                     <b class='title'>${_('user_page.education')}</b>
                                     <hr class='hidden_line'>
-
-                                    <div id='insert_education' style='padding: 1px 3px 7px 3px;'>
-                                        <table><tbody></tbody></table>
-                                    </div>
+                                </div>
+                                <div id='insert_education' style='padding: 1px 3px 7px 3px;'>
+                                    <table><tbody></tbody></table>
                                 </div>
                             </div>` : ''}
                             ${user.hasRelatives() ? `<div class='mini_info_block' id='_carrerBlock'>
                                 <div class='tilte_cover'>
                                     <b class='title'>${_('user_page.relatives')}</b>
                                     <hr class='hidden_line'>
-
-                                    <div id='insert_relatives' style='padding: 1px 3px 7px 3px;'>
-                                        <table><tbody></tbody></table>
-                                    </div>
+                                </div>
+                                <div id='insert_relatives' style='padding: 1px 3px 7px 3px;'>
+                                    <table><tbody></tbody></table>
                                 </div>
                             </div>` : ''}
                             ${user.hasMilitary() ? `<div class='mini_info_block' id='_carrerBlock'>
                                 <div class='tilte_cover'>
                                     <b class='title'>${_('user_page.military')}</b>
                                     <hr class='hidden_line'>
-
-                                    <div id='insert_military' style='padding: 1px 3px 7px 3px;'>
-                                        <table><tbody></tbody></table>
-                                    </div>
+                                </div>
+                                <div id='insert_military' style='padding: 1px 3px 7px 3px;'>
+                                    <table><tbody></tbody></table>
                                 </div>
                             </div>` : ''}
                             ${user.has('personal') ? `
@@ -515,7 +513,7 @@ async function user_page_template(user)
                                     ${user.has('counters') && user.info.counters.groups ? `<a href='#'>${_('counters.groups_count', user.info.counters.groups)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.pages ? `<a href='#'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.photos ? `<a href='#'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.posts ? `<a href='/site_pages/wall_page.html?id=${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.posts ? `<a href='site_pages/wall.html?id=${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
@@ -816,8 +814,10 @@ function club_template(club)
                 </div>
             </div>
             <div class="right_block bordered_block">
-                <img id='avatar_img' src='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'>
-                <div id='_actions'></div>
+                <div class='block_parallax'>
+                    <img id='avatar_img' src='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'>
+                    <div id='_actions'></div>
+                </div>
             </div>
         </div>
     </div>
@@ -833,117 +833,145 @@ function process_attachments(attachments)
 {
     let attachms = document.createElement('div')
     attachms.innerHTML = `
-    <div class='attachments'>
+    <div class='attachments' ${attachments.length == 1 ? `style='text-align: center;'` : ''}>
         <div class='ordinary_attachments'></div>
         <div class='other_attachments'></div>
     </div>`
 
-    attachments.forEach(attachment => {
-        switch(attachment.type) {
-            case 'photo':
-                let op_photo = attachment.photo
-                let photo_id = op_photo.owner_id + '_' + op_photo.id
-    
-                attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
-                    `
-                        <div class='ordinary_attachment photo_attachment' data-photoid='${photo_id}'>
-                            <img src='${op_photo.sizes[2].url}'>
-                        </div>
-                    `
-                )
-                break
-            case 'video':
-                let op_video = attachment.video
-                let video_id = op_video.owner_id + '_' + op_video.id
-                let preview = ''
+    if(attachments.length == 1 && attachments[0].type == 'photo') {
+        let photo = new Photo(attachments[0].photo)
+        
+        attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
+            `
+            <img class='ordinary_attachment photo_attachment' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+            `
+        )
+    } else if(attachments.length == 1 && attachments[0].type == 'video') {
+        let video = new Video(attachments[0].video)
+        
+        attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
+            `
+            <div class='ordinary_attachment video_attachment_viewer_open video_attachment_big big_attachment' data-videoid='${video.getId()}'>
+                <div class='video_preview_block'>
+                    <img src='assets/images/playicon.png' class='play_button'>
 
-                if(op_video.image) {
-                    if(op_video.image[3]) {
-                        preview = op_video.image[3].url
-                    } else if(op_video.image[2]) {
-                        preview = op_video.image[2].url
-                    } else {
-                        preview = op_video.image[1].url
-                    }
-                }
+                    <div class='time_block'>
+                        <span>${video.getDuration()}</span>
+                    </div>
+                    ${video.hasPreview() ? `<img class='video_preview' src='${video.getPreview(3)}'>` : ''}
+                </div>
+                <div class='video_attachment_info'>
+                    <b><a href='site_pages/video.html?id=${video.getId()}'>${video.getTitle()}</a></b>
+                    <p>${_('videos.views_count', video.getViews())}</p>
+                </div>
+            </div>
+            `
+        )
+    } else {
+        attachments.forEach(attachment => {
+            switch(attachment.type) {
+                case 'photo':
+                    let photo = new Photo(attachment.photo)
 
-                attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
-                    `
-                        <div class='ordinary_attachment video_attachment' data-videoid='${video_id}'>
-                            <div class='play_button'>
-                                <img src='assets/images/playicon.png'>
-                            </div>
-
-                            <div class='time_block'>
-                                <span>${format_seconds(op_video.duration)}</span>
-                            </div>
-                            ${op_video.image ? `<img src='${preview}'>` : ''}
-                        </div>
-                    `
-                )
-                break
-            case 'doc':
-                let op_doc = attachment.doc
-                let doc_id = op_doc.owner_id + '_' + op_doc.id
-                
-                if(op_doc.ext == 'gif' || op_doc.ext == 'jpg' || op_doc.ext == 'png') {
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
-                    `
-                        <div class='ordinary_attachment doc_attachment' data-docid='${doc_id}'>
-                            <div class='ext_block'>
-                                <span>${escape_html(op_doc.ext.toUpperCase())} | ${human_file_size(op_doc.size)}</span>
+                        `
+                            <img class='ordinary_attachment photo_attachment' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+                        `
+                    )
+                    break
+                case 'video':
+                    let op_video = attachment.video
+                    let video_id = op_video.owner_id + '_' + op_video.id
+                    let preview = ''
+    
+                    if(op_video.image) {
+                        if(op_video.image[3]) {
+                            preview = op_video.image[3].url
+                        } else if(op_video.image[2]) {
+                            preview = op_video.image[2].url
+                        } else {
+                            preview = op_video.image[1].url
+                        }
+                    }
+    
+                    attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <div class='ordinary_attachment video_attachment_viewer_open video_attachment' data-videoid='${video_id}'>
+                                <img src='assets/images/playicon.png' class='play_button'>
+    
+                                <div class='time_block'>
+                                    <span>${format_seconds(op_video.duration)}</span>
+                                </div>
+                                ${op_video.image ? `<img src='${preview}'>` : ''}
                             </div>
-                            <img src='${op_doc.preview.photo.sizes[3].src}'>
-                        </div>
-                    `)
-                } else {
+                        `
+                    )
+                    break
+                case 'doc':
+                    let op_doc = attachment.doc
+                    let doc_id = op_doc.owner_id + '_' + op_doc.id
+                    
+                    if(op_doc.ext == 'gif' || op_doc.ext == 'jpg' || op_doc.ext == 'png') {
+                        attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <div class='ordinary_attachment doc_attachment' data-docid='${doc_id}'>
+                                <div class='ext_block'>
+                                    <span>${escape_html(op_doc.ext.toUpperCase())} | ${human_file_size(op_doc.size)}</span>
+                                </div>
+                                <img src='${op_doc.preview.photo.sizes[3].src}'>
+                            </div>
+                        `)
+                    } else {
+                        attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <a href='${op_doc.url}'>
+                                <div class='list_attachment doc_list_attachment' data-docid='${doc_id}'>
+                                    <div class='list_attachment_format'>${op_doc.ext}</div>
+                                    <div class='list_attachment_info'>
+                                        <p><b>${escape_html(op_doc.title)}</b></p>
+                                        <p>${human_file_size(op_doc.size)}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        `)
+                    }
+                    break
+                case 'poll':
+                    let op_poll = new Poll(attachment.poll)
+    
                     attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
                     `
-                        <a href='${op_doc.url}'>
-                            <div class='list_attachment doc_list_attachment' data-docid='${doc_id}'>
-                                <div class='list_attachment_format'>${op_doc.ext}</div>
-                                <div class='list_attachment_info'>
-                                    <p><b>${escape_html(op_doc.title)}</b></p>
-                                    <p>${human_file_size(op_doc.size)}</p>
-                                </div>
+                        <div class='list_attachment poll_list_attachment' data-pollid='${op_poll.getId()}'>
+                            <div class='poll_head'>
+                                <span class='question'>${escape_html(op_poll.getQuestion())}</span>
                             </div>
-                        </a>
+                            <div class='poll_answers'></div>
+                        </div>
                     `)
-                }
-                break
-            case 'poll':
-                let op_poll = attachment.poll
-                let poll_id = op_poll.owner_id + '_' + op_poll.id
-
-                attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
-                `
-                    <div class='list_attachment poll_list_attachment' data-pollid='${poll_id}'>
-                        ${escape_html(op_poll.question)}
-                    </div>
-                `)
-
-                op_poll.answers.forEach(answer => {
-                    attachms.querySelector(`.poll_list_attachment[data-pollid='${poll_id}']`).insertAdjacentHTML('beforeend', `
-                        <p>
-                            ${answer.text}
-                        </p>
+    
+                    op_poll.getAnswers().forEach(answer => {
+                        attachms.querySelector(`.poll_list_attachment[data-pollid='${op_poll.getId()}'] .poll_answers`).insertAdjacentHTML('beforeend', `
+                            <label>
+                                <input type='radio' name='poll_${op_poll.getId()}'>
+                                ${escape_html(answer.text)}
+                            </label>
+                        `)
+                    })
+                    break
+                case 'audio':
+                    let op_audio = new Audio(attachment.audio)
+    
+                    attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                    `
+                        <div class='list_attachment audio_list_attachment audio_player' data-audioid='${op_audio.getId()}'>
+                            <span>${op_audio.getName()}</span>
+                            <span>${op_audio.getDuration()}</span>
+                        </div>
                     `)
-                })
-                break
-            case 'audio':
-                let op_audio = attachment.audio
-                let audio_id = op_audio.owner_id + '_' + op_audio.id
-
-                attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
-                `
-                    <div class='list_attachment audio_list_attachment' data-audioid='${audio_id}'>
-                        ${escape_html(op_audio.title)}
-                        ${escape_html(op_audio.artist)}
-                    </div>
-                `)
-                break
-        }
-    })
+                    break
+            }
+        })
+    }
 
     return attachms.innerHTML
 }
@@ -951,11 +979,12 @@ function process_attachments(attachments)
 function post_template(post, profiles, groups, additional_options = {})
 {
     let owner = post.getOwner()
+    let signer = post.getSigner()
 
     let template = ``
     template += 
     `
-    <div class='post' data-postid='${post.getId()}'>
+    <div class='post main_info_block' data-type='post' data-postid='${post.getId()}'>
         <div class='post_hidden_by_default post_restore_block'>
             ${_('wall.post_has_deleted')}
         </div>
@@ -977,7 +1006,7 @@ function post_template(post, profiles, groups, additional_options = {})
                 </a>
             </div>
             <div class='post_name'>
-                <b><a href='${owner.getUrl()}'>${owner.getName()}</a></b>
+                <p><b><a href='${owner.getUrl()}'>${owner.getName()}</a></b> ${post.hasUpperText() ? post.getUpperText() : ''}</p>
                 <p><a href='site_pages/post.html?post=${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
             </div>
             `
@@ -985,22 +1014,26 @@ function post_template(post, profiles, groups, additional_options = {})
     template += `
                 </div>
                 
-                ${post.isntRepost() ? `<div class='posts_menu_toggle dropdown_toggle icons1' data-onid='_actposts${post.getId()}'></div>
-                <div class='post_upper_actions dropdown_wrapper'>
-                    <div class='dropdown_menu' id='_actposts${post.getId()}'>
-                        ${post.canEdit() ? `<p id='_postEdit'>${_('wall.edit_post')}</p>` : ''}
-                        ${post.canDelete() ? `<p id='_postDelete'>${_('wall.delete_post')}</p>` : ''}
-                        ${post.canArchive() && !post.isArchived() ? `<p id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</p>` : ''}
-                        ${post.canArchive() && post.isArchived()? `<p id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</p>` : ''}
-                        ${post.canPin() && post.isPinned() ? `<p id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</p>` : ''}
-                        ${post.canPin() && !post.isPinned() ? `<p id='_pinPost' data-act='pin'>${_('wall.pin_post')}</p>` : ''}
-                        ${post.canShut() ? `<p id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</p>` : ''}
-                        ${post.canUp() ? `<p id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</p>` : ''}
-                        ${!post.canDelete() ? `<p>${_('wall.report_post')}</p>` : ''}
-                        ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
-                        ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
-                    </div>
-                </div>` : ''}
+                ${post.isntRepost() ? 
+                `
+                <div class='post_toggle_wrap'>
+                    <div class='posts_menu_toggle dropdown_toggle icons1' data-onid='_actposts${post.getId()}'></div>
+                        <div class='post_upper_actions dropdown_wrapper'>
+                            <div class='dropdown_menu' id='_actposts${post.getId()}'>
+                                ${post.canEdit() ? `<p id='_postEdit'>${_('wall.edit_post')}</p>` : ''}
+                                ${post.canDelete() ? `<p id='_postDelete'>${_('wall.delete_post')}</p>` : ''}
+                                ${post.canArchive() && !post.isArchived() ? `<p id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</p>` : ''}
+                                ${post.canArchive() && post.isArchived()? `<p id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</p>` : ''}
+                                ${post.canPin() && post.isPinned() ? `<p id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</p>` : ''}
+                                ${post.canPin() && !post.isPinned() ? `<p id='_pinPost' data-act='pin'>${_('wall.pin_post')}</p>` : ''}
+                                ${post.canShut() ? `<p id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</p>` : ''}
+                                ${post.canUp() ? `<p id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</p>` : ''}
+                                ${!post.canDelete() ? `<p>${_('wall.report_post')}</p>` : ''}
+                                ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
+                                ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>` : ''}
             </div>
 
             <div class='post_content'>
@@ -1008,6 +1041,18 @@ function post_template(post, profiles, groups, additional_options = {})
 
                 ${post.hasAttachments() ? process_attachments(post.getAttachments()) : ''}
                 <div class='repost_block'></div>
+
+                ${post.hasSigner() ? `<div class='post_signer special_post_block'>
+                    ${_('wall.author')}:
+                    <a href='${signer.getUrl()}'>${signer.getName()}</a>
+                </div>` : ''}
+                ${post.hasSource() ? `<div class='post_source special_post_block'>
+                    ${_('wall.source')}:
+                    ${post.getSource()}
+                </div>` : ''}
+                ${post.isAd() ? `<div class='is_ad special_post_block'>
+                    <span>${_('wall.is_ad')}</span>
+                </div>` : ''}
             </div>
 
             ${post.info.likes ?
@@ -1018,7 +1063,7 @@ function post_template(post, profiles, groups, additional_options = {})
                         <span>${post.getLikes()}</span>
                     </a>
                     ${!additional_options.hide_comments ? `
-                    <a href='site_pages/wall.html?act=post&post=${post.getId()}' class='comment'>
+                    <a href='site_pages/post.html?post=${post.getId()}' class='comment'>
                         <div class='comment_icon icons1'></div>
                         <span>${post.getCommentsCount()}</span>
                     </a>` : ''}
@@ -1049,43 +1094,42 @@ function post_template(post, profiles, groups, additional_options = {})
     return post_class.innerHTML
 }
 
-function comment_template(object, owner_object)
+function comment_template(object, owner)
 {
-    let comment_id = object.owner_id + '_' + object.id
-    let link = owner_object.name ? `site_pages/club_page?id=${owner_object.id}` : `site_pages/user_page?id=${owner_object.id}`
     let template = `
-        <div class='comment_block' data-commentid='${comment_id}'>
+        <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
             <div class='comment_author'>
                 <div class='comment_avaname'>
-                    <a href='${link}'>
-                        <img src='${owner_object.photo_50}'>
+                    <a href='${owner.getUrl()}'>
+                        <img src='${owner.getAvatar(true)}'>
                     </a>
                 </div>
             </div>
             <div class='comment_info'>
                 <div class='comment_upper_author'>
-                    <b><a href='${link}'>${escape_html(!owner_object.name ? owner_object.first_name + ' ' + owner_object.last_name : owner_object.name)}</a></b>
+                    <div>
+                        <b><a href='${owner.getUrl()}'>${owner.getName()}</a></b>
+                        ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
+                    </div>
                     
                     <div class='comment_upper_actions'>
-                        <div id='_reportComment'></div>
-                        <div id='_commentEdit'></div>
-                        <div id='_commentDelete'></div>
+                        <div class='icons1' id='_reportComment'></div>
+                        <div class='icons1' id='_commentEdit'></div>
+                        <div class='icons1' id='_commentDelete'></div>
                     </div>
                 </div>
 
                 <div class='comment_content'>
-                    <p>${format_text(object.text)}</p>
+                    <p>${object.getText()}</p>
+                    ${object.hasAttachments() ? process_attachments(object.getAttachments()) : ''}
                 </div>
 
-                <div class='comment_bottom' style='display: flex;'>
-                    <span><a href='#'>${short_date(object.date)}</a></span>
-                        <div class='post_actions_wr'>
-                            <div class='like ${object.likes.user_likes == 1 ? 'activated' : '' }'>
-                                <div class='like_icon icons1'></div>
-                                <span>${object.likes.count}</span>
-                            </div>
-                            <div class='repost'>
-                                <div class='repost_icon icons1'></div>
+                <div class='comment_bottom'>
+                    <span><a href='#'>${object.getDate()}</a></span>
+                        <div class='post_actions_no_frame'>
+                            <div class='like ${object.isLiked() ? 'activated' : '' }'>
+                                <div class='like_icon ${object.info.likes.user_likes == 1 ? 'activated' : '' } icons1'></div>
+                                <span>${object.getLikes()}</span>
                             </div>
                         </div>
                     </div>
@@ -1133,18 +1177,21 @@ async function wall_template(owner_id, tabs, default_tab = 'all')
     return template_div.innerHTML
 }
 
+// вообще в ахуе что оно работает
 function paginator_template(pagesCount, activePage, stepCount = 3) 
 {
     let template = `
         <div class='paginator'></div>
     `
 
+    //pagesCount -= 1
+
     let template_div = document.createElement('div')
     template_div.innerHTML = template
 
     let pages = []
     let temp_url = new URL(location.href)
-    
+
     for(let t_page = (activePage - (stepCount - 1)); t_page <= (activePage + (stepCount - 1)); t_page++) {
         if(t_page < 1 || t_page > pagesCount) {
             continue
@@ -1152,12 +1199,18 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
 
         pages.push(t_page)
     }
+        
+    if(activePage > stepCount - 1) {
+        temp_url.searchParams.set('page', 1)
+        template_div.querySelector('.paginator').innerHTML += `
+            <a data-ignore='1' data-page='1' href='${temp_url}'>«</a>
+        `
+    }
 
     if(activePage > 1) {
-        let page = activePage - 1
         temp_url.searchParams.set('page', activePage - 1)
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage - 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>&#60;</a>
+            <a data-ignore='1' data-page='${activePage - 1}' href='${temp_url}'>‹</a>
         `
     }
 
@@ -1165,15 +1218,21 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
         temp_url.searchParams.set('page', page)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${page}' data-page='${activePage + 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>${page}</a>
+            <a data-ignore='1' data-page='${page}' data-page='${activePage}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>${page}</a>
         `
     })
 
     if(activePage < pagesCount) {
-        let page = activePage + 1
         temp_url.searchParams.set('page', activePage + 1)
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage + 1}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>&#62;</a>
+            <a data-ignore='1' data-page='${activePage + 1}' href='${temp_url}'>›</a>
+        `
+    }
+
+    if(activePage < pagesCount - (stepCount - 1)) {
+        temp_url.searchParams.set('page', pagesCount)
+        template_div.querySelector('.paginator').innerHTML += `
+            <a data-ignore='1' data-page='${pagesCount - 1}' href='${temp_url}'>»</a>
         `
     }
 

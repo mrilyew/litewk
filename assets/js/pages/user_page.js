@@ -39,7 +39,7 @@ window.page_class = new class {
 
             // Creating wall as object
             let wall_params   = {'owner_id': user.getId(), 'extended': 1, 'count': 10, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all'}
-            window.wall = new ClassicListView(post_template, $('.user_page_wrapper .wall_block .wall_block_insert')[0])
+            window.wall = new ClassicListView(Post, $('.user_page_wrapper .wall_block .wall_block_insert')[0])
             window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             
             window.wall.objects.count = user.info.counters.posts

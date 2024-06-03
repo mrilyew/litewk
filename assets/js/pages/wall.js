@@ -47,7 +47,7 @@ window.page_class = new class {
         )
 
         let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all'}
-        window.wall = new ClassicListView(post_template, $('.wall_wrapper_post')[0])
+        window.wall = new ClassicListView(Post, $('.wall_wrapper_post')[0])
         window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
     
         if(window.s_url.searchParams.has('page')) {
@@ -66,25 +66,7 @@ window.page_class = new class {
 
         try {
             $('.wall_wrapper span')[0].innerHTML = _('counters.posts_on_wall_count', window.wall.objects.count)
-            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, window.wall.objects.page))
+            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
         } catch(e) {}
-
-        $('.wall_wrapper_upper_panel').on('click', '.paginator a', async (e) => {
-            e.preventDefault()
-
-            if(e.target.classList.contains('active')) {
-                return
-            }
-
-            window.wall.clear()
-            await window.wall.page(e.target.dataset.page)
-
-            window.s_url = new URL(e.target.href)
-            push_state(window.s_url)
-
-            $('.paginator').remove()
-            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.wall.objects.page)))
-            window.wall.createNextPage()
-        })
     }
 }

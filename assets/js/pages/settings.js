@@ -1,15 +1,36 @@
 window.tweaks = [
     {
         'name': 'settings_ui_tweaks.vk_like_padding',
-        'internal_name': 'VK-like page padding',
+        'internal_name': 'Remove page padding',
         'author': 'litewk',
-        'code': `/* VK-like page padding */
+        'code': `/* Remove page padding */
 .wrapper {
-    padding: 0px 10%;
+    padding: unset !important;
 }
-            
+
 .wrapper .menu {
-    border-left: 1px solid var(--main-text-lighter-color);
+    background: var(--main-elements-color);
+    height: 100%;
+    width: 156px;
+    border-left: unset !important;
+    border-right: 1px solid var(--main-text-lighter-color);
+    position: fixed;
+}
+
+.to_the_sky {
+    display: none;
+}`,
+    },
+    {
+        'name':  'settings_ui_tweaks.transitions_everywhere',
+        'internal_name': 'Transitions everywhere',
+        'code': `/* Transitions everywhere */
+* {
+    transition: 200ms all ease-in;
+}
+
+textarea {
+    transition: unset !important;
 }`,
     }
 ]
@@ -183,7 +204,7 @@ window.page_class = new class {
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
                             <label>
-                                <input type='checkbox' name='_useExecute' ${window.site_params.get('internal.use_execute') == '1' ? 'checked' : ''}>
+                                <input type='checkbox' name='_useExecute' ${window.site_params.get('internal.use_execute', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_debug.settings_use_execute')}
                             </label>
                         </div>

@@ -45,7 +45,7 @@ window.page_class = new class {
 
             // Creating wall as object
             let wall_params  = {'owner_id': club.getRealId(), 'extended': 1, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all'}
-            window.wall = new ClassicListView(post_template, $('.club_page_wrapper .wall_block .wall_block_insert')[0])
+            window.wall = new ClassicListView(Post, $('.club_page_wrapper .wall_block .wall_block_insert')[0])
             window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             
             if(window.s_url.searchParams.has('page')) {
