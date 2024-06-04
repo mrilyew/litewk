@@ -483,6 +483,12 @@ window.langs = [
             'show_next_comments': 'Показать следующие комментарии',
         },
 
+        'newsfeed': {
+            'section_default': 'Лента',
+            'section_smart_feed': 'Умная лента',
+            'section_recommend': 'Рекоммендации',
+        },
+
         'photos': {
             'photo': 'Фотография',
         },

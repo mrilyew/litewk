@@ -255,7 +255,7 @@ ul li:last-child {
     padding-left: 157px;
 }
 
-.wall_wrapper .wall_wrapper_tabs {
+.wall_wrapper_tabs {
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -266,16 +266,14 @@ ul li:last-child {
     top: 0px;
 }
 
-.wall_wrapper .wall_wrapper_tabs .wall_additional_tabs {
+.wall_wrapper_tabs .wall_additional_tabs {
     padding: 4px 3px;
 }
-
-.wall_wrapper .wall_wrapper_upper_panel {
+.wall_wrapper_upper_panel {
     margin-bottom: 10px;
     position: sticky;
     top: 0px;
     z-index: 99;
-    
     display: flex;
     justify-content: space-between;
 }
