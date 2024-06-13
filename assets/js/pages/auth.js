@@ -33,19 +33,5 @@ window.page_class = new class {
                 </ul>
             </div>
         `)
-
-        $('#aut').on('click', async () => {
-            if($(`input[name='tok']`)[0].value == '' || $(`input[name='path']`)[0].value == '') {
-                add_error(_('errors.not_all_fields'), 'fill_form')
-                return
-            }
-    
-            let api_url = $(`input[name='path']`)[0].value
-            let token = $(`input[name='tok']`)[0].value
-    
-            if(await window.accounts.addAccount(api_url, token)) {
-                window.location.assign(document.querySelector('base').href)
-            }
-        })
     }
 }

@@ -54,17 +54,17 @@ window.page_class = new class {
             `
         )
 
-        window.wall = new ClassicListView(Comment, $('.wall_wrapper_post .wall_wrapper_comments')[0])
-        window.wall.setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'photo_50,photo_200'})
+        window.main_classes['wall'] = new ClassicListView(Comment, $('.wall_wrapper_post .wall_wrapper_comments')[0])
+        window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'photo_50,photo_200'})
             
         if(window.s_url.searchParams.has('page')) {
-            window.wall.objects.page = Number(window.s_url.searchParams.get('page')) - 1
+            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
         }
 
-        window.wall.clear()
-        await window.wall.nextPage()
+        window.main_classes['wall'].clear()
+        await window.main_classes['wall'].nextPage()
 
-        $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.wall.objects.count)
-        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.main_classes['wall'].objects.count)
+        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
     }
 }

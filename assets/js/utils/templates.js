@@ -8,7 +8,7 @@ async function work_template(work)
     return `
     <div class='career_work  ${!tmp_club ? 'no_group' : ''}'>
         ${tmp_club ? 
-        `<div class='career_work_avatar'>
+        `<div class='career_work_avatar avatar'>
             <a href='site_pages/club_page.html?id=${work.group_id}'>
                 <img class='avatar' src='${tmp_club.photo_50}'>
             </a>
@@ -969,6 +969,12 @@ function process_attachments(attachments)
                         </div>
                     `)
                     break
+                default:
+                    attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                    `
+                        Attachment type: ${attachment.type}
+                    `)
+                    break
             }
         })
     }
@@ -1000,7 +1006,7 @@ function post_template(post, profiles, groups, additional_options = {})
         `
 
     template += `
-            <div class='post_ava'>
+            <div class='post_ava avatar'>
                 <a href='${owner.getUrl()}'>
                     <img src='${owner.getAvatar(true)}'>
                 </a>
@@ -1101,7 +1107,7 @@ function comment_template(object, owner)
         <div class='main_comment_block' ${object.hasThread() ? `data-commscount='${object.info.thread.count}'` : ''} data-ownerid='${object.info.owner_id}' data-cid='${object.getCorrectID()}'>
             <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
                 <div class='comment_author'>
-                    <div class='comment_avaname'>
+                    <div class='comment_avaname avatar'>
                         <a href='${owner.getUrl()}'>
                             <img src='${owner.getAvatar(true)}'>
                         </a>
@@ -1116,8 +1122,8 @@ function comment_template(object, owner)
                         
                         <div class='comment_upper_actions'>
                             <div class='icons1' id='_reportComment'></div>
-                            <div class='icons1' id='_commentEdit'></div>
-                            <div class='icons1' id='_commentDelete'></div>
+                            ${object.canEdit() ? `<div class='icons1' id='_commentEdit'></div>` : ''}
+                            ${object.canDelete() ? `<div class='icons1' id='_commentDelete'></div>` : ''}
                         </div>
                     </div>
 

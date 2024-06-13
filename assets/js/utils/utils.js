@@ -197,8 +197,8 @@ function append_script(link, toBody = false)
             reject( Error("Network error loading " + script.src) );
         }
 
-        script.onload = () => {
-            window.page_class.render_page()
+        script.onload = async () => {
+            await window.page_class.render_page()
             $('textarea').trigger('input')
             resolve(true);
         }
@@ -264,6 +264,7 @@ let showMoreObserver = new IntersectionObserver(entries => {
 function push_state(url)
 {
     history.pushState({}, '', url)
+    
     window.s_url = new URL(url)
 }
 

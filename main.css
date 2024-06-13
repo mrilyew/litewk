@@ -245,7 +245,7 @@ ul li:last-child {
 .wrapper .menu {
     height: 100%;
     width: 156px;
-    border-right: 1px solid var(--main-text-lighter-color);
+    border-right: 1px dotted var(--main-text-lighter-color);
     position: fixed;
 }
 
@@ -326,6 +326,11 @@ ul li:last-child {
     display: none;
 }
 
+.page_content .dropdown_menu a {
+    color: var(--main-text-lighter-color);
+    text-decoration: none;
+}
+
 .dropdown_menu.visible {
     display: block;
 }
@@ -362,6 +367,7 @@ ul li:last-child {
 }
 
 .page_content .tabs a {
+    user-select: none;
     font-size: 14px;
     display: inline-block;
     padding: 3px;
@@ -466,6 +472,10 @@ body.dimmed > .dimmer {
     margin-bottom: 5px;
 }
 
+.settings_block .settings_sublock label {
+    display: block;
+}
+
 .settings_block .settings_flex {
     display: flex;
     flex-direction: column;
@@ -542,6 +552,12 @@ body.dimmed > .dimmer {
 .settings_block .tweaks_insert {
     display: flex;
     flex-direction: column;
+}
+
+.litewk_titles .litewk_title {
+    padding: 0;
+    margin: 0;
+    font-size: 25px;
 }
 
 /* User page. */

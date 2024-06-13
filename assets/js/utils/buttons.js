@@ -14,7 +14,7 @@ $(document).on('click', 'a', async (e) => {
         
         e.preventDefault()
 
-        await window.main_class.go_to(target.href)
+        await window.router.route(target.href)
     }
 })
 
@@ -22,13 +22,14 @@ window.addEventListener('popstate', async (e) => {
     e.preventDefault();
     replace_state(location.href)
 
-    await window.main_class.go_to(location.href, false)
-});
+    await window.router.route(location.href, false)
+})
 
 $(document).on('click', '.to_the_sky', (e) => {
     if(scrollY > 1000) {
         window.temp_scroll = scrollY
-        window.scrollTo(0, 0)
+
+        window.scrollTo(0, 1)
     } else {
         if(window.temp_scroll) {
             window.scrollTo(0, window.temp_scroll)
@@ -50,9 +51,24 @@ $(document).on('scroll', () => {
     }
 })
 
+// Auth
+
+$(document).on('click', '.onpage_error #aut', async () => {
+    if($(`input[name='tok']`)[0].value == '' || $(`input[name='path']`)[0].value == '') {
+        add_error(_('errors.not_all_fields'), 'fill_form')
+        return
+    }
+
+    let api_url = $(`input[name='path']`)[0].value
+    let token = $(`input[name='tok']`)[0].value
+
+    if(await window.accounts.addAccount(api_url, token)) {
+        window.location.assign(document.querySelector('base').href)
+    }
+})
+
 // Others
 
-// угадайте откуда спиздил
 $(document).on('input', 'textarea', (e) => {
     let boost = 5
     let textArea = e.target
@@ -396,19 +412,34 @@ $(document).on('click', '.post #_pinPost', async (e) => {
 
 // Wall
 
+$(document).on('click', '.show_more', async (e) => {
+    if(e.target.dataset.clicked == '1') {
+        e.preventDefault()
+        return
+    }
+
+    e.target.setAttribute('data-clicked', '1')
+
+    await window.main_classes['wall'].nextPage()
+    //showMoreObserver.unobserve($('.show_more')[0])
+
+    e.target.setAttribute('data-clicked', '0')
+})
+
 $(document).on('click', '.wall_select_block a', (e) => {
     e.preventDefault()
     
+    console.log(e)
     $('.wall_select_block a.selectd').removeClass('selectd')
     $(e.target).addClass('selectd')
 
-    wall.setSection($('.wall_select_block a.selectd')[0].dataset.section)
+    window.main_classes['wall'].setSection($('.wall_select_block a.selectd')[0].dataset.section)
 })
 
 $(document).on('change', `input[type='query']`, (e) => {
     e.preventDefault()
 
-    window.wall.search(e.target.value)
+    window.main_classes['wall'].search(e.target.value)
 })
 
 $(document).on('click', '.wall_block .searchIcon', (e) => {
@@ -436,9 +467,9 @@ $(document).on('click', '#_invert_wall', (e) => {
     let tempp = wall.method_params
     tempp.offset = 0
 
-    window.wall.setParams(wall.method_name, tempp, e.target.checked)
-    window.wall.clear()
-    window.wall.nextPage()
+    window.main_classes['wall'].setParams(wall.method_name, tempp, e.target.checked)
+    window.main_classes['wall'].clear()
+    window.main_classes['wall'].nextPage()
 })
 
 $(document).on('click', '.paginator a', async (e) => {
@@ -448,15 +479,15 @@ $(document).on('click', '.paginator a', async (e) => {
         return
     }
 
-    window.wall.clear()
-    await window.wall.page(e.target.dataset.page - 1)
+    window.main_classes['wall'].clear()
+    await window.main_classes['wall'].page(e.target.dataset.page - 1)
 
     window.s_url = new URL(e.target.href)
     push_state(window.s_url)
 
     $('.paginator').remove()
-    e.target.parentNode.insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
-    window.wall.createNextPage()
+    e.target.parentNode.insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    window.main_classes['wall'].createNextPage()
 })
 
 $(document).on('click', '.like', async (e) => {

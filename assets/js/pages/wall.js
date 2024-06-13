@@ -47,26 +47,26 @@ window.page_class = new class {
         )
 
         let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all'}
-        window.wall = new ClassicListView(Post, $('.wall_wrapper_post')[0])
-        window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
+        window.main_classes['wall'] = new ClassicListView(Post, $('.wall_wrapper_post')[0])
+        window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
     
         if(window.s_url.searchParams.has('page')) {
-            window.wall.objects.page = Number(window.s_url.searchParams.get('page')) - 1
+            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
         }
 
         if(section != 'search') {
-            window.wall.clear()
-            await window.wall.nextPage()
+            window.main_classes['wall'].clear()
+            await window.main_classes['wall'].nextPage()
         } else {
             if(window.s_url.searchParams.get('wall_query')) {
                 $(`input[type='query']`)[0].value = window.s_url.searchParams.get('wall_query')
-                await window.wall.search(window.s_url.searchParams.get('wall_query'))
+                await window.main_classes['wall'].search(window.s_url.searchParams.get('wall_query'))
             }
         }
 
         try {
-            $('.wall_wrapper span')[0].innerHTML = _('counters.posts_on_wall_count', window.wall.objects.count)
-            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.wall.objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+            $('.wall_wrapper span')[0].innerHTML = _('counters.posts_on_wall_count', window.main_classes['wall'].objects.count)
+            $('.wall_wrapper_upper_panel')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
         } catch(e) {}
     }
 }

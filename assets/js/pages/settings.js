@@ -32,6 +32,15 @@ window.tweaks = [
 textarea {
     transition: unset !important;
 }`,
+    },
+    {
+        'name': 'settings_ui_tweaks.round_avatars',
+        'internal_name': 'Round avatars',
+        'code': `/* Round avatars */
+.avatar img {
+    border-radius: 21px;
+}
+        `
     }
 ]
 
@@ -50,9 +59,11 @@ window.page_class = new class {
                 <div class='bordered_block'>
                     <div class='tabs'>
                         <a data-section='ui' ${section == 'ui' ? `class='selectd'` : ''}>${_('settings.settings_ui')}</a>
+                        <a data-section='ux' ${section == 'ux' ? `class='selectd'` : ''}>${_('settings.settings_ux')}</a>
                         <a data-section='language' ${section == 'language' ? `class='selectd'` : ''}>${_('settings.settings_language')}</a>
                         <a data-section='accounts' ${section == 'accounts' ? `class='selectd'` : ''}>${_('settings.settings_accounts')}</a>
                         <a data-section='debug' ${section == 'debug' ? `class='selectd'` : ''}>${_('settings.settings_debug')}</a>
+                        <a data-section='about' ${section == 'about' ? `class='selectd'` : ''}>${_('settings.settings_about')}</a>
                     </div>
                 </div>
             </div>
@@ -67,7 +78,6 @@ window.page_class = new class {
         switch(section) {
             default:
             case 'ui':
-                let date_val = window.site_params.get('ui.date_format') ?? 'default'
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_sublock'>
@@ -75,23 +85,6 @@ window.page_class = new class {
                             <textarea id='_custom_css' placeholder='${_('settings.please_enter')}'>${window.site_params.get('ui.custom_css') ?? ''}</textarea>
                             <b>${_('settings_ui.settings_ui_tweaks')}</b>
                             <div class='tweaks_insert'></div>
-                        </div>
-                        <div class='settings_sublock'>
-                            <p class='settings_title'><b>${_('settings_ui.settings_custom_js')}</b></p>
-                            <span style='margin: -6px 0px 7px 0px;display: block;'>${_('settings_ui.settings_custom_js_tip')}</span>
-                            <textarea id='_custom_js' placeholder='${_('settings.please_enter')}'>${window.site_params.get('ui.custom_js') ?? ''}</textarea>
-                        </div>
-                        <div class='settings_sublock settings_flex'>
-                            <p class='settings_title'><b>${_('settings_ui.settings_date_format')}</b></p>
-                            <label><input name='_date_format' ${date_val == 'default' ? 'checked' : ''} value='default' type='radio'>${_('settings_ui.settings_date_format_default')}</label>
-                            <label><input name='_date_format' ${date_val == 'month' ? 'checked' : ''} value='month' type='radio'>${_('settings_ui.settings_date_format_day_month')}</label>
-                        </div>
-                        <div class='settings_sublock'>
-                            <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
-                            <label>
-                                <input type='checkbox' name='_hideImageStatus' ${window.site_params.get('ui.hide_image_statuses') == '1' ? 'checked' : ''}>
-                                ${_('settings_ui.settings_hide_image_statuses')}
-                            </label>
                         </div>
                     </div>
                 `)
@@ -115,24 +108,64 @@ window.page_class = new class {
                     })
                 })
     
-                $(document).on('input', '#_custom_css', (e) => {
+                $('#_custom_css').on('input', (e) => {
                     window.site_params.set('ui.custom_css', e.target.value)
                     $('#_customcss')[0].innerHTML = e.target.value
                 })
-    
-                $(document).on('input', '#_custom_js', (e) => {
+
+                break
+            case 'ux':
+                let date_val = window.site_params.get('ui.date_format') ?? 'default'
+                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
+                    <div class='settings_block'>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_ui.settings_custom_js')}</b></p>
+                            <span style='margin: -6px 0px 7px 0px;display: block;'>${_('settings_ui.settings_custom_js_tip')}</span>
+                            <textarea id='_custom_js' placeholder='${_('settings.please_enter')}'>${window.site_params.get('ui.custom_js') ?? ''}</textarea>
+                        </div>
+                        <div class='settings_sublock settings_flex'>
+                            <p class='settings_title'><b>${_('settings_ui.settings_date_format')}</b></p>
+                            <label><input name='_date_format' ${date_val == 'default' ? 'checked' : ''} value='default' type='radio'>${_('settings_ui.settings_date_format_default')}</label>
+                            <label><input name='_date_format' ${date_val == 'month' ? 'checked' : ''} value='month' type='radio'>${_('settings_ui.settings_date_format_day_month')}</label>
+                        </div>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
+                            <label>
+                                <input type='checkbox' name='_hideImageStatus' ${window.site_params.get('ui.hide_image_statuses') == '1' ? 'checked' : ''}>
+                                ${_('settings_ui.settings_hide_image_statuses')}
+                            </label>
+                            <label>
+                                <input type='checkbox' name='_saveScrollProgress' ${window.site_params.get('ux.save_scroll', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_save_hash_progress')}
+                            </label>
+                            <label>
+                                <input type='checkbox' name='_autoScroll' ${window.site_params.get('ux.auto_scroll', '1') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_auto_scroll')}
+                            </label>
+                        </div>
+                    </div>
+                `)
+
+                $('#_custom_js').on('input', (e) => {
                     window.site_params.set('ui.custom_js', e.target.value)
                 })
-    
-                $(document).on('click', 'input[name="_date_format"]', () => {
+
+                $('input[name="_date_format"]').on('click', () => {
                     window.site_params.set('ui.date_format', $('input[name="_date_format"]:checked').val())
                 })
 
-                $(document).on('change', 'input[name="_hideImageStatus"]', () => {
+                $('input[name="_hideImageStatus"]').on('change', () => {
                     window.site_params.set('ui.hide_image_statuses', Number($('input[name="_hideImageStatus"]')[0].checked))
                 })
-    
-                date_val = null
+
+                $('input[name="_saveScrollProgress"]').on('change', () => {
+                    window.site_params.set('ux.save_scroll', Number($('input[name="_saveScrollProgress"]')[0].checked))
+                })
+                
+                $('input[name="_autoScroll"]').on('change', () => {
+                    window.site_params.set('ux.auto_scroll', Number($('input[name="_autoScroll"]')[0].checked))
+                })
+
                 break
             case 'language':
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
@@ -142,6 +175,10 @@ window.page_class = new class {
                 `)
     
                 window.langs.forEach(lang => {
+                    if(!lang.lang_info) {
+                        return
+                    }
+
                     $('.settings_flex')[0].insertAdjacentHTML('beforeend', 
                         `
                         <label class='lang_block'>
@@ -158,9 +195,11 @@ window.page_class = new class {
     
                     $('input[name="_lang"]').on('click', () => {
                         window.site_params.set('lang', $('input[name="_lang"]:checked').val())
+                        console.log(window.site_params.get('lang'))
                         window.lang = null
                         window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
-                        window.main_class.restart('language')
+                        
+                        setTimeout(() => {window.router.restart('language')}, 50)
                     })
                 })
     
@@ -202,7 +241,13 @@ window.page_class = new class {
                             </div>
                         </div>
                         <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_debug.settings_routing')}</b></p>
+
+                            <input type='button' id='_restart_app' value='${_('settings_debug.settings_restart_app')}'>
+                        </div>
+                        <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
+
                             <label>
                                 <input type='checkbox' name='_useExecute' ${window.site_params.get('internal.use_execute', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_debug.settings_use_execute')}
@@ -223,6 +268,10 @@ window.page_class = new class {
     
                 $('.settings_block #_clear').on('click', async (e) => {
                     $('#_result')[0].value = ''
+                })
+                    
+                $('.settings_block #_restart_app').on('click', async (e) => {
+                    window.router.restart()
                 })
     
                 $('.settings_block #_unspace').on('click', async (e) => {
@@ -258,7 +307,7 @@ window.page_class = new class {
                         localStorage.setItem(el, JSON.stringify(localstorage_import[el]))
                     })
     
-                    window.main_class.restart()
+                    window.router.restart()
                 })
 
                 $(document).on('change', 'input[name="_useExecute"]', () => {
@@ -306,20 +355,50 @@ window.page_class = new class {
                     )
                 })
 
-                $('#_enteracc').on('click', (e) => {
+                $('.settings_accounts').on('click', '#_enteracc', (e) => {
                     if(Number(window.site_params.get('active_account')) == e.currentTarget.dataset.id) {
                         return
                     }
 
                     window.accounts.setActiveAccount(e.currentTarget.dataset.id)
-                    window.main_class.restart('accounts')
+                    window.router.restart('accounts')
                 })
 
                 $('#_logoutacc').on('click', (e) => {
                     window.site_params.delete('active_account')
-                    window.main_class.restart('accounts')
+                    window.router.restart('accounts')
                 })
 
+                break
+            case 'about':
+                let fonts = [`"Comic Sans MS", "Comic Sans", cursive`, 'Verdana', 'Impact']
+                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
+                    <div class='settings_block litewk_titles'>
+                        <h4 class='litewk_title' style='font-family: ${fonts[random_int(0, fonts.length)]};color:;'>LiteWK.</h4>
+
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><b>${_('settings_about.settings_about_authors')}</b></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>${_('settings_about.settings_api_vk')}</td>
+                                    <td><a href='https://vk.company/ru/' target='_blank'>VK Group</a></td>
+                                </tr>
+                                <tr>
+                                    <td>${_('settings_about.settings_about_main_code')}</td>
+                                    <td>udjhh</td>
+                                </tr>
+                                <tr>
+                                    <td>${_('settings_about.settings_about_cover')}</td>
+                                    <td>priwetvsem</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `)
+                
                 break
         }
     }

@@ -34,13 +34,13 @@ window.page_class = new class {
                 break
         }
 
-        let news = new Newsfeed(Post, $('.newsfeed_wrapper_posts')[0])
-        news.setParams(method, method_params)
+        window.main_classes['wall'] = new Newsfeed(Post, '.newsfeed_wrapper_posts')
+        window.main_classes['wall'].setParams(method, method_params)
         
         if(window.s_url.searchParams.has('start_hash')) {
-            news.method_params.start_from = window.s_url.searchParams.get('start_hash')
+            window.main_classes['wall'].method_params.start_from = window.s_url.searchParams.get('start_hash')
         }
 
-        await news.nextPage()
+        await window.main_classes['wall'].nextPage()
     }
 }

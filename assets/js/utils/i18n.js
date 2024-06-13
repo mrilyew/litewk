@@ -74,10 +74,12 @@ window.langs = [
         'settings': {
             'settings': 'Настройки',
             'settings_ui': 'Внешний вид',
+            'settings_ux': 'Поведение',
             'settings_auth': 'Авторизация',
             'settings_language': 'Язык',
             'settings_accounts': 'Аккаунты',
             'settings_debug': 'Отладка',
+            'settings_about': 'О сайте',
             'please_enter': 'вводи',
         },
 
@@ -98,6 +100,12 @@ window.langs = [
         'settings_ui_tweaks': {
             'vk_like_padding': 'Расширять страницу на всю ширину монитора',
             'transitions_everywhere': 'Плавные переходы везде',
+            'round_avatars': 'Круглые аватарки',
+        },
+        
+        'settings_ux': {
+            'settings_save_hash_progress': 'Сохранять прогресс прокрутки страницы',
+            'settings_auto_scroll': 'Автопрокрутка',
         },
 
         'settings_language': {
@@ -131,7 +139,17 @@ window.langs = [
             'settings_method_clear': 'Очистить',
             'settings_method_unspacify': 'Убрать пробелы',
 
+            'settings_routing': 'Роутинг',
+
             'settings_use_execute': 'Использовать execute по возможности',
+            'settings_restart_app': 'Перезапустить приложение',
+        },
+
+        'settings_about': {
+            'settings_about_authors': 'Разработчики',
+            'settings_about_main_code': 'Основной код',
+            'settings_about_cover': 'Обложка',
+            'settings_api_vk': 'VK API',
         },
 
         'messagebox': {
@@ -144,7 +162,7 @@ window.langs = [
             'path_to_api': 'Путь к API',
             'vk_api_token': 'Токен VK API',
             'vk_api_get_token': `Получить токен VK API ты можешь на сайте <a href="https://vkhost.github.io/" target='_blank'>vkhost.github.io</a>, следуя инструкциям, данным на нём.`,
-            'vk_api_info_token': `Сайт хранит токен локально и не передаёт его третьим лицам, однако не исключены XSS-уязвимости. Если вы почувствовали, что ваш токен украли, отключите приложение с авторизацией в <a href='https://vk.com/settings?act=apps' target='_blank'>настройках VK</a>.`,
+            'vk_api_info_token': `Сайт хранит токен локально и не передаёт его третьим лицам, однако не исключены XSS-уязвимости.<br> Если вы почувствовали, что ваш токен украли, отключите приложение с авторизацией в <a href='https://vk.com/settings?act=apps' target='_blank'>настройках VK</a>, либо в VK ID > "Безопасность и вход" нажмите "Завершить другие сеансы".`,
             'vk_api_info_recommend': 'Рекомендую использовать первое приложение из списка.',
             'auth': 'Авторизоваться',
         },
@@ -484,8 +502,8 @@ window.langs = [
         },
 
         'newsfeed': {
-            'section_default': 'Лента',
-            'section_smart_feed': 'Умная лента',
+            'section_default': 'Новое',
+            'section_smart_feed': 'Интересное',
             'section_recommend': 'Рекоммендации',
         },
 

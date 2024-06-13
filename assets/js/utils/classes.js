@@ -801,22 +801,24 @@ class ClassicListView {
         this.inverse           = inverse
     }
 
-    createNextPage() {
-        let rand_id = random_int(0, 5000)
-
-        let div_showmore = document.createElement('div')
-        div_showmore.setAttribute('class', 'show_more')
-        div_showmore.setAttribute('data-rand', rand_id)
-        div_showmore.innerHTML = `<span>${_('pagination.show_more')}</span>`
-
-        div_showmore.onclick = async () => {
-            div_showmore.onclick = null
-            await this.nextPage()
-            $(`.show_more[data-rand=${rand_id}]`).remove()
+    getInsertNode() {
+        if(typeof(this.insert_node) == 'string') {
+            return document.querySelector(this.insert_node)
+        } else {
+            return this.insert_node
         }
+    }
 
-        this.insert_node.insertAdjacentElement('beforeend', div_showmore)
-        showMoreObserver.observe($(`.show_more[data-rand=${rand_id}]`)[0])
+    createNextPage() {
+        if(!$('.show_more')[0]) {
+            this.getInsertNode().insertAdjacentHTML('beforeend', `<div class='show_more'>${_('pagination.show_more')}</div>`)
+            
+            if(window.site_params.get('ux.auto_scroll', '1') == '1') {
+                showMoreObserver.observe($('.show_more')[0])
+            }
+        } else {
+            this.getInsertNode().append($('.show_more')[0])
+        }
     }
 
     async nextPage()
@@ -839,6 +841,7 @@ class ClassicListView {
 
             if(this.objects.page < 0) {
                 console.info('Last page reached. Do not care.')
+                $('.show_more').remove()
                 return
             }
 
@@ -848,6 +851,7 @@ class ClassicListView {
         } else {
             if(this.objects.pagesCount < this.objects.page + 1) {
                 console.info('Last page reached. Do not care.')
+                $('.show_more').remove()
                 return
             }
 
@@ -862,12 +866,14 @@ class ClassicListView {
 
         if(page_condition) {
             this.createNextPage()
+        } else {
+            $('.show_more').remove()
         }
 
-        /*if(window.s_url.searchParams.has('page')) {
+        if(window.site_params.get('ux.save_scroll', '0') == '1') {
             window.s_url.searchParams.set('page', this.objects.page)
             history.pushState({}, '', window.s_url)
-        }*/
+        }
     }
 
     async page(number = 0)
@@ -912,7 +918,7 @@ class ClassicListView {
                 messej = _('wall.no_posts_in_search')
             }
 
-            this.insert_node.insertAdjacentHTML('beforeend', `
+            this.getInsertNode().insertAdjacentHTML('beforeend', `
                 <div class='bordered_block'>${messej}</div>
             `)
         }
@@ -936,7 +942,7 @@ class ClassicListView {
             this.objects.page = Number(number) + 1
         }
         
-        this.insert_node.insertAdjacentHTML('beforeend', templates)
+        this.getInsertNode().insertAdjacentHTML('beforeend', templates)
 
         if($('.paginator')[0]) {
             let parent = $('.paginator')[0].parentNode
@@ -1005,7 +1011,7 @@ class ClassicListView {
         this.objects.count = null
         this.objects.pagesCount = 10000
 
-        this.insert_node.innerHTML = ''
+        this.getInsertNode().innerHTML = ''
     }
 }
 
@@ -1026,7 +1032,7 @@ class Newsfeed extends ClassicListView {
         let objects_data = null
 
         let error = () => {
-            this.insert_node.insertAdjacentHTML('beforeend', `
+            this.getInsertNode().insertAdjacentHTML('beforeend', `
                 <div class='bordered_block'>${_('errors.error_getting_news', objects_data.error.error_msg)}</div>
             `)
         }
@@ -1046,10 +1052,12 @@ class Newsfeed extends ClassicListView {
 
         this.method_params.start_from = objects_data.response.next_from
 
-        window.s_url.searchParams.set('start_hash', objects_data.response.next_from)
-        push_state(window.s_url)
+        if(window.site_params.get('ux.save_scroll', '0') == '1') {
+            window.s_url.searchParams.set('start_hash', objects_data.response.next_from)
+            push_state(window.s_url)
+        }
 
-        this.insert_node.insertAdjacentHTML('beforeend', templates)
+        this.getInsertNode().insertAdjacentHTML('beforeend', templates)
         this.createNextPage()
     }
 }
@@ -1065,10 +1073,12 @@ class VkApi {
         let result = JSON.parse(await jsonp(path))
         
         log(`Called method ${method} with params ${JSON.stringify(params)} with force=${String(force)}`)
-
+        
         if(!force) {
-            log(`NO FORCE, result: `)
-            log(result)
+            //log(`NO FORCE, result: `)
+            //log(result)
+
+            document.cookie = ''
             return result
         }
 
@@ -1079,11 +1089,13 @@ class VkApi {
                     log(`${method} with params ${JSON.stringify(params)} caused error: ${result.error.error_code} '${result.error.error_msg}'`)
                     
                     add_error(_('errors.vk_api_error', result.error.error_msg), 'vkapierr')
+                    document.cookie = ''
                     return result
                 case 14:
                     log(`${method} caused captcha`)
                     return new Promise((resolve, reject) => {
                         let sid = result.error.captcha_sid
+                        document.cookie = ''
                         let msg = new MessageBox(_('captcha.enter_captcha'), `
                             <div class='captcha_box'>
                                 <div>
@@ -1111,8 +1123,10 @@ class VkApi {
                     })
             }
         } else {
-            log(`SUCCESS, result: `)
-            log(result)
+            //log(`SUCCESS, result: `)
+            //log(result)
+
+            document.cookie = ''
             return result
         }
     }
@@ -1288,6 +1302,82 @@ class Accounts {
     }
 }
 
+window.router = new class {
+    save_page(url) {
+        let maybe = window.saved_pages.find(el => el.url == url)
+        let tempar = Object.assign({}, window.main_classes)
+
+        let insert = {
+            'url': url,
+            'html': $('.page_content')[0].innerHTML,
+            'classes': tempar,
+            'scroll': window.scrollY,
+        }
+
+        if(maybe) {
+            log(maybe)
+            window.saved_pages[window.saved_pages.indexOf(maybe)] = insert
+
+            return true
+        }
+            
+        window.saved_pages.push(insert)
+        return true
+    }
+
+    load_saved_page(page) {
+        window.main_classes = null
+        window.main_classes = page.classes
+        replace_state(page.url)
+
+        $('.page_content')[0].innerHTML = page.html
+                
+        window.scrollTo(0, page.scrollY)
+    }
+
+    reset_page() {
+        $('#_main_page_script').remove()
+        $('.page_content')[0].innerHTML = ``
+        
+        window.page_class = null
+    }
+    
+    restart(add) {
+        $('style').remove()
+        $('div').remove()
+        
+        window.main_class.load_layout(add)
+    }
+
+    async route(url, history_log = true) {
+        let may = window.saved_pages.find(page => page.url == url)
+
+        if(window.s_url.href != url) {
+            this.save_page(window.s_url.href)
+        }
+
+        if(may && may.url.indexOf('auth') == -1 && may.url.indexOf('settings') == -1) {
+            this.load_saved_page(may)
+            return
+        }
+
+        let main_part = ((new URL(url)).pathname.split('.')[0]).split('/')[2]
+    
+        if(main_part == 'site_pages') {
+            main_part = ((new URL(url)).pathname.split('.')[0]).split('/')[3]
+        }
+
+        this.reset_page()
+
+        if(history_log && window.s_url.href != url) {
+            push_state(url)
+        }
+
+        await append_script(`assets/js/pages/${main_part}.js`, true) // т.н. костыль?
+        this.save_page(url)
+    }
+}
+
 window.site_params = new class {
     constructor() {
         if(localStorage.params == undefined) {
@@ -1299,11 +1389,15 @@ window.site_params = new class {
         let params = JSON.parse(localStorage.params) ?? {}
         params[param] = value
 
-        localStorage.params = JSON.stringify(params)
+        localStorage.setItem('params', JSON.stringify(params))
     }
 
     get(param, def = null) {
         let params = JSON.parse(localStorage.params ?? {})
+
+        if(params[param] == '0') {
+            return '0'
+        }
 
         return params[param] ? params[param] : def
     }
@@ -1329,6 +1423,3 @@ window.site_params = new class {
         localStorage.removeItem('params')
     }
 }
-
-window.s_url = new URL(location.href)
-window.accounts = new Accounts

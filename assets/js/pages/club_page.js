@@ -45,20 +45,20 @@ window.page_class = new class {
 
             // Creating wall as object
             let wall_params  = {'owner_id': club.getRealId(), 'extended': 1, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all'}
-            window.wall = new ClassicListView(Post, $('.club_page_wrapper .wall_block .wall_block_insert')[0])
-            window.wall.setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
+            window.main_classes['wall'] = new ClassicListView(Post, $('.club_page_wrapper .wall_block .wall_block_insert')[0])
+            window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             
             if(window.s_url.searchParams.has('page')) {
-                window.wall.objects.page = Number(window.s_url.searchParams.get('page'))
+                window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page'))
             }
 
             if(wall_temp != 'search') {
-                window.wall.clear()
-                await window.wall.nextPage()
+                window.main_classes['wall'].clear()
+                await window.main_classes['wall'].nextPage()
             } else {
                 $('.wall_block .searchIcon').trigger('click')
                 $(`.wall_block input[type='query']`)[0].value = window.s_url.searchParams.get('wall_query')
-                await window.wall.search(window.s_url.searchParams.get('wall_query'))
+                await window.main_classes['wall'].search(window.s_url.searchParams.get('wall_query'))
             }
         }
     }
