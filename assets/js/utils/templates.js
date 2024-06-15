@@ -807,7 +807,7 @@ function club_template(club)
                         ${club.has('counters') && club.info.counters.clips ? `<a href='#'>${_('counters.clips_count', club.info.counters.clips)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.photos ? `<a href='#'>${_('counters.photos_count', club.info.counters.photos)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.topics ? `<a href='#'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
-                        ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists', club.info.counters.video_playlists)}</a>` : ''}
+                        ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
                         ${club.has('members_count') && club.info.members_count ? `<a href='#'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
                     </div>
@@ -982,11 +982,11 @@ function process_attachments(attachments)
     return attachms.innerHTML
 }
 
-function post_template(post, profiles, groups, additional_options = {})
+function post_template(post, additional_options = {})
 {
     let owner = post.getOwner()
     let signer = post.getSigner()
-
+    
     let template = ``
     template += 
     `
@@ -1094,29 +1094,32 @@ function post_template(post, profiles, groups, additional_options = {})
     // proccess attachments
 
     if(post.isCopy()) {
-        let reposted_post = new Post(post.getRepost(), profiles, groups)
-        post_class.querySelector('.repost_block').innerHTML = post_template(reposted_post, profiles, groups, additional_options)
+        let reposted_post = new Post()
+
+        reposted_post.hydrate(post.getRepost(), post.profiles, post.groups)
+        post_class.querySelector('.repost_block').innerHTML = post_template(reposted_post, additional_options)
     }
 
     return post_class.innerHTML
 }
 
-function comment_template(object, owner)
+function comment_template(object)
 {
+    let owner = object.getOwner()
     let template = `
         <div class='main_comment_block' ${object.hasThread() ? `data-commscount='${object.info.thread.count}'` : ''} data-ownerid='${object.info.owner_id}' data-cid='${object.getCorrectID()}'>
             <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
                 <div class='comment_author'>
                     <div class='comment_avaname avatar'>
-                        <a href='${owner.getUrl()}'>
-                            <img src='${owner.getAvatar(true)}'>
+                        <a href='${owner ? owner.getUrl() : ''}'>
+                            <img src='${owner ? owner.getAvatar(true) : ''}'>
                         </a>
                     </div>
                 </div>
                 <div class='comment_info'>
                     <div class='comment_upper_author'>
                         <div>
-                            <b><a href='${owner.getUrl()}'>${owner.getName()}</a></b>
+                            <b><a href='${owner ? owner.getUrl() : ''}'>${owner ? owner.getName() : ''}</a></b>
                             ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
                         </div>
                         
@@ -1160,7 +1163,9 @@ function comment_template(object, owner)
 
     if(object.hasThread()) {
         object.info.thread.items.forEach(el => {
-            let comment = new Comment(el, object.profiles, object.groups)
+            let comment = new Comment()
+            comment.hydrate(el, object.profiles, object.groups)
+
             temp_l.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', comment.getTemplate())
         })
 

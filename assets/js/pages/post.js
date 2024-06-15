@@ -14,7 +14,8 @@ window.page_class = new class {
 
         try {
             info = (await window.vk_api.call('wall.getById', {'posts': id, 'extended': 1})).response
-            post = new Post(info.items[0], info.profiles, info.groups)
+            post = new Post
+            post.hydrate(info.items[0], info.profiles, info.groups)
         } catch(e) {}
 
         if(!info) {

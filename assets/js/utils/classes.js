@@ -15,6 +15,10 @@ class Faveable {
             return false
         }
     }
+
+    hydrate(data) {
+        this.info = data
+    }
 }
 
 class PostLike extends Faveable {
@@ -31,7 +35,7 @@ class PostLike extends Faveable {
     }
 
     getOwnerID() {
-        if(this.info.from_id) {
+        if(this.has('from_id')) {
             return this.info.from_id
         } else {
             return this.info.owner_id
@@ -41,10 +45,16 @@ class PostLike extends Faveable {
     getOwner() {
         if(this.getOwnerID() > 0) {
             let uwser = find_owner(this.getOwnerID(), this.profiles, this.groups)
-            return new User(uwser)
+            let user_obj = new User
+            user_obj.hydrate(uwser)
+
+            return user_obj
         } else {
             let cwub = find_owner(this.getOwnerID(), this.profiles, this.groups)
-            return new Club(cwub)
+            let club_obj = new Club
+            club_obj.hydrate(cwub)
+
+            return club_obj
         }
     }
 
@@ -87,11 +97,15 @@ class User extends Faveable {
     FRIEND_STATUS_REQUEST_FROM_USER = 2
     FRIEND_STATUS_IS_FRIEND = 3
 
-    constructor(info) {
-        super(info)
-        this.info = info
+    async fromId(id = 0) {
+        let info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'})
+        
+        this.info = info.response[0]
+    }
 
-        // occupation2work
+    hydrate(data) {
+        super.hydrate(data)
+
         if(!this.has('career') && this.has('occupation') && this.info.occupation.type == 'work') {
             this.info.career = [
                 {'group_id': this.info.occupation.id}
@@ -399,9 +413,13 @@ class User extends Faveable {
 }
 
 class Club extends Faveable {
-    constructor(info) {
-        super(info)
-        this.info = info
+    async fromId(id = 0) {
+        let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
+        this.info = info.response.groups[0]
+    }
+
+    hydrate(info) {
+        super.hydrate(info)
     }
 
     getAvatar(mini = false) {
@@ -504,8 +522,7 @@ class Club extends Faveable {
 }
 
 class Post extends PostLike {
-    constructor(info, profiles, groups) {
-        super(info)
+    hydrate(info, profiles, groups) {
         this.info = info
         this.profiles = profiles
         this.groups   = groups
@@ -559,7 +576,10 @@ class Post extends PostLike {
         if(!this.info.signer_id) {
             return null
         } else {
-            return new User(find_owner(this.info.signer_id, this.profiles, this.groups))
+            let user = new User
+            user.hydrate(find_owner(this.info.signer_id, this.profiles, this.groups))
+
+            return user
         }
     }
 
@@ -578,7 +598,7 @@ class Post extends PostLike {
     }
     
     getTemplate(anything_else = {}) {
-        return post_template(this, this.profiles, this.groups, anything_else)
+        return post_template(this, anything_else)
     }
 
     isAd() {
@@ -749,19 +769,37 @@ class Poll extends PostLike {
 }
 
 class Comment extends PostLike {
-    constructor(info, profiles, groups) {
-        super(info)
+    hydrate(info, profiles, groups) {
         this.info = info
         this.profiles = profiles
         this.groups = groups
+
+        if(this.info.deleted) {
+            this.info.likes = {
+                'user_likes': 0,
+                'count': 0,
+            }
+        }
     }
 
     isAuthor() {
         return this.info.is_from_post_author
     }
 
+    isLiked() {
+        return this.info.likes.user_likes == 1
+    }
+
+    getOwner() {
+        if(this.info.deleted) {
+            return null
+        }
+
+        return super.getOwner()
+    }
+
     getTemplate() {
-        return comment_template(this, this.getOwner())
+        return comment_template(this)
     }
 
     getThreadCount() {
@@ -861,7 +899,6 @@ class ClassicListView {
             }
 
             await this.page(this.objects.page)
-
             page_condition = this.objects.pagesCount > this.objects.page
         }
 
@@ -933,7 +970,9 @@ class ClassicListView {
         let templates = ''
         
         objects_data.response.items.forEach(obj => {
-            let ob_j = new this.object_class(obj, objects_data.response.profiles, objects_data.response.groups)
+            let ob_j = new this.object_class
+            ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
+
             templates += ob_j.getTemplate()
         })
 
@@ -1047,9 +1086,11 @@ class Newsfeed extends ClassicListView {
             return
         }
 
+        /* сегодня был хороший день и я доволен */
         let templates = ''
         objects_data.response.items.forEach(obj => {
-            let ob_j = new this.object_class(obj, objects_data.response.profiles, objects_data.response.groups)
+            let ob_j = new this.object_class()
+            ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
             templates += ob_j.getTemplate()
         })
 
@@ -1318,7 +1359,6 @@ window.router = new class {
         }
 
         if(maybe) {
-            log(maybe)
             window.saved_pages[window.saved_pages.indexOf(maybe)] = insert
 
             return true

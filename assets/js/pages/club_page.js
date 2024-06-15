@@ -6,19 +6,14 @@ window.page_class = new class {
             return
         }
 
-        // Drawing user page
-        let info = null
+        let club = new Club()
+        await club.fromId(id)
 
-        try {
-            info = (await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)).response.groups[0]
-        } catch(e) {}
-        
-        if(!info) {
+        if(!club.info) {
             add_onpage_error(_('errors.group_not_found', id))
             return
         }
-    
-        let club = new Club(info)
+
         document.title = escape_html(club.getName())
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', await club.getTemplate())

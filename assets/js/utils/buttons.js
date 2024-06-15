@@ -435,7 +435,6 @@ $(document).on('click', '.show_more', async (e) => {
 $(document).on('click', '.wall_select_block a', (e) => {
     e.preventDefault()
     
-    console.log(e)
     $('.wall_select_block a.selectd').removeClass('selectd')
     $(e.target).addClass('selectd')
 
@@ -528,7 +527,8 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
     let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': 'photo_50,photo_200', 'sort': 'asc'})
 
     replies.response.items.forEach(element => {
-        let comm = new Comment(element, replies.response.profiles, replies.response.groups)
+        let comm = new Comment()
+        comm.hydrate(element, replies.response.profiles, replies.response.groups)
         insert.insertAdjacentHTML('beforeend', comm.getTemplate())
     })
 
@@ -545,7 +545,6 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
 // Viewers
 
 $(document).on('click', '.photo_attachment', (e) => {
-    log(e)
     e.preventDefault()
 
     new MessageWindow(_('photos.photo'), (insert, additional) => {
@@ -558,7 +557,6 @@ $(document).on('click', '.photo_attachment', (e) => {
 })
 
 $(document).on('click', '.video_attachment_viewer_open', (e) => {
-    log(e)
     e.preventDefault()
 
     new MessageWindow(_('photos.photo'), async (insert, additional) => {
