@@ -274,3 +274,26 @@ function replace_state(url)
     
     window.s_url = new URL(url)
 }
+
+// клянусь джаваскрипт ненавидеть
+function array_splice(array, key)
+{
+    resultArray = [];
+
+    for(let i = 0; i < array.length; i++){
+        if(i != key){
+            resultArray.push(array[i]);
+        }
+    }
+
+    return resultArray;
+}
+
+function array_swap(array, first, last) 
+{
+    let temp = array[first]
+    array[first] = array[last]
+    array[last] = temp
+
+    return array
+}

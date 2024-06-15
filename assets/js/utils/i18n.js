@@ -95,10 +95,29 @@ window.langs = [
             'settings_hide_image_statuses': 'Скрывать эмодзи у имени',
 
             'settings_ui_tweaks': 'Твики',
+            'settings_ui_left_menu': 'Меню навигации',
+            'settings_ui_left_authorize': 'Авторизуйся.',
+
+            'settings_ui_left_reset_default': 'Сбросить',
+            'settings_ui_left_add': 'Добавить',
+            'settings_ui_left_menu_start_edit': 'Начать редактирование',
+            'settings_ui_left_menu_stop_edit': 'Закончить редактирование',
+            'settings_ui_left_delete': 'Удалить',
+            'settings_ui_left_up': 'Вверх',
+            'settings_ui_left_down': 'Вниз',
+
+            'settings_ui_left_click_tip': 'Нажми по элементу в меню, чтобы отредактировать его.',
+            'settings_ui_left_text': 'Надпись',
+            'settings_ui_left_href': 'Ссылка',
+            'settings_ui_left_new_page': 'Открывать в новой вкладке',
+            'settings_ui_left_disabled': 'Отключён',
+            'settings_ui_left_hidden': 'Скрыт',
+
+            'settings_ui_i18n_tip': `Символ '_' в начале означает, что будет использоваться локализированная строка.`,
         },
 
         'settings_ui_tweaks': {
-            'vk_like_padding': 'Расширять страницу на всю ширину монитора',
+            'vk_like_padding': 'Расширить страницу на всю ширину монитора',
             'transitions_everywhere': 'Плавные переходы везде',
             'round_avatars': 'Круглые аватарки',
         },

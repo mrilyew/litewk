@@ -70,6 +70,10 @@ window.page_class = new class {
         `)
     
         $('.tabs a').on('click', (e) => {
+            if(window.edit_mode) {
+                return
+            }
+
             this.render_page(e.target.dataset.section)
             window.s_url.searchParams.set('section', e.target.dataset.section)
             push_state(window.s_url)
@@ -78,6 +82,9 @@ window.page_class = new class {
         switch(section) {
             default:
             case 'ui':
+                let selected_tab = ''
+                window.edit_mode = false
+                
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_sublock'>
@@ -85,6 +92,72 @@ window.page_class = new class {
                             <textarea id='_custom_css' placeholder='${_('settings.please_enter')}'>${window.site_params.get('ui.custom_css') ?? ''}</textarea>
                             <b>${_('settings_ui.settings_ui_tweaks')}</b>
                             <div class='tweaks_insert'></div>
+                        </div>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_ui.settings_ui_left_menu')}</b></p>
+                            ${!window.active_account ? _('settings_ui.settings_ui_left_authorize') : 
+                            `
+                                <div>
+                                    <input type='button' id='_editnav' value='${_('settings_ui.settings_ui_left_menu_start_edit')}'>
+                                </div>
+                            `}
+                            <div id='__menupostedit' class='hidden' style='margin-top: 5px;'>
+                                <div>
+                                    <input type='button' id='_resetdef' value='${_('settings_ui.settings_ui_left_reset_default')}'>
+                                    <input type='button' id='_addnav' value='${_('settings_ui.settings_ui_left_add')}'>
+                                </div>
+                                
+                                <span>${_('settings_ui.settings_ui_left_click_tip')}</span>
+                                
+                                <div id='__menupostedittab' class='hidden' data-tab=''>
+                                    <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_text')}</td>
+                                            <td>
+                                                <input type='text' id='_leftmenu_text'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                ${_('settings_ui.settings_ui_i18n_tip')}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_href')}</td>
+                                            <td>
+                                                <input type='text' id='_leftmenu_href'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_new_page')}</td>
+                                            <td>
+                                                <input type='checkbox' id='_leftmenu_newpage'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_disabled')}</td>
+                                            <td>
+                                                <input type='checkbox' id='_leftmenu_disabled'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_hidden')}</td>
+                                            <td>
+                                                <input type='checkbox' id='_leftmenu_hidden'>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+
+                                <div id='__movement_buttons' style='display:none;'>
+                                    <input type='button' id='_delnav' value='${_('settings_ui.settings_ui_left_delete')}'>
+                                    <input type='button' id='_upnav' value='${_('settings_ui.settings_ui_left_up')}'>
+                                    <input type='button' id='_downnav' value='${_('settings_ui.settings_ui_left_down')}'>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `)
@@ -111,6 +184,143 @@ window.page_class = new class {
                 $('#_custom_css').on('input', (e) => {
                     window.site_params.set('ui.custom_css', e.target.value)
                     $('#_customcss')[0].innerHTML = e.target.value
+                })
+
+                // MENU EDITOR
+
+                function rebuild_menu(editing = false) {
+                    let menu_html = ''
+                    window.left_menu.forEach(tab => {
+                        let tempname = tab.name
+                        if(!editing && tab.hidden) {
+                            return
+                        }
+            
+                        if(!editing && tab.name[0] == '_') {
+                            tempname = _(tab.name.substr(1))
+                        }            
+            
+                        menu_html += `
+                            <a data-orighref='${tab.href}' href='${tab.href}' ${tab.new_page ? `target='_blank'` : ''} ${tab.disabled ? `class='stopped'` : ''}>${tempname}</a>
+                        `
+                    })
+
+                    $('.menu')[0].innerHTML = menu_html
+                }
+
+                $('#_editnav').on('click', (e) => {
+                    if(window.edit_mode == true) {
+                        window.edit_mode = false
+                        e.target.value = _('settings_ui.settings_ui_left_menu_start_edit')
+                        $('.menu')[0].classList.remove('editing')
+
+                        rebuild_menu(false)
+                        $('#__menupostedit')[0].classList.add('hidden')
+                    } else {
+                        window.edit_mode = true
+                        e.target.value = _('settings_ui.settings_ui_left_menu_stop_edit')
+                        $('.menu')[0].classList.add('editing')
+
+                        rebuild_menu(true)
+                        $('#__menupostedit')[0].classList.remove('hidden')
+                    }
+                })
+
+                $('#__menupostedit #_resetdef').on('click', (e) => {
+                    window.left_menu = window.default_left_menu.slice(0)
+
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+                    rebuild_menu(true)
+                })
+
+                $('#__menupostedit #_addnav').on('click', (e) => {
+                    window.left_menu.push({
+                        'name': 'replace_me',
+                        'href': random_int(0, 1000),
+                        'new_page': false,
+                        'disabled': false,
+                        'hidden': true,
+                    })
+
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+                    rebuild_menu(true)
+                })
+                
+                $('#__menupostedit #_delnav').on('click', (e) => {
+                    let index = window.left_menu.indexOf(selected_tab)
+
+                    window.left_menu = array_splice(window.left_menu, window.left_menu.indexOf(selected_tab))
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+                    rebuild_menu(true)
+               
+                    let maybe_tab = window.left_menu[index]
+
+                    if(!maybe_tab) {
+                        maybe_tab = window.left_menu[index - 1]
+                    }
+
+                    if(maybe_tab) {
+                        log(maybe_tab)
+                        $(`.menu.editing a[data-orighref='${maybe_tab.href}']`).trigger('click')
+                    }
+                })
+                                
+                $('#__menupostedit #_upnav').on('click', (e) => {
+                    let index = window.left_menu.indexOf(selected_tab)
+
+                    if(index <= 0) {
+                        return
+                    }
+
+                    window.left_menu = array_swap(window.left_menu, index, index - 1)
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+                    rebuild_menu(true)
+
+                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
+                })
+
+                $('#__menupostedit #_downnav').on('click', (e) => {
+                    let index = window.left_menu.indexOf(selected_tab)
+
+                    if(index >= window.left_menu.length - 1) {
+                        return
+                    }
+
+                    window.left_menu = array_swap(window.left_menu, index, index + 1)
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+                    rebuild_menu(true)
+
+                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
+                })
+
+                $(document).on('click', '.menu.editing a', (e) => {
+                    $('.menu.editing a.editing').removeClass('editing')
+                    e.target.classList.toggle('editing')
+                    let tab = window.left_menu.find(el => el.href == e.target.dataset.orighref)
+
+                    selected_tab = tab
+                    $('#__menupostedittab')[0].classList.remove('hidden')
+                    $('#__menupostedittab #_leftmenu_text')[0].value = tab.name
+                    $('#__menupostedittab #_leftmenu_href')[0].value = tab.href
+                    $('#__menupostedittab #_leftmenu_newpage')[0].checked = tab.new_page
+                    $('#__menupostedittab #_leftmenu_disabled')[0].checked = tab.disabled
+                    $('#__menupostedittab #_leftmenu_hidden')[0].checked = tab.hidden
+                    $('#__movement_buttons')[0].style.display = 'block'
+                })
+
+                $('#__menupostedittab input').on('input', (e) => {
+                    selected_tab.name = $('#__menupostedittab #_leftmenu_text')[0].value
+                    selected_tab.href = $('#__menupostedittab #_leftmenu_href')[0].value
+                    selected_tab.new_page = $('#__menupostedittab #_leftmenu_newpage')[0].checked
+                    selected_tab.disabled = $('#__menupostedittab #_leftmenu_disabled')[0].checked
+                    selected_tab.hidden = $('#__menupostedittab #_leftmenu_hidden')[0].checked
+
+                    window.left_menu[window.left_menu.indexOf(selected_tab)] = selected_tab
+                    window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu))
+
+                    rebuild_menu(true)
+
+                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
                 })
 
                 break
@@ -319,7 +529,7 @@ window.page_class = new class {
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_buttons'>
-                            <span>${_('settings_accounts.accounts_count', window.accounts.getAccountsCount())}</span>
+                            <span><b>${_('settings_accounts.accounts_count', window.accounts.getAccountsCount())}</b></span>
     
                             <div class='additional_buttons'>
                                 ${!window.site_params.has('active_account') ? '' : `<input type='button' id='_logoutacc' value='${_('settings_accounts.accounts_logout')}'>`}

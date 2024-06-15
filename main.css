@@ -7,6 +7,7 @@
     --main-elements-lighter-color: #6e6e6e;
     --main-text-color: #b1b1b1;
     --main-text-lighter-color: #cfcfcf;
+    --main-editing-color: #bfbf78;
     --main-typical-brightness: 0.8;
 }
 
@@ -247,6 +248,7 @@ ul li:last-child {
     width: 156px;
     border-right: 1px dotted var(--main-text-lighter-color);
     position: fixed;
+    overflow-y: auto;
 }
 
 .wrapper .page_content {
@@ -269,6 +271,7 @@ ul li:last-child {
 .wall_wrapper_tabs .wall_additional_tabs {
     padding: 4px 3px;
 }
+
 .wall_wrapper_upper_panel {
     margin-bottom: 10px;
     position: sticky;
@@ -512,6 +515,10 @@ body.dimmed > .dimmer {
     margin-bottom: 6px;
 }
 
+.settings_sublock .settings_left_menu_customisation {
+    border: 1px dotted var(--main-text-lighter-color);
+}
+
 .settings_block .settings_buttons {
     display: flex;
     flex-direction: row;
@@ -558,6 +565,31 @@ body.dimmed > .dimmer {
     padding: 0;
     margin: 0;
     font-size: 25px;
+}
+
+/* Menu editor */
+
+#__menupostedit.hidden, #__menupostedittab.hidden {
+    display: none;
+}
+
+#__menupostedit {
+    margin-top: 6px;
+}
+
+.wrapper .menu.editing {
+    outline: 1px solid var(--main-editing-color);
+    border-right: none;
+    width: 175px;
+}
+
+.wrapper .menu.editing a.stopped {
+    filter: unset;
+}
+
+.wrapper .menu.editing a.editing {
+    background: var(--main-editing-color);
+    color: var(--main-background-color);
 }
 
 /* User page. */

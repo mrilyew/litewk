@@ -777,7 +777,8 @@ class Comment extends PostLike {
     }
 }
 
-// Без дублирования кода никак.
+// Site logic
+
 class ClassicListView {
     constructor(object_class, insert_node)
     {
@@ -988,18 +989,20 @@ class ClassicListView {
             temp_params.offset = this.objects.page * this.objects.perPage
         }
 
-        temp_params.query  = query
+        temp_params.query = query
 
         // Баг это или фича, но при вызове wall.search 'count' недействительный. Так что вот так вот.
         temp_params.count  = 100
 
         this.setParams('wall.search', temp_params)
 
-        /*let temp_url = window.s_url
+        let temp_url = window.s_url
         temp_url.searchParams.set('wall_section', 'search')
         temp_url.searchParams.set('wall_query', query)
-        push_state(temp_url)
-        temp_url = null*/
+
+        replace_state(temp_url)
+        
+        temp_url = null
 
         this.clear()
         this.nextPage()

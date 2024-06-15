@@ -3,6 +3,12 @@
 $(document).on('click', 'a', async (e) => {
     let target = e.target
 
+    if(window.edit_mode) {
+        e.preventDefault()
+
+        return
+    }
+
     if(e.target.tagName != 'a') {
         target = e.target.closest('a')
     }
@@ -453,6 +459,7 @@ $(document).on('click', '.wall_block .searchIcon', (e) => {
         $(e.target).addClass('clicked')
         $('#_shown_layer')[0].style.display = 'none'
         $('#_search_layer')[0].style.display = 'block'
+        $(`input[type='query']`)[0].focus()
     }
 })
 
@@ -464,11 +471,12 @@ $(document).on('click', '#_invert_wall', (e) => {
     }
 
     push_state(window.s_url)
-    let tempp = wall.method_params
+    let tempp = window.main_classes['wall'].method_params
     tempp.offset = 0
 
-    window.main_classes['wall'].setParams(wall.method_name, tempp, e.target.checked)
+    window.main_classes['wall'].setParams(window.main_classes['wall'].method_name, tempp, e.target.checked)
     window.main_classes['wall'].clear()
+    window.main_classes['wall'].objects.page = -1
     window.main_classes['wall'].nextPage()
 })
 

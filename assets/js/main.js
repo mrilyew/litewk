@@ -1,7 +1,133 @@
+window.default_left_menu = [
+    {
+        'name': '_navigation.my_page',
+        'href': 'site_pages/user_page.html',
+        'new_page': false,
+        'disabled': false,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_news',
+        'href': 'site_pages/news_page.html',
+        'new_page': false,
+        'disabled': false,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_friends',
+        'href': 'site_pages/friends.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_messages',
+        'href': 'site_pages/messages.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_photos',
+        'href': 'site_pages/albums.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_audios',
+        'href': 'site_pages/audios.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_videos',
+        'href': 'site_pages/videos.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_faves',
+        'href': 'site_pages/faves.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_notifications',
+        'href': 'site_pages/notifs.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_search',
+        'href': 'site_pages/search.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_documents',
+        'href': 'site_pages/docs.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_notes',
+        'href': 'site_pages/notes.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_wikipages',
+        'href': 'site_pages/wikipages.html',
+        'new_page': false,
+        'disabled': true,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_settings',
+        'href': 'site_pages/settings.html',
+        'new_page': false,
+        'disabled': false,
+        'hidden': false,
+    },
+    {
+        'name': 'Dota 2',
+        'href': 'steam://rungameid/570',
+        'new_page': true,
+        'disabled': false,
+        'hidden': true,
+    }
+]
+
 window.main_class = new class {
     load_layout() {
         window.saved_pages = []
         window.main_classes = {}
+
+        let menu_html = ``
+        window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu
+
+        window.left_menu.forEach(tab => {
+            let tempname = tab.name
+            if(tab.hidden) {
+                return
+            }
+
+            if(tab.name[0] == '_') {
+                tempname = _(tab.name.substr(1))
+            }
+
+            menu_html += `
+                <a href='${tab.href}' ${tab.new_page ? `target='_blank'` : ''} ${tab.disabled ? `class='stopped'` : ''}>${tempname}</a>
+            `
+        })
 
         document.querySelector('body').insertAdjacentHTML('afterbegin', 
         `
@@ -16,20 +142,7 @@ window.main_class = new class {
         </div>
         <div class="wrapper">
             <div class="menu">
-                <a href='site_pages/user_page.html'>${_('navigation.my_page')}</a>
-                <a href='site_pages/news_page.html'>${_('navigation.my_news')}</a>
-                <a class='stopped'>${_('navigation.my_friends')}</a>
-                <a class='stopped'>${_('navigation.my_messages')}</a>
-                <a class='stopped'>${_('navigation.my_photos')}</a>
-                <a class='stopped'>${_('navigation.my_audios')}</a>
-                <a class='stopped'>${_('navigation.my_videos')}</a>
-                <a class='stopped'>${_('navigation.my_faves')}</a>
-                <a class='stopped'>${_('navigation.my_notifications')}</a>
-                <a class='stopped'>${_('navigation.my_search')}</a>
-                <a class='stopped'>${_('navigation.my_documents')}</a>
-                <a class='stopped'>${_('navigation.my_notes')}</a>
-                <a class='stopped'>${_('navigation.my_wikipages')}</a>
-                <a href='site_pages/settings.html'>${_('navigation.my_settings')}</a>
+                ${menu_html}
             </div>
     
             <div class="page_content">
