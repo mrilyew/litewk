@@ -188,7 +188,8 @@ class User extends Faveable {
         let partner = null
 
         if(this.info.relation_partner) {
-            partner  = new User(this.info.relation_partner)
+            partner  = new User
+            partner.hydrate(this.info.relation_partner)
         }
 
         switch(this.info.relation) {
@@ -340,6 +341,14 @@ class User extends Faveable {
     }
 
     isFriend() {
+        if(this.getId() == window.active_account.vk_info.id) {
+            return true
+        }
+
+        if(!this.info.friend_status) {
+            return false
+        }
+
         return this.getFriendStatus() == this.FRIEND_STATUS_IS_FRIEND
     }
 
@@ -502,6 +511,10 @@ class Club extends Faveable {
 
     hasCover() {
         return this.getCover() && this.getCover().enabled == 1 && this.getCover().images
+    }
+
+    isFriend() {
+        return false
     }
 
     isAdmin() {

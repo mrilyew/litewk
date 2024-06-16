@@ -120,6 +120,7 @@ window.langs = [
             'vk_like_padding': 'Расширить страницу на всю ширину монитора',
             'transitions_everywhere': 'Плавные переходы везде',
             'round_avatars': 'Круглые аватарки',
+            'highlight_friends': 'Подсвечивать друзей зелёным цветом',
         },
         
         'settings_ux': {

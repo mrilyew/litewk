@@ -46,7 +46,7 @@ window.page_class = new class {
             `
         )
 
-        let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all'}
+        let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all', 'fields': 'friend_status,photo_50,photo_200,sex'}
         window.main_classes['wall'] = new ClassicListView(Post, $('.wall_wrapper_post')[0])
         window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
     

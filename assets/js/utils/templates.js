@@ -78,7 +78,7 @@ async function user_page_template(user)
                         <div class='upper_block'>
                             <div id="name_block">
                                 <div class='name_with_smiley'>
-                                    <span id='name' class='bolder'>${user.getFullName()}</span>
+                                    <span id='name' class='bolder ${user.isFriend() ? ' friended' : ''}'>${user.getFullName()}</span>
 
                                     ${user.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
                                     `<div class='smiley' title='${user.getImageStatus().name}'>
@@ -1012,7 +1012,7 @@ function post_template(post, additional_options = {})
                 </a>
             </div>
             <div class='post_name'>
-                <p><b><a href='${owner.getUrl()}'>${owner.getName()}</a></b> ${post.hasUpperText() ? post.getUpperText() : ''}</p>
+                <p><b><a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''}>${owner.getName()}</a></b> ${post.hasUpperText() ? post.getUpperText() : ''}</p>
                 <p><a href='site_pages/post.html?post=${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
             </div>
             `
@@ -1119,7 +1119,7 @@ function comment_template(object)
                 <div class='comment_info'>
                     <div class='comment_upper_author'>
                         <div>
-                            <b><a href='${owner ? owner.getUrl() : ''}'>${owner ? owner.getName() : ''}</a></b>
+                            <b><a href='${owner ? owner.getUrl() : ''}' ${owner.isFriend() ? `class='friended'` : ''}>${owner ? owner.getName() : ''}</a></b>
                             ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
                         </div>
                         

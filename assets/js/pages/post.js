@@ -56,7 +56,7 @@ window.page_class = new class {
         )
 
         window.main_classes['wall'] = new ClassicListView(Comment, $('.wall_wrapper_post .wall_wrapper_comments')[0])
-        window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'photo_50,photo_200'})
+        window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'friend_status,photo_50,photo_200,sex'})
             
         if(window.s_url.searchParams.has('page')) {
             window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1

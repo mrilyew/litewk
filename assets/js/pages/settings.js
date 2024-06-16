@@ -19,7 +19,9 @@ window.tweaks = [
 
 .to_the_sky {
     display: none;
-}`,
+}
+
+`,
     },
     {
         'name':  'settings_ui_tweaks.transitions_everywhere',
@@ -31,7 +33,9 @@ window.tweaks = [
 
 textarea {
     transition: unset !important;
-}`,
+}
+
+`,
     },
     {
         'name': 'settings_ui_tweaks.round_avatars',
@@ -40,7 +44,18 @@ textarea {
 .avatar img {
     border-radius: 21px;
 }
-        `
+
+`
+    },
+    {
+        'name': 'settings_ui_tweaks.highlight_friends',
+        'internal_name': 'Highlight friends',
+        'code': `/* Friends highlighter */
+.friended {
+    color: rgb(0, 185, 0);
+}
+
+`
     }
 ]
 

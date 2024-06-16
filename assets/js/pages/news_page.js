@@ -18,7 +18,7 @@ window.page_class = new class {
         )
 
         let method = 'newsfeed.get'
-        let method_params = {'filters': 'post', 'count': 10, 'fields': 'photo_50,photo_200'}
+        let method_params = {'filters': 'post', 'count': 10, 'fields': 'friend_status,photo_50,photo_200,sex'}
 
         switch(tab) {
             default:
