@@ -31,6 +31,11 @@ function log(txt)
     console.log(txt)
 }
 
+function init_observers()
+{
+    showMoreObserver.observe($('.show_more')[0])
+}
+
 function short_date(unix_time, need_time = true, hide_year = false) 
 {
     let date = new Date(unix_time * 1000)

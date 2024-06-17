@@ -81,7 +81,7 @@ async function user_page_template(user)
                                     <span id='name' class='bolder ${user.isFriend() ? ' friended' : ''}'>${user.getFullName()}</span>
 
                                     ${user.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                                    `<div class='smiley' title='${user.getImageStatus().name}'>
+                                    `<div class='smiley' data-id='${user.getId()}' title='${user.getImageStatus().name}'>
                                         <img src='${user.getImageStatusURL()}'>
                                     </div>` : ``}
                                 </div>
@@ -741,6 +741,14 @@ function club_template(club)
                                     <span>${club.getDescription()}</span>
                                 </td>
                             </tr>` : ''}
+                            ${club.info.age_limits != 1 ? `<tr>
+                                <td>
+                                    <span>${_('groups.age_limits')}</span>
+                                </td>
+                                <td>
+                                    <span>${club.getAgeLimits()}</span>
+                                </td>
+                            </tr>` : ''}
                             <tr>
                                 <td>
                                     <span>ID</span>
@@ -816,7 +824,16 @@ function club_template(club)
             <div class="right_block bordered_block">
                 <div class='block_parallax'>
                     <img id='avatar_img' src='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'>
-                    <div id='_actions'></div>
+                    <div id='_actions'>
+                        ${club.isClosed() == 0 ? `
+                            ${!club.isMember() ? `<a class='action' id='_toggleSub' data-val='0' data-addid='${club.getId()}'> ${_('groups.subscribe')}</a>` : ''}
+                            ${club.isMember() ? `<a class='action' id='_toggleSub' data-val='1' data-addid='${club.getId()}'> ${_('groups.unsubscribe')}</a>` : ''}
+                        ` : ``}
+                        ${!club.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='club' data-addid='${club.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
+                        ${club.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='club' data-addid='${club.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
+                        ${!club.isClosed() && !club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
+                        ${!club.isClosed() && club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
+                    </div>
                 </div>
             </div>
         </div>
@@ -1012,7 +1029,21 @@ function post_template(post, additional_options = {})
                 </a>
             </div>
             <div class='post_name'>
-                <p><b><a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''}>${owner.getName()}</a></b> ${post.hasUpperText() ? post.getUpperText() : ''}</p>
+                <div class='post_name_sup'>
+                    <p>
+                        <b>
+                            <a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''}>
+                                ${owner.getName()}
+                            </a>
+                        </b>
+
+                        ${owner.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+                        `<div class='smiley' data-id='${owner.getId()}' title='${owner.getImageStatus().name}'>
+                            <img src='${owner.getImageStatusURL()}'>
+                        </div>` : ``}
+                    ${post.hasUpperText() ? post.getUpperText() : ''}
+                    </p>
+                </div>
                 <p><a href='site_pages/post.html?post=${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
             </div>
             `
@@ -1118,8 +1149,16 @@ function comment_template(object)
                 </div>
                 <div class='comment_info'>
                     <div class='comment_upper_author'>
-                        <div>
-                            <b><a href='${owner ? owner.getUrl() : ''}' ${owner.isFriend() ? `class='friended'` : ''}>${owner ? owner.getName() : ''}</a></b>
+                        <div class='comment_author_name'>
+                            <b>
+                                <a href='${owner ? owner.getUrl() : ''}' ${owner.isFriend() ? `class='friended'` : ''}>${owner ? owner.getName() : ''}</a>
+                            </b>
+
+                            ${owner.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+                            `<div class='smiley' data-id='${owner.getId()}' title='${escape_html(owner.getImageStatus().name)}'>
+                                <img src='${owner.getImageStatusURL()}'>
+                            </div>` : ``}
+
                             ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
                         </div>
                         

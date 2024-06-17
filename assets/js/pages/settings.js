@@ -275,7 +275,6 @@ window.page_class = new class {
                     }
 
                     if(maybe_tab) {
-                        log(maybe_tab)
                         $(`.menu.editing a[data-orighref='${maybe_tab.href}']`).trigger('click')
                     }
                 })
@@ -420,7 +419,6 @@ window.page_class = new class {
     
                     $('input[name="_lang"]').on('click', () => {
                         window.site_params.set('lang', $('input[name="_lang"]:checked').val())
-                        console.log(window.site_params.get('lang'))
                         window.lang = null
                         window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
                         
@@ -521,15 +519,15 @@ window.page_class = new class {
     
                 $(`.settings_block input[name='_import_localstorage']`).on('click', async (e) => {
                     let localstorage_import = JSON.parse(prompt(_('settings_debug.settings_localstorage_enter')))
-                    
+
                     if(!localstorage_import) {
                         return
                     }
                     
                     localStorage.clear()
     
-                    Object.keys(localstorage_import).forEach(el => {
-                        localStorage.setItem(el, JSON.stringify(localstorage_import[el]))
+                    Object.entries(localstorage_import).forEach(([key, value]) => {
+                        localStorage.setItem(key, value)
                     })
     
                     window.router.restart()
@@ -573,7 +571,7 @@ window.page_class = new class {
                                 </div>
                             </div>
                             <div class='settings_account_actions'>
-                                ${Number(window.site_params.get('active_account')) != acc.vk_info.id ? `<input type='button' data-id='${acc.vk_info.id}' id='_enteracc' value='${_('settings_accounts.accounts_set_default')}'>` : ''}
+                                ${!window.active_account || window.active_account.vk_token != acc.vk_token ? `<input type='button' data-id='${acc.vk_token}' id='_enteracc' value='${_('settings_accounts.accounts_set_default')}'>` : ''}
                             </div>
                         </div>
                     `

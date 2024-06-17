@@ -39,7 +39,7 @@ window.page_class = new class {
             $(`.wall_block a[data-section='${wall_section}']`).addClass('selectd')
 
             // Creating wall as object
-            let wall_params  = {'owner_id': club.getRealId(), 'extended': 1, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all'}
+            let wall_params  = {'owner_id': club.getRealId(), 'extended': 1, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all', 'fields': 'image_status,friend_status,photo_50,photo_200,sex'}
             window.main_classes['wall'] = new ClassicListView(Post, $('.club_page_wrapper .wall_block .wall_block_insert')[0])
             window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             

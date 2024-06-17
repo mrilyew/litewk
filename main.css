@@ -8,6 +8,7 @@
     --main-text-color: #b1b1b1;
     --main-text-lighter-color: #cfcfcf;
     --main-editing-color: #bfbf78;
+    --main-error-color: #e60b0b;
     --main-typical-brightness: 0.8;
 }
 
@@ -314,6 +315,10 @@ ul li:last-child {
     border: 1px solid var(--main-text-lighter-color);
 }
 
+.wrapper .bordered_block.error_template span {
+    color: var(--main-error-color);
+}
+
 .wrapper .bordered_block .hidden_line {
     padding: 0;
     margin: -9px 0px 7px 0px;
@@ -394,6 +399,10 @@ ul li:last-child {
     color: var(--main-blocks-color);
 }
 
+body.dimmed {
+    overflow: hidden;
+}
+
 body.dimmed > .dimmer {
     z-index: 200;
     position: fixed;
@@ -426,6 +435,10 @@ body.dimmed > .dimmer {
     justify-content: space-between;
     vertical-align: middle;
     padding: 5px 8px;
+}
+
+.messagebox .messagebox_title span, .messagebox .messagebox_title a {
+    margin-top: 3px;
 }
 
 .fullscreen_view .fullscreen_view_title {
@@ -594,6 +607,38 @@ body.dimmed > .dimmer {
 
 /* User page. */
 
+.smiley_message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.smiley_message .smiley_message_icon {
+    padding: 5px 0px;
+}
+
+.smiley_message .smiley_message_text {
+    display: flex;
+    flex-direction: column;
+}
+
+.smiley_message .smiley_message_text .smiley_message_title {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.smiley_message .smiley_message_text * {
+    text-align: center;
+}
+
+.smiley_message .smiley_message_text a {
+    margin: 10px 0px;
+}
+
+.smiley_message img {
+    height: 60px;
+}
+
 .default_wrapper {
     padding: 9px 9px 0px 9px;
 }
@@ -630,13 +675,19 @@ body.dimmed > .dimmer {
     margin-left: 9px;
 }
 
-.user_page_wrapper .left_block #avatar_img {
+#avatar_img {
     width: 100%;
+    min-width: 171px;
 }
 
 .user_page_wrapper .right_block #name_block {
     display: flex;
     justify-content: space-between;
+}
+
+.smiley {
+    cursor: pointer;
+    height: 16px;
 }
 
 .user_page_wrapper .right_block #name_block .name_with_smiley {
@@ -813,6 +864,12 @@ body.dimmed > .dimmer {
     display: flex;
     flex-direction: column;
     padding-top: 2px;
+}
+
+.page_content .post .post_author .post_name .post_name_sup, .comment_author_name {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
 }
 
 .page_content .post .post_actions {

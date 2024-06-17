@@ -49,12 +49,16 @@ class PostLike extends Faveable {
             user_obj.hydrate(uwser)
 
             return user_obj
-        } else {
+        } else if(this.getOwnerID() < 0) {
             let cwub = find_owner(this.getOwnerID(), this.profiles, this.groups)
             let club_obj = new Club
             club_obj.hydrate(cwub)
 
             return club_obj
+        } else {
+            let fake_user = new User
+
+            return fake_user
         }
     }
 
@@ -97,8 +101,23 @@ class User extends Faveable {
     FRIEND_STATUS_REQUEST_FROM_USER = 2
     FRIEND_STATUS_IS_FRIEND = 3
 
+    constructor() {
+        super()
+        this.info = {
+            'id': 0,
+            'first_name': 'DELETED',
+            'friend_status': 0,
+            'is_closed': true,
+            'last_name': '',
+            'can_access_closed': true,
+            'photo_50': 'https://vk.com/images/deactivated_50.png',
+            'photo_200': 'https://vk.com/images/deactivated_50.png',
+            'sex': 3,
+        }
+    }
+
     async fromId(id = 0) {
-        let info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'})
+        let info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_nft,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'})
         
         this.info = info.response[0]
     }
@@ -203,7 +222,7 @@ class User extends Faveable {
             case 3:
                 return (is_woman ? _('relation.female_engaged') : _('relation.male_engaged')) + (partner ? ` ${_('with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 4:
-                let preposition = is_woman ? _('prepositions.for_rus_preposition') : _('prepositions.on_rus_preposition')
+                let preposition = !is_woman ? _('prepositions.for_rus_preposition') : _('prepositions.on_rus_preposition')
                 return is_woman ? _('relation.female_married') : _('relation.male_married') + (partner ? ` ${preposition} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 5:
                 return _('relation.relations_complicated') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
@@ -423,7 +442,12 @@ class User extends Faveable {
 
 class Club extends Faveable {
     async fromId(id = 0) {
-        let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
+        let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
+        
+        if(info.error || !info.response.groups) {
+            return
+        }
+        
         this.info = info.response.groups[0]
     }
 
@@ -438,7 +462,7 @@ class Club extends Faveable {
             return this.info.photo_200
         }
     }
-
+    
     getUrl() {
         return 'site_pages/club_page.html?id=' + this.getId()
     }
@@ -502,7 +526,13 @@ class Club extends Faveable {
     }
 
     getAgeLimits() {
-        return this.info.age_limits
+        if(this.info.age_limits == 2) {
+            return '16+'
+        } else if(this.info.age_limits == 3) {
+            return '18+'
+        } else {
+            return '0+'
+        }
     }
 
     hasAccess() {
@@ -515,6 +545,10 @@ class Club extends Faveable {
 
     isFriend() {
         return false
+    }
+    
+    isSubscribed() {
+        return this.info.is_subscribed == 1
     }
 
     isAdmin() {
@@ -541,6 +575,10 @@ class Post extends PostLike {
         this.groups   = groups
     }
 
+    getId() {
+        return this.info.owner_id + '_' + this.info.id
+    }
+
     getViews() {
         if(!this.hasViews()) {
             return 0
@@ -564,6 +602,22 @@ class Post extends PostLike {
     getUpperText() {
         let source = this.info.post_source
 
+        // почему не в post_source?
+        if(this.info.final_post == 1) {
+            let silently = ''
+            let gen = 'male'
+            
+            if(this.info.message.length < 1) {
+                silently = '_silently'
+            }
+
+            if(this.getOwner().info.sex != 2) {
+                gen = 'female'
+            }
+
+            return _(`wall.deleted_page${silently}_${gen}`)
+        }
+
         if(!source || !source.data) {
             return null
         }
@@ -579,7 +633,19 @@ class Post extends PostLike {
                         return _('wall.updated_photo_user_female')
                     }
                 }
-                
+            case 'profile_activity':
+                if(this.getOwner().info.sex == 2) {
+                    return _('wall.updated_status_user_male')
+                } else {
+                    return _('wall.updated_status_user_female')
+                }
+            case 'comments':
+                let zab = _('wall.left_status_female')
+                if(this.getOwner().info.sex == 2) {
+                    zab = _('wall.left_status_male')
+                }
+
+                return `${zab} <a href='${source.link.url}' target='_blank'>${escape_html(source.link.title)}</a>`
             default:
                 return source.data
         }
@@ -612,6 +678,10 @@ class Post extends PostLike {
     
     getTemplate(anything_else = {}) {
         return post_template(this, anything_else)
+    }
+    
+    needToHideComments() {
+        return this.info.comments.can_post == 0 && this.info.comments.count < 1
     }
 
     isAd() {
@@ -728,7 +798,11 @@ class Video extends PostLike {
         }
 
         if(!this.info.image[num]) {
-            return this.info.image[6].url
+            try {
+                return this.info.image[3].url
+            } catch(e) {
+                return this.info.image[0].url
+            }
         } else {
             return this.info.image[num].url
         }
@@ -803,6 +877,10 @@ class Comment extends PostLike {
         return this.info.likes.user_likes == 1
     }
 
+    getId() {
+        return this.info.owner_id + '_' + this.info.id
+    }
+
     getOwner() {
         if(this.info.deleted) {
             return null
@@ -866,7 +944,7 @@ class ClassicListView {
             this.getInsertNode().insertAdjacentHTML('beforeend', `<div class='show_more'>${_('pagination.show_more')}</div>`)
             
             if(window.site_params.get('ux.auto_scroll', '1') == '1') {
-                showMoreObserver.observe($('.show_more')[0])
+                init_observers()
             }
         } else {
             this.getInsertNode().append($('.show_more')[0])
@@ -986,7 +1064,15 @@ class ClassicListView {
             let ob_j = new this.object_class
             ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
 
-            templates += ob_j.getTemplate()
+            try {
+                templates += ob_j.getTemplate()
+            } catch(e) {
+                templates += `
+                    <div class='error_template bordered_block'>
+                        <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
+                    </div>
+                `
+            }
         })
 
         if(this.inverse) {
@@ -1104,7 +1190,16 @@ class Newsfeed extends ClassicListView {
         objects_data.response.items.forEach(obj => {
             let ob_j = new this.object_class()
             ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
-            templates += ob_j.getTemplate()
+
+            try {
+                templates += ob_j.getTemplate()
+            } catch(e) {
+                templates += `
+                    <div class='error_template bordered_block'>
+                        <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
+                    </div>
+                `
+            }
         })
 
         this.method_params.start_from = objects_data.response.next_from
@@ -1152,6 +1247,7 @@ class VkApi {
                     log(`${method} caused captcha`)
                     return new Promise((resolve, reject) => {
                         let sid = result.error.captcha_sid
+
                         document.cookie = ''
                         let msg = new MessageBox(_('captcha.enter_captcha'), `
                             <div class='captcha_box'>
@@ -1196,34 +1292,37 @@ class MessageBox {
             `
                 <div class='messagebox'>
                     <div class='messagebox_title'>
-                        <span style='margin-top: 3px;'>${title}</span>
+                        <span>${title}</span>
 
-                        <a href='#' data-ignore='1' id='_close'><span>${_('messagebox.close')}</span></a>
+                        <a href='#' data-ignore='1' id='_close'>${_('messagebox.close')}</a>
                     </div>
                     <div class='messagebox_body'>
                         <span>${content}</span>
                     </div>
-                    <div class='messagebox_buttons'></div>
+                    ${buttons ? `<div class='messagebox_buttons'></div>` : ''}
                 </div>
             `
         )
 
-        let i = 0
-        buttons.forEach(b => {
-            let btn = document.createElement('input')
-            //btn.setAttribute('class', 'showmore')
-            btn.setAttribute('type', 'button')
-            btn.setAttribute('value', b)
-            btn.onclick = buttons_actions[i]
+        if(buttons_actions) {
+            let i = 0
+            buttons.forEach(b => {
+                let btn = document.createElement('input')
+                //btn.setAttribute('class', 'showmore')
+                btn.setAttribute('type', 'button')
+                btn.setAttribute('value', b)
+                btn.onclick = buttons_actions[i]
+    
+                $('.messagebox_buttons')[0].insertAdjacentElement('beforeend', btn)
+                btn = null
+                i += 1
+            })
+    
+            i = null
+        }
 
-            $('.messagebox_buttons')[0].insertAdjacentElement('beforeend', btn)
-            btn = null
-            i += 1
-        })
 
-        i = null
-
-        $('#_close').on('click', (e) => {
+        $('.messagebox_title #_close').on('click', (e) => {
             e.preventDefault()
 
             this.close()
@@ -1302,7 +1401,7 @@ class Accounts {
         window.site_params.set('accounts', JSON.stringify(accs))
 
         if(make_active) {
-            window.site_params.set('active_account', res.response.id)
+            window.site_params.set('active_account', token)
         }
 
         temp_api = null
@@ -1328,21 +1427,21 @@ class Accounts {
     setActiveAccount(id)
     {
         let accs = JSON.parse(window.site_params.get('accounts') ?? '[]')
-        let acc = accs.find(acc => acc.vk_info.id == id)
+        let acc = accs.find(acc => acc.vk_token == id)
 
         if(!acc) {
-            alert('ты чёт попутал')
+            alert('бляха хорош пёс')
             return
         }
         
-        window.site_params.set('active_account', acc.vk_info.id)
+        window.site_params.set('active_account', acc.vk_token)
     }
 
     getActiveAccount()
     {
         let accs = JSON.parse(window.site_params.get('accounts') ?? '[]')
 
-        return accs.find(acc => acc.vk_info.id == Number(window.site_params.get('active_account') ?? 0))
+        return accs.find(acc => acc.vk_token == window.site_params.get('active_account'))
     }
 
     getAccountsCount()
@@ -1387,7 +1486,8 @@ window.router = new class {
         replace_state(page.url)
 
         $('.page_content')[0].innerHTML = page.html
-                
+        init_observers()
+        
         window.scrollTo(0, page.scrollY)
     }
 
@@ -1401,8 +1501,9 @@ window.router = new class {
     restart(add) {
         $('style').remove()
         $('div').remove()
-        
+
         window.main_class.load_layout(add)
+        $(document).trigger('scroll')
     }
 
     async route(url, history_log = true) {
@@ -1431,6 +1532,8 @@ window.router = new class {
 
         await append_script(`assets/js/pages/${main_part}.js`, true) // т.н. костыль?
         this.save_page(url)
+
+        init_observers()
     }
 }
 

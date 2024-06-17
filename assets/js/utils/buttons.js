@@ -257,6 +257,28 @@ $(document).on('click', '#_toggleBlacklist', async (e) => {
     }
 })
 
+$(document).on('click', '#_toggleSub', async (e) => {
+    e.preventDefault()
+    let sub_status = Number(e.currentTarget.dataset.val)
+    let verb = 'join'
+
+    if(sub_status == 1) {
+        verb = 'leave'
+    }
+
+    let result = await window.vk_api.call('groups.'+verb, {'group_id': e.target.closest('.page_content').querySelector('#clb_id').value})
+    
+    if(!result.error) {
+        if(sub_status == 0) {
+            e.target.setAttribute('data-val', 1)
+            e.target.innerHTML = _('groups.unsubscribe')
+        } else {
+            e.target.setAttribute('data-val', 0)
+            e.target.innerHTML = _('groups.subscribe')
+        }
+    }
+})
+
 $(document).on('click', '#_toggleHiddeness', async (e) => {
     e.preventDefault()
     let hidenes = Number(e.currentTarget.dataset.val)
@@ -278,9 +300,18 @@ $(document).on('click', '#_toggleHiddeness', async (e) => {
 
 $(document).on('click', '#_toggleSubscribe', async (e) => {
     e.preventDefault()
+
+    let owner = 0
+
+    if(document.querySelector('#usr_id')) {
+        owner = document.querySelector('#usr_id').value
+    } else {
+        owner = "-" + document.querySelector('#clb_id').value
+    }
+
     let hidenes = Number(e.currentTarget.dataset.val)
     let verb = hidenes == 0 ? '' : 'un'
-    let result = await window.vk_api.call(`wall.${verb}subscribe`, {'owner_id': document.querySelector('#usr_id').value})
+    let result = await window.vk_api.call(`wall.${verb}subscribe`, {'owner_id': owner})
     
     if(result.error) {
         return
@@ -418,6 +449,32 @@ $(document).on('click', '.post #_pinPost', async (e) => {
 
 // Wall
 
+$(document).on('click', '.smiley', async (e) => {
+    let status = e.target
+
+    if(status.tagName == 'IMG') {
+        status = e.target.parentNode
+    }
+
+    let stats = await window.vk_api.call('status.getImagePopup', {'user_id': status.dataset.id})
+    
+    new MessageBox(_('image_status.name'), `
+        <div class='smiley_message'>
+            <div class='smiley_message_icon'>
+                <img src='${stats.response.popup.photo.images[2].url}'>
+            </div>
+
+            <div class='smiley_message_text'>
+                <span class='smiley_message_title'>${escape_html(stats.response.popup.title)}</span>
+                <span class='smiley_message_text'>${format_text(stats.response.popup.text)}</span>
+                
+                ${stats.response.popup.buttons && stats.response.popup.buttons.length > 0 ? `<a href='${stats.response.popup.buttons[0].action.url}' target='_blank'><input type='button' id='__getStatus' value='${_('image_status.get_status')}'></a>` : ''}
+                
+            </div>
+        </div>
+    `)
+})
+
 $(document).on('click', '.show_more', async (e) => {
     if(e.target.dataset.clicked == '1') {
         e.preventDefault()
@@ -493,8 +550,11 @@ $(document).on('click', '.paginator a', async (e) => {
     push_state(window.s_url)
 
     $('.paginator').remove()
-    e.target.parentNode.insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
     window.main_classes['wall'].createNextPage()
+
+    log($('#insert_paginator_here_bro')[0])
+    log(paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
 })
 
 $(document).on('click', '.like', async (e) => {

@@ -25,7 +25,7 @@ window.page_class = new class {
             `
                 <div class='default_wrapper wall_wrapper'>
                     <div>
-                        <div class='bordered_block wall_wrapper_upper_panel'>
+                        <div class='bordered_block wall_wrapper_upper_panel' id='insert_paginator_here_bro'>
                             ${section != 'search' ? `<span>${_('counters.posts_on_wall_count', 0)}</span>` : `
                                 <input type="query" placeholder="${_('wall.search')}">
                             `}
@@ -46,8 +46,8 @@ window.page_class = new class {
             `
         )
 
-        let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all', 'fields': 'friend_status,photo_50,photo_200,sex'}
-        window.main_classes['wall'] = new ClassicListView(Post, $('.wall_wrapper_post')[0])
+        let wall_params = {'owner_id': id, 'extended': 1, 'count': 10, 'filter': tabs.includes(section) ? section : 'all', 'fields': 'image_status,friend_status,photo_50,photo_200,sex'}
+        window.main_classes['wall'] = new ClassicListView(Post, '.wall_wrapper_post')
         window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
     
         if(window.s_url.searchParams.has('page')) {

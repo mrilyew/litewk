@@ -13,7 +13,7 @@ window.page_class = new class {
         let post = null
 
         try {
-            info = (await window.vk_api.call('wall.getById', {'posts': id, 'extended': 1})).response
+            info = (await window.vk_api.call('wall.getById', {'posts': id, 'extended': 1, 'fields': 'image_status,friend_status,photo_50,photo_200,sex'})).response
             post = new Post
             post.hydrate(info.items[0], info.profiles, info.groups)
         } catch(e) {}
@@ -40,11 +40,12 @@ window.page_class = new class {
                     <div class='wall_wrapper_post'>
                         ${post.getTemplate({'hide_comments': 1})}
 
-                        <div class='bordered_block comment_select_block'>
+                        ${!post.needToHideComments() ?
+                        `<div class='bordered_block comment_select_block' id='insert_paginator_here_bro'>
                             <span>${_('wall.comments_count', 0)}</span>
                         </div>
 
-                        <div class='wall_wrapper_comments'></div>
+                        <div class='wall_wrapper_comments'></div>` : ''}
                     </div>
                     <div class='wall_wrapper_tabs bordered_block'>
                         ${tabs_}
@@ -55,17 +56,19 @@ window.page_class = new class {
             `
         )
 
-        window.main_classes['wall'] = new ClassicListView(Comment, $('.wall_wrapper_post .wall_wrapper_comments')[0])
-        window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.getOwnerID(), 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'friend_status,photo_50,photo_200,sex'})
-            
-        if(window.s_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        if(!post.needToHideComments()) {
+            window.main_classes['wall'] = new ClassicListView(Comment, '.wall_wrapper_post .wall_wrapper_comments')
+            window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.info.owner_id, 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': 'image_status,friend_status,photo_50,photo_200,sex'})
+                
+            if(window.s_url.searchParams.has('page')) {
+                window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+            }
+    
+            window.main_classes['wall'].clear()
+            await window.main_classes['wall'].nextPage()
+    
+            $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.main_classes['wall'].objects.count)
+            $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
         }
-
-        window.main_classes['wall'].clear()
-        await window.main_classes['wall'].nextPage()
-
-        $('.comment_select_block span')[0].innerHTML = _('wall.comments_count', window.main_classes['wall'].objects.count)
-        $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
     }
 }

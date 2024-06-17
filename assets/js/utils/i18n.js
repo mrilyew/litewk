@@ -468,6 +468,16 @@ window.langs = [
             'now_online': 'Онлайн',
         },
 
+        'groups': {
+            'subscribe': 'Подписаться',
+            'unsubscribe': 'Отписаться',
+            'send_request': 'Подать заявку',
+            'cancel_request': 'Отменить заявку',
+            'recomend_to_friends': 'Рекоммендовать друзьям',
+            'invite_friends': 'Пригласить друзей',
+            'age_limits': 'Возрастные ограничения',
+        },
+
         'wall': {
             'wall': 'Стена',
             'pinned': 'закреплено',
@@ -503,6 +513,18 @@ window.langs = [
             'updated_photo_group': 'обновили фото',
             'updated_photo_user_male': 'обновил фото',
             'updated_photo_user_female': 'обновила фото',
+
+            'updated_status_user_male': 'обновил статус',
+            'updated_status_user_female': 'обновила статус',
+
+            'deleted_page_male': 'удалил страницу со словами:',
+            'deleted_page_female': 'удалила страницу со словами:',
+
+            'deleted_page_silently_male': 'молча удалил страницу.',
+            'deleted_page_silently_female': 'молча удалила страницу.',
+
+            'left_status_male': 'оставил комментарий на странице',
+            'left_status_female': 'оставил комментарий на странице',
             
             'author': 'Автор',
             'source': 'Источник',
@@ -543,6 +565,11 @@ window.langs = [
             'enter_captcha_there': 'Введи сюда капчу.',
         },
 
+        'image_status': {
+            'name': 'Статус',
+            'get_status': 'Получить статус',
+        },
+
         'errors': {
             'not_all_fields_filled': 'Не все поля заполнены',
             'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',
@@ -551,12 +578,14 @@ window.langs = [
             'post_access_denied': 'Нет доступа к записи.',
             'not_all_fields': 'Не все поля введены',
             'profile_not_found': `Запрашиваемый профиль не найден. <br> Может, ты имел ввиду <a href='site_pages/club_page.html?id=$1'>группу?</a>`,
-            'group_not_found': `Запрашиваемый профиль не найден. <br> Может, ты имел ввиду <a href='site_pages/user_page.html?id=$1'>профиль?</a>`,
+            'group_not_found': `Запрашиваемая группа не найдена. <br> Может, ты имел ввиду <a href='site_pages/user_page.html?id=$1'>профиль?</a>`,
             'wall_not_found': 'Стена не найдена,',
             'post_not_found': `Пост не найден.`,
             'not_authorized': 'Ты не авторизовался.',
             'error_getting_wall': 'Ошибка при получении стены. Текст: $1',
             'error_getting_news': 'Ошибка при получении новостей. Текст: $1',
+
+            'template_insert_failed': `Вставка шаблона не удалась по причине "$1". Расскажи разработчику.`
         },
     }
 ]

@@ -25,7 +25,7 @@ window.page_class = new class {
                 method = 'newsfeed.get'
                 break
             case 'smart':
-                method = 'execute.getNewsfeedSmart'
+                method = 'newsfeed.getByType'
                 method_params.feed_type = 'top'
                 
                 break
