@@ -39,13 +39,19 @@ function init_observers()
 function short_date(unix_time, need_time = true, hide_year = false) 
 {
     let date = new Date(unix_time * 1000)
+    let current_date = new Date()
     
     switch(window.site_params.get('ui.date_format')) {
         default:
         case 'default':
             return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}${hide_year ? '' : '.' + date.getFullYear()} ` + (need_time ? `в ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}` : '')
         case 'month':
-            return _('time.date_formatted_month', String(date.getDate()).padStart(2, '0'), _(`time.month_${date.getMonth()+1}_gen`), hide_year ? '' : '' + date.getFullYear(), need_time ? `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}` : '')
+            if(current_date.getFullYear() != date.getFullYear()) {
+                return _('time.date_formatted_month', String(date.getDate()).padStart(2, '0'), _(`time.month_${date.getMonth()+1}_gen`), hide_year ? '' : '' + date.getFullYear(), need_time ? `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}` : '')
+            } else {
+                return _('time.date_formatted_month_no_year', String(date.getDate()).padStart(2, '0'), _(`time.month_${date.getMonth()+1}_gen`), need_time ? `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}` : '')
+            }
+            
     }
 }
 
@@ -110,7 +116,7 @@ function nl2br(text)
 function format_links(text)
 {
     return text.replace(/(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig, 
-    `<a href='$1' target='_blank'>$1</a>`)
+    `<a href='site_pages/resolve_link.html?id=$1' target='_blank'>$1</a>`)
 }
 
 function format_hashtags(text) 
@@ -118,8 +124,27 @@ function format_hashtags(text)
     return text.replace(/#(\S*)/g, `<a href='site_pages/search.html?section=posts&query=#$1'>#$1</a>`)
 }
 
+function format_mentions(text)
+{
+    return text.replace(/\[([^|]+)\|([^\]]+)\]/g, `<a href="site_pages/resolve_link.html?id=$1">$2</a>`)
+}
+
+function format_emojis(text)
+{
+    return twemoji.parse(text)
+}
+
 function format_text(text) {
-    return format_hashtags(format_links(nl2br(escape_html(text))))
+    let formatted_text = text
+
+    formatted_text = escape_html(formatted_text)
+    formatted_text = nl2br(formatted_text)
+    formatted_text = format_hashtags(formatted_text)
+    formatted_text = format_mentions(formatted_text)
+    formatted_text = format_links(formatted_text)
+    formatted_text = format_emojis(formatted_text)
+
+    return formatted_text
 }
 
 function format_seconds(duration) 
@@ -301,4 +326,9 @@ function array_swap(array, first, last)
     array[last] = temp
 
     return array
+}
+
+function not_found_not_specified()
+{
+    window.location.assign('https://youtu.be/BHj7U_bQpkc')
 }

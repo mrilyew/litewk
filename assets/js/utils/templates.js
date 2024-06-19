@@ -1024,7 +1024,7 @@ function post_template(post, additional_options = {})
 
     template += `
             <div class='post_ava avatar'>
-                <a href='${owner.getUrl()}'>
+                <a ${owner.isOnline() ? `class='onliner'` : ''} href='${owner.getUrl()}'>
                     <img src='${owner.getAvatar(true)}'>
                 </a>
             </div>
@@ -1138,11 +1138,11 @@ function comment_template(object)
 {
     let owner = object.getOwner()
     let template = `
-        <div class='main_comment_block' ${object.hasThread() ? `data-commscount='${object.info.thread.count}'` : ''} data-ownerid='${object.info.owner_id}' data-cid='${object.getCorrectID()}'>
+        <div id='_comment_${object.info.id}' class='main_comment_block' ${object.hasThread() ? `data-commscount='${object.info.thread.count}'` : ''} data-ownerid='${object.info.owner_id}' data-cid='${object.getCorrectID()}'>
             <div class='comment_block main_info_block' data-type='comment' data-postid='${object.getId()}'>
                 <div class='comment_author'>
                     <div class='comment_avaname avatar'>
-                        <a href='${owner ? owner.getUrl() : ''}'>
+                        <a ${owner.isOnline() ? `class='onliner'` : ''} href='${owner ? owner.getUrl() : ''}'>
                             <img src='${owner ? owner.getAvatar(true) : ''}'>
                         </a>
                     </div>
@@ -1160,10 +1160,11 @@ function comment_template(object)
                             </div>` : ``}
 
                             ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
+                            ${object.info.reply_to_comment ? `${_('wall.reply_to_comment', window.s_url.href + '#_comment_'  + object.info.id)}` : ''}
                         </div>
                         
                         <div class='comment_upper_actions'>
-                            <div class='icons1' id='_reportComment'></div>
+                            ${!object.canDelete() ? `<div class='icons1' id='_reportComment'></div>` : ''}
                             ${object.canEdit() ? `<div class='icons1' id='_commentEdit'></div>` : ''}
                             ${object.canDelete() ? `<div class='icons1' id='_commentDelete'></div>` : ''}
                         </div>

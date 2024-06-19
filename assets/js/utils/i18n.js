@@ -45,6 +45,8 @@ window.langs = [
 
             'to_up': 'Наверх',
             'come_back': 'Назад',
+
+            'suspicious_link': 'Ссылка, по мнению ВК, подозрительная. <br> Всё равно хочешь перейти?',
         },
 
         'pagination': {
@@ -65,6 +67,7 @@ window.langs = [
             'month_11_gen': 'ноября',
             'month_12_gen': 'декабря',
             'date_formatted_month': '$1 $2 $3 г. в $4',
+            'date_formatted_month_no_year': '$1 $2 в $3',
             'age_zero': '0 лет',
             'age_one': '$1 год',
             'age_few': '$1 года',
@@ -121,6 +124,7 @@ window.langs = [
             'transitions_everywhere': 'Плавные переходы везде',
             'round_avatars': 'Круглые аватарки',
             'highlight_friends': 'Подсвечивать друзей зелёным цветом',
+            'hide_onliner': `Скрыть отображение статуса "онлайн" у постов и комментариев`
         },
         
         'settings_ux': {
@@ -176,6 +180,9 @@ window.langs = [
             'close': 'Закрыть',
             'cancel': 'Отмена',
             'enter': 'Ввести',
+
+            'yes': 'Да',
+            'no': 'Нет'
         },
 
         'auth': {
@@ -202,6 +209,8 @@ window.langs = [
             'no_status': 'Нет статуса',
             'personal_info': 'Личная информация',
             'came_on_site': 'заходил(а)',
+            'came_on_site_male': 'заходил',
+            'came_on_site_female': 'заходила',
             'sex': 'Пол',
             'male': 'мужской',
             'female': 'женский',
@@ -535,15 +544,27 @@ window.langs = [
             'comments_count_few': '$1 комментария',
             'comments_count_other': '$1 комментариев',
             
+            'comments_count_with_threads_zero': 'Нет комментариев',
+            'comments_count_with_threads_one': '$1 комментарий ($2 всего)',
+            'comments_count_with_threads_few': '$1 комментария ($2 всего)',
+            'comments_count_with_threads_other': '$1 комментариев ($2 всего)',
+            
             'thread_count_zero': 'Нет ответов',
             'thread_count_one': '$1 ответ',
             'thread_count_few': '$1 ответа',
             'thread_count_other': '$1 ответов',
 
             'show_next_comments': 'Показать следующие комментарии',
+            'show_next_comments_count': 'Показать следующие 10 комментариев',
+            'reply_to_comment': `<span>ответ на <a href='$1'>комментарий</a></span>`,
+
+            'sort_new_first': 'Сначала новые',
+            'sort_old_first': 'Сначала старые',
+            'sort_interesting_first': 'Сначала интересные',
         },
 
         'newsfeed': {
+            'newsfeed': 'Новости',
             'section_default': 'Новое',
             'section_smart_feed': 'Интересное',
             'section_recommend': 'Рекоммендации',

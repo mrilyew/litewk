@@ -110,7 +110,8 @@ window.main_class = new class {
     load_layout() {
         window.saved_pages = []
         window.main_classes = {}
-
+        window.typical_fields = 'image_status,online,friend_status,photo_50,photo_200,sex'
+        
         let menu_html = ``
         window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu
 
@@ -134,7 +135,7 @@ window.main_class = new class {
         <style id='_customcss'>
             ${window.site_params.get('ui.custom_css') ? escape_html(window.site_params.get('ui.custom_css')) : '{}'}
         </style>
-    
+        
         <div class='dimmer'></div>
         <div class='to_the_sky'>
             <span class='to_up'>${_('navigation.to_up')}</span>

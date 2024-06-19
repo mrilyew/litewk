@@ -52,9 +52,19 @@ textarea {
         'internal_name': 'Highlight friends',
         'code': `/* Friends highlighter */
 .friended {
-    color: rgb(0, 185, 0);
+    color: var(--main-friendly-color);
 }
 
+`
+    },
+    {
+        'name': 'settings_ui_tweaks.hide_onliner',
+        'internal_name': 'Hide online square',
+        'code': `/* Hide online square */
+.onliner::before {
+    display: none;
+}
+  
 `
     }
 ]

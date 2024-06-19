@@ -9,6 +9,7 @@
     --main-text-lighter-color: #cfcfcf;
     --main-editing-color: #bfbf78;
     --main-error-color: #e60b0b;
+    --main-friendly-color: #00b900;
     --main-typical-brightness: 0.8;
 }
 
@@ -19,6 +20,10 @@
     word-break: break-word;
     word-wrap: break-word;
     text-align: left;
+}
+
+*:target {
+    background: var(--main-elements-lighter-color);
 }
 
 body {
@@ -36,10 +41,19 @@ table {
     border: none;
     width: 100%;
     border-collapse: collapse;
+    border-spacing: 10px;
 }
 
 table td:nth-child(odd) {
     width: 30%;
+}
+
+table td {
+    vertical-align: top;
+}
+
+td, th {
+    padding: 0px;
 }
 
 a {
@@ -50,7 +64,7 @@ a:hover {
     color: var(--main-text-lighter-color);
 }
 
-p, span {
+p, span, a {
     margin: 0;
     padding: 0;
     font-size: 15px;
@@ -166,6 +180,26 @@ ul li:last-child {
 
 /* Main classes. */
 
+.emoji {
+    margin-right: 4px;
+    width: 13px;
+}
+
+.avatar {
+    position: relative;
+}
+
+.onliner::before {
+    content: ' ';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: var(--main-friendly-color);
+    position: absolute;
+    bottom: 4px;
+    right: -3px;
+}
+
 .to_the_sky.hidden {
     opacity: 0;
     pointer-events: none;
@@ -183,6 +217,11 @@ ul li:last-child {
     position: fixed;
     cursor: pointer;
     user-select: none;
+}
+
+.away_buttons {
+    text-align: center;
+    margin-top: 10px;
 }
 
 .to_the_sky:hover {
@@ -214,7 +253,7 @@ ul li:last-child {
 }
 
 .paginator a {
-    width: 25px;
+    padding: 0px 2px;
     text-decoration: none;
     display: inline-block;
     text-align: center;
@@ -250,6 +289,10 @@ ul li:last-child {
     border-right: 1px dotted var(--main-text-lighter-color);
     position: fixed;
     overflow-y: auto;
+}
+
+.wrapper .menu::-webkit-scrollbar {
+    width: 0px;
 }
 
 .wrapper .page_content {
@@ -412,6 +455,10 @@ body.dimmed > .dimmer {
     opacity: 0.7;
 }
 
+.messagebox, .messagebox * {
+    box-sizing: content-box;
+}
+
 .messagebox, .fullscreen_view {
     background: var(--main-blocks-color);
     border: 1px solid var(--main-text-lighter-color);
@@ -429,16 +476,12 @@ body.dimmed > .dimmer {
 }
 
 .messagebox .messagebox_title, .fullscreen_view .fullscreen_view_title {
-    height: 34px;
+    height: 24px;
     border-bottom: 1px solid var(--main-text-lighter-color);
     display: flex;
     justify-content: space-between;
     vertical-align: middle;
-    padding: 5px 8px;
-}
-
-.messagebox .messagebox_title span, .messagebox .messagebox_title a {
-    margin-top: 3px;
+    padding: 9px 8px 3px 8px;
 }
 
 .fullscreen_view .fullscreen_view_title {
@@ -781,6 +824,7 @@ body.dimmed > .dimmer {
 .mini_info_block .tilte_cover {
     position: sticky;
     top: 0;
+    z-index: 1;
 }
 
 .tilte_cover #insert_education b {
@@ -807,7 +851,6 @@ body.dimmed > .dimmer {
     background: var(--main-elements-color);
     border: 1px solid var(--main-text-lighter-color);
     padding: 8px 7px;
-    margin-bottom: 9px;
 }
 
 /*.page_content .post .post_signer a::before {
@@ -1000,18 +1043,9 @@ body.dimmed > .dimmer {
 
 .page_content .comment_block {
     display: flex;
-    padding: 5px 5px;
+    padding: 6px 5px 5px 5px;
     background: var(--main-elements-color);
     border: 1px solid var(--main-text-lighter-color)
-}
-
-.page_content .comment_thread_block {
-    margin-left: 20px;
-    box-sizing: border-box;
-}
-
-.page_content .comment_thread_block .comment_thread_block_title {
-    padding-left: 5px;
 }
 
 .page_content .main_comment_block {
@@ -1031,6 +1065,10 @@ body.dimmed > .dimmer {
 .page_content .comment_block .comment_op {
     background: var(--main-text-lighter-color);
     color: var(--main-background-color);
+    width: 24px;
+    text-align: center;
+    height: 18px;
+    margin-top: 2px;
 }
 
 .page_content .comment_block .comment_avaname img {
@@ -1047,6 +1085,7 @@ body.dimmed > .dimmer {
 .page_content .comment_block .comment_upper_author {
     display: flex;
     justify-content: space-between;
+    margin-top: -2px;
 }
 
 .page_content .comment_block .comment_upper_actions {
@@ -1067,6 +1106,47 @@ body.dimmed > .dimmer {
 
 .page_content .comment_block #_commentDelete {
     background-position: -11px -15px;
+}
+
+.page_content .comment_block #_commentEdit {
+    background-position: -33px -15px;
+}
+
+.page_content .comment_block #_reportComment {
+    background-position: -12px -35px;
+}
+
+.page_content .comment_thread_block {
+    margin-left: 20px;
+    box-sizing: border-box;
+}
+
+.page_content .comment_thread_block .comment_thread_block_title {
+    padding: 7px 0px 6px 0px;
+}
+
+.page_content .comment_thread_block .comment_avaname img {
+    width: 30px;
+}
+
+.page_content .comment_thread_block .comment_author_name a {
+    font-size: 14px;
+}
+
+.page_content .comment_thread_block .comment_block .comment_info {
+    margin-left: 6px;
+}
+
+.page_content .comment_thread_block .comment_op {
+    font-size: 13px;
+    height: 17px;
+    margin-top: 3px;
+    width: 25px;
+}
+
+.page_content .comment_thread_block .smiley img {
+    width: 18px;
+    margin-top: 2px;
 }
 
 .comment_block .post_actions_no_frame div {
@@ -1103,6 +1183,7 @@ body.dimmed > .dimmer {
 }
 
 .page_content .comment_select_block {
+    margin-top: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
@@ -1130,6 +1211,12 @@ body.dimmed > .dimmer {
     position: sticky;
     top: 0;
     z-index: 2;
+}
+
+.page_content .wall_block .wall_block_insert, .newsfeed_wrapper_posts {
+    gap: 10px 0px;
+    display: flex;
+    flex-direction: column;
 }
 
 .page_content .wall_block .right_side {
@@ -1264,10 +1351,12 @@ body.dimmed > .dimmer {
     padding: 4px;
     background: #070707;
     border: 1px solid var(--main-text-lighter-color);
-    width: 38px;
+    min-width: 50px;
     justify-content: center;
     display: flex;
     align-items: center;
+    height: 29px;
+    margin-top: 5px;
 }
 
 .page_content .attachments .other_attachments .doc_list_attachment .list_attachment_info {

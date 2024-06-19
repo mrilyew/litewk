@@ -25,9 +25,16 @@ window.page_class = new class {
             if(user.isThisUser()) {
                 wall_sections.push('others')
                 wall_sections.push('archived')
+            } else if(user.info.can_see_all_posts == 1) {
+                wall_sections.push('others')
             }
 
             let wall_temp = window.s_url.searchParams.get('wall_section') ?? 'all'
+
+            if(!window.s_url.searchParams.get('wall_section')) {
+                wall_temp = user.info.wall_default
+            }
+
             let wall_section = wall_temp && wall_sections.includes(wall_temp) ? wall_temp : 'all' // Wall active section
 
             // Get wall template
@@ -38,7 +45,7 @@ window.page_class = new class {
             $(`.wall_block a[data-section='${wall_section}']`).addClass('selectd')
 
             // Creating wall as object
-            let wall_params   = {'owner_id': user.getId(), 'extended': 1, 'count': 10, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all', 'fields': 'image_status,friend_status,photo_50,photo_200,sex'}
+            let wall_params   = {'owner_id': user.getId(), 'extended': 1, 'count': 10, 'filter': wall_sections.includes(wall_section) ? wall_section : 'all', 'fields': window.typical_fields}
             window.main_classes['wall'] = new ClassicListView(Post, '.user_page_wrapper .wall_block .wall_block_insert')
             window.main_classes['wall'].setParams('wall.get', wall_params, window.s_url.searchParams.get('wall_invert') == 'yes')
             

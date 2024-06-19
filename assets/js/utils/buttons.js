@@ -9,16 +9,20 @@ $(document).on('click', 'a', async (e) => {
         return
     }
 
+    if(target.href.indexOf('#') != -1) {
+        e.preventDefault()
+        return
+    }
+
     if(e.target.tagName != 'a') {
         target = e.target.closest('a')
     }
 
-    if(target.href && target.href != '#' && target.href.indexOf(window.s_url.origin) != -1) {
+    if(target.href && target.href.indexOf(window.s_url.origin) != -1) {
+        e.preventDefault()
         if(target.dataset.ignore) {
             return
         }
-        
-        e.preventDefault()
 
         await window.router.route(target.href)
     }
@@ -466,7 +470,7 @@ $(document).on('click', '.smiley', async (e) => {
 
             <div class='smiley_message_text'>
                 <span class='smiley_message_title'>${escape_html(stats.response.popup.title)}</span>
-                <span class='smiley_message_text'>${format_text(stats.response.popup.text)}</span>
+                <span class='smiley_message_text_span'>${format_text(stats.response.popup.text)}</span>
                 
                 ${stats.response.popup.buttons && stats.response.popup.buttons.length > 0 ? `<a href='${stats.response.popup.buttons[0].action.url}' target='_blank'><input type='button' id='__getStatus' value='${_('image_status.get_status')}'></a>` : ''}
                 
@@ -584,7 +588,7 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
 
     let cid = comm_block.dataset.cid
     let offset = comm_block.dataset.offset ?? '3'
-    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': 'photo_50,photo_200', 'sort': 'asc'})
+    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': 'asc'})
 
     replies.response.items.forEach(element => {
         let comm = new Comment()

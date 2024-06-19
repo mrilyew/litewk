@@ -140,6 +140,10 @@ class User extends Faveable {
         return this.getId() == window.active_account.vk_info.id
     }
 
+    isWoman() {
+        return this.info.sex == 1
+    }
+
     getId() {
         return this.info.id
     }
@@ -175,7 +179,7 @@ class User extends Faveable {
     }
 
     getTextStatus() {
-        return escape_html(this.info.status ?? _('user_page.no_status'))
+        return format_emojis(escape_html(this.info.status ?? _('user_page.no_status')))
     }
 
     getDomain() {
@@ -331,7 +335,13 @@ class User extends Faveable {
     }
 
     getFullOnline() {
-        let verb = _('user_page.came_on_site') + ' '
+        let gend = 'male'
+
+        if(this.isWoman()) {
+            gend = 'female'
+        }
+
+        let verb = _('user_page.came_on_site_'+gend) + ' '
         if(this.info.online == 1) {
             verb = _('online_types.now_online') + ' '
         }
@@ -409,6 +419,10 @@ class User extends Faveable {
 
     isDeactivated() {
         return this.info.deactivated
+    }
+
+    isOnline() {
+        return this.info.online == 1
     }
 
     hasCover() {
@@ -543,6 +557,14 @@ class Club extends Faveable {
         return this.getCover() && this.getCover().enabled == 1 && this.getCover().images
     }
 
+    hasAccess() {
+        if(!this.isClosed()) {
+            return true
+        } else {
+            return this.isMember()
+        }
+    }
+
     isFriend() {
         return false
     }
@@ -565,6 +587,10 @@ class Club extends Faveable {
 
     isMember() {
         return this.info.is_member
+    }
+
+    isOnline() {
+        return false
     }
 }
 
@@ -681,6 +707,10 @@ class Post extends PostLike {
     }
     
     needToHideComments() {
+        if(!this.info.comments) {
+            return true
+        }
+
         return this.info.comments.can_post == 0 && this.info.comments.count < 1
     }
 
@@ -903,6 +933,14 @@ class Comment extends PostLike {
 
     hasThread() {
         return this.info.thread && this.getThreadCount() > 0
+    }
+
+    canDelete() {
+        if(!this.info.can_delete) {
+            return this.getOwnerID() == window.active_account.vk_info.id
+        }
+
+        return this.info.can_delete == 1
     }
 }
 
@@ -1303,6 +1341,11 @@ class MessageBox {
                 </div>
             `
         )
+        
+        $('.dimmed .dimmer').on('click', (e) => {
+            log(e)
+            this.close()
+        })
 
         if(buttons_actions) {
             let i = 0
@@ -1513,7 +1556,7 @@ window.router = new class {
             this.save_page(window.s_url.href)
         }
 
-        if(may && may.url.indexOf('auth') == -1 && may.url.indexOf('settings') == -1) {
+        if(may && may.url.indexOf('auth') == -1 && may.url.indexOf('settings') == -1 && may.url.indexOf('resolve') == -1) {
             this.load_saved_page(may)
             return
         }

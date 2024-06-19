@@ -1,7 +1,7 @@
 window.page_class = new class {
     async render_page() {
         let tab = window.s_url.searchParams.get('news_section') ?? 'def'
-
+        
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `
             <div class='newsfeed_wrapper default_wrapper wall_wrapper'>
@@ -18,7 +18,7 @@ window.page_class = new class {
         )
 
         let method = 'newsfeed.get'
-        let method_params = {'filters': 'post', 'count': 10, 'fields': 'friend_status,photo_50,photo_200,sex'}
+        let method_params = {'filters': 'post', 'count': 10, 'fields': window.typical_fields}
 
         switch(tab) {
             default:
@@ -34,6 +34,7 @@ window.page_class = new class {
                 break
         }
 
+        document.title = _(`newsfeed.newsfeed`)
         window.main_classes['wall'] = new Newsfeed(Post, '.newsfeed_wrapper_posts')
         window.main_classes['wall'].setParams(method, method_params)
         
