@@ -130,6 +130,8 @@ window.langs = [
         'settings_ux': {
             'settings_save_hash_progress': 'Сохранять прогресс прокрутки страницы',
             'settings_auto_scroll': 'Автопрокрутка',
+
+            'settings_default_sort': 'Сортировка комментариев по умолчанию',
         },
 
         'settings_language': {
@@ -197,11 +199,12 @@ window.langs = [
         'user_page': {
             'edit_page': 'Редактировать',
             'user_avatar': 'Аватар пользователя',
-            'has_verification': 'Есть галочка?',
+            'has_verification': 'Имеет галочку',
             'has_verification_esia': 'Подтвердил документы?',
             'has_verification_phone': 'Подтвердил номер телефона?',
-            'has_indexing': 'Индексируется в поисковиках?',
-            'is_closed': 'Профиль закрыт?',
+            'has_indexing': 'Индексируется в поисковиках',
+            'is_closed': 'Закрыт ли профиль',
+
             'user_no': 'Нет',
             'user_yes': `Да`,
             'hidden': 'скрыт',
@@ -228,6 +231,9 @@ window.langs = [
             'page_link': 'Короткая ссылка',
             'known_languages': 'Владеет языками',
             'known_languages_pov': 'Владение языками',
+            
+            'show_more_information': 'Показать больше информации',
+            'hide_more_information': 'Скрыть подробную информации',
             
             'job_post': 'Должность',
             'job_year_start': 'Год начала работы',

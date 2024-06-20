@@ -33,6 +33,10 @@ function log(txt)
 
 function init_observers()
 {
+    if(window.site_params.get('ux.auto_scroll', '1') == '0') {
+        return 
+    }
+    
     showMoreObserver.observe($('.show_more')[0])
 }
 

@@ -359,45 +359,49 @@ window.page_class = new class {
                         </div>
                         <div class='settings_sublock settings_flex'>
                             <p class='settings_title'><b>${_('settings_ui.settings_date_format')}</b></p>
-                            <label><input name='_date_format' ${date_val == 'default' ? 'checked' : ''} value='default' type='radio'>${_('settings_ui.settings_date_format_default')}</label>
-                            <label><input name='_date_format' ${date_val == 'month' ? 'checked' : ''} value='month' type='radio'>${_('settings_ui.settings_date_format_day_month')}</label>
+                            <label><input name='_date_format' ${date_val == 'default' ? 'checked' : ''} value='default' type='radio' data-sett='ui.date_format'>${_('settings_ui.settings_date_format_default')}</label>
+                            <label><input name='_date_format' ${date_val == 'month' ? 'checked' : ''} value='month' type='radio' data-sett='ui.date_format'>${_('settings_ui.settings_date_format_day_month')}</label>
+                        </div>
+                        <div class='settings_sublock settings_flex'>
+                            <p class='settings_title'><b>${_('settings_ux.settings_default_sort')}</b></p>
+                            <select data-sett='ux.default_sort' style='width: min-content;'>
+                                <option value='asc' ${window.site_params.get('ux.default_sort', 'asc') == 'asc' ? 'selected' : ''}>${_('wall.sort_old_first')}</option>
+                                <option value='desc' ${window.site_params.get('ux.default_sort', 'asc') == 'desc' ? 'selected' : ''}>${_('wall.sort_new_first')}</option>
+                                <option value='smart' ${window.site_params.get('ux.default_sort', 'asc') == 'smart' ? 'selected' : ''}>${_('wall.sort_interesting_first')}</option>
+                            </select>
                         </div>
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
                             <label>
-                                <input type='checkbox' name='_hideImageStatus' ${window.site_params.get('ui.hide_image_statuses') == '1' ? 'checked' : ''}>
+                                <input type='checkbox' data-sett='ui.hide_image_statuses' ${window.site_params.get('ui.hide_image_statuses') == '1' ? 'checked' : ''}>
                                 ${_('settings_ui.settings_hide_image_statuses')}
                             </label>
                             <label>
-                                <input type='checkbox' name='_saveScrollProgress' ${window.site_params.get('ux.save_scroll', '0') == '1' ? 'checked' : ''}>
+                                <input type='checkbox' data-sett='ux.save_scroll' ${window.site_params.get('ux.save_scroll', '0') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_save_hash_progress')}
                             </label>
                             <label>
-                                <input type='checkbox' name='_autoScroll' ${window.site_params.get('ux.auto_scroll', '1') == '1' ? 'checked' : ''}>
+                                <input type='checkbox' data-sett='ux.auto_scroll' ${window.site_params.get('ux.auto_scroll', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_auto_scroll')}
                             </label>
                         </div>
                     </div>
                 `)
 
-                $('#_custom_js').on('input', (e) => {
-                    window.site_params.set('ui.custom_js', e.target.value)
-                })
-
-                $('input[name="_date_format"]').on('click', () => {
-                    window.site_params.set('ui.date_format', $('input[name="_date_format"]:checked').val())
-                })
-
-                $('input[name="_hideImageStatus"]').on('change', () => {
-                    window.site_params.set('ui.hide_image_statuses', Number($('input[name="_hideImageStatus"]')[0].checked))
-                })
-
-                $('input[name="_saveScrollProgress"]').on('change', () => {
-                    window.site_params.set('ux.save_scroll', Number($('input[name="_saveScrollProgress"]')[0].checked))
+                $(`.settings_block input[type='checkbox']`).on('change', (e) => {
+                    window.site_params.set(e.target.dataset.sett, Number(e.target.checked))
                 })
                 
-                $('input[name="_autoScroll"]').on('change', () => {
-                    window.site_params.set('ux.auto_scroll', Number($('input[name="_autoScroll"]')[0].checked))
+                $(`.settings_block select`).on('change', (e) => {
+                    window.site_params.set(e.target.dataset.sett, e.target.value)
+                })
+                
+                $(`.settings_block input[type='radio']`).on('click', (e) => {
+                    window.site_params.set(e.target.dataset.sett, $(`input[type='radio'][data-sett='${e.target.dataset.sett}']:checked`).val())
+                })
+
+                $('#_custom_js').on('input', (e) => {
+                    window.site_params.set('ui.custom_js', e.target.value)
                 })
 
                 break

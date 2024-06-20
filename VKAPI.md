@@ -218,6 +218,14 @@ search.getHints
 
 #### wall.getComments
 
+`sort`: 
+
+`asc` — сначала старые
+
+`desc` — сначала новые
+
+`smart` — сначала интересные
+
 `is_from_post_author`: Пометка "Автор" у комментария.
 
 #### wall.getSubscriptions

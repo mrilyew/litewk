@@ -3,6 +3,10 @@
 $(document).on('click', 'a', async (e) => {
     let target = e.target
 
+    if(target.tagName != 'A') {
+        target = e.target.closest('a')
+    }
+
     if(window.edit_mode) {
         e.preventDefault()
 
@@ -453,6 +457,40 @@ $(document).on('click', '.post #_pinPost', async (e) => {
 
 // Wall
 
+$(document).on('change', '#post_comment_sort select', async (e) => {
+    window.s_url.searchParams.set('comm_sort', e.target.value)
+    replace_state(window.s_url)
+
+    window.main_classes['wall'].clear()
+    window.main_classes['wall'].objects.page = 0
+    window.main_classes['wall'].method_params.sort = e.target.value
+    await window.main_classes['wall'].nextPage()
+})
+
+$(document).on('change', '#thread_comment_sort select', async (e) => {
+    let comm_block = e.target.closest('.main_comment_block')
+    log(comm_block)
+    let cid = comm_block.dataset.cid
+    
+    comm_block.setAttribute('data-sort', e.target.value)
+    comm_block.setAttribute('data-offset', 10)
+
+    comm_block.querySelector('.comments_thread_insert_block').innerHTML = ''
+    let result = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': 0, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': e.target.value})
+    let comments = result.response.items
+
+    comments.forEach(el => {
+        let comment = new Comment
+        comment.hydrate(el, result.response.profiles, result.response.groups)
+
+        comm_block.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', comment.getTemplate())
+    })
+
+    if(result.response.count > 10) {
+        comm_block.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', `<span id='shownextcomms'>${_('wall.show_next_comments')}</span>`)
+    }
+})
+
 $(document).on('click', '.smiley', async (e) => {
     let status = e.target
 
@@ -588,7 +626,8 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
 
     let cid = comm_block.dataset.cid
     let offset = comm_block.dataset.offset ?? '3'
-    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': 'asc'})
+    let sort = comm_block.dataset.sort ?? 'asc'
+    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': sort})
 
     replies.response.items.forEach(element => {
         let comm = new Comment()

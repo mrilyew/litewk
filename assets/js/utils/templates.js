@@ -117,6 +117,56 @@ async function user_page_template(user)
                                                 <span>${user.getDomain()}</span>
                                             </td>
                                         </tr>
+                                        ${user.has('sex') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.sex')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getSex()}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('bdate') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.birthdate')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getBdate()}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ''}
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.register_date')}</span>
+                                            </td>
+                                            <td>
+                                                <span><a href='https://vk.com/foaf.php?id=${user.getId()}#ya:created'>01.01.1970</a></span>
+                                            </td>
+                                        </tr>
+                                        ${user.has('relation') ? `
+                                            <tr>
+                                                <td>
+                                                    <span>${_('user_page.marital_status')}</span>
+                                                </td>
+                                                <td>
+                                                    <span>${user.getRelationStatus()}</span>
+                                                </td>
+                                            </tr>
+                                        ` : ``}
+                                        ${user.has('personal') && user.info.personal.langs ? 
+                                        `
+                                            <tr>
+                                                <td>
+                                                    <span>${_('user_page.known_languages')}</span>
+                                                </td>
+                                                <td>
+                                                    <span>${user.getLangs()}</span>
+                                                </td>
+                                            </tr>
+                                        `
+                                        : ``}
                                         <tr>
                                             <td>
                                                 <span>${_('user_page.has_verification')}</span>
@@ -157,56 +207,6 @@ async function user_page_template(user)
                                                 <span>${user.isClosed() ? _('user_page.user_yes') : _('user_page.user_no')}</span>
                                             </td>
                                         </tr>
-                                        ${user.has('sex') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.sex')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getSex()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('bdate') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.birthdate')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getBdate()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ''}
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.register_date')}</span>
-                                            </td>
-                                            <td>
-                                                <span><a href='https://vk.com/foaf.php?id=${user.getId()}#ya:created'>?</a></span>
-                                            </td>
-                                        </tr>
-                                        ${user.has('relation') ? `
-                                            <tr>
-                                                <td>
-                                                    <span>${_('user_page.marital_status')}</span>
-                                                </td>
-                                                <td>
-                                                    <span>${user.getRelationStatus()}</span>
-                                                </td>
-                                            </tr>
-                                        ` : ``}
-                                        ${user.has('personal') && user.info.personal.langs ? 
-                                        `
-                                            <tr>
-                                                <td>
-                                                    <span>${_('user_page.known_languages')}</span>
-                                                </td>
-                                                <td>
-                                                    <span>${user.getLangs()}</span>
-                                                </td>
-                                            </tr>
-                                        `
-                                        : ``}
                                     </tbody>
                                 </table>
                             </div>
@@ -1074,11 +1074,11 @@ function post_template(post, additional_options = {})
                     </div>` : ''}
             </div>
 
-            <div class='post_content'>
+            <div class='post_content contenter'>
                 <span>${post.getText()}</span>
 
                 ${post.hasAttachments() ? process_attachments(post.getAttachments()) : ''}
-                <div class='repost_block'></div>
+                ${post.hasRepost() ? `<div class='repost_block'></div>` : ''}
 
                 ${post.hasSigner() ? `<div class='post_signer special_post_block'>
                     ${_('wall.author')}:
@@ -1170,7 +1170,7 @@ function comment_template(object)
                         </div>
                     </div>
 
-                    <div class='comment_content'>
+                    <div class='comment_content contenter'>
                         <p>${object.getText()}</p>
                         ${object.hasAttachments() ? process_attachments(object.getAttachments()) : ''}
                     </div>
@@ -1190,6 +1190,14 @@ function comment_template(object)
             <div class='comment_thread_block'>
                 <div class='comment_thread_block_title'>
                     <span>${_('wall.thread_count', object.getThreadCount())}</span>
+
+                    ${object.info.thread.count > 4 ? `
+                    <div id='thread_comment_sort' class='comment_sort'>
+                        <select>
+                            <option value='desc'>${_('wall.sort_new_first')}</option>
+                            <option value='asc' selected>${_('wall.sort_old_first')}</option>
+                        </select>
+                    </div>` : ''}
                 </div>
 
                 <div class='comments_thread_insert_block'></div>
@@ -1255,9 +1263,12 @@ async function wall_template(owner_id, tabs, default_tab = 'all')
     return template_div.innerHTML
 }
 
-// вообще в ахуе что оно работает
 function paginator_template(pagesCount, activePage, stepCount = 3) 
 {
+    if(pagesCount < 2) {
+        return ``
+    }
+
     let template = `
         <div class='paginator'></div>
     `

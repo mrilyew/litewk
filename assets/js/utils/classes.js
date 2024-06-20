@@ -750,6 +750,10 @@ class Post extends PostLike {
         return this.info.comments && this.info.comments.can_open == 1
     }
 
+    hasRepost() {
+        return this.info.copy_history != null
+    }
+
     hasSigner() {
         return this.has('signer_id')
     }
@@ -1511,6 +1515,7 @@ window.router = new class {
             'html': $('.page_content')[0].innerHTML,
             'classes': tempar,
             'scroll': window.scrollY,
+            'title': document.title
         }
 
         if(maybe) {
@@ -1526,6 +1531,8 @@ window.router = new class {
     load_saved_page(page) {
         window.main_classes = null
         window.main_classes = page.classes
+        document.title = page.title
+        
         replace_state(page.url)
 
         $('.page_content')[0].innerHTML = page.html

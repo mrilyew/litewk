@@ -9,6 +9,9 @@ window.page_class = new class {
         }
 
         text = text.replace('https://vk.com/', '')
+        text = text.replace('https://vkontakte.ru/', '')
+        text = text.replace('http://vk.com/', '')
+        text = text.replace('http://vkontakte.ru/', '')
 
         if(text.indexOf('https://') != -1 || text.indexOf('http://') != -1) {
             let res = await window.vk_api.call('utils.checkLink', {'url': text})
