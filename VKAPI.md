@@ -70,6 +70,16 @@ search.getHints
 
 ### newsfeed
 
+#### newsfeed.addBan
+
+По неподтверждённой информации:
+
+`type`: `week` — скрыть источник с ленты на неделю
+
+#### newsfeed.ignoreItem
+
+Вместо 1 возвращает `{'status': true}`
+
 #### newsfeed.getByType
 
 Возвращает посты по типу:

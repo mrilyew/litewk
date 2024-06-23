@@ -78,6 +78,8 @@ $(document).on('click', '.onpage_error #aut', async () => {
 
     if(await window.accounts.addAccount(api_url, token)) {
         window.location.assign(document.querySelector('base').href)
+    } else {
+        add_error('', 'hh')
     }
 })
 
@@ -289,20 +291,82 @@ $(document).on('click', '#_toggleSub', async (e) => {
 
 $(document).on('click', '#_toggleHiddeness', async (e) => {
     e.preventDefault()
-    let hidenes = Number(e.currentTarget.dataset.val)
+    let hidenes = Number(e.target.dataset.val)
     let verb = hidenes == 0 ? 'add' : 'delete'
-    let result = await window.vk_api.call(`newsfeed.${verb}Ban`, {'user_ids': document.querySelector('#usr_id').value})
+    let result = {}
+    let params = {'user_ids': ''}
+    
+    if(e.target.dataset.ban_id) {
+        if(Number(e.target.dataset.ban_id) < 0) {
+            params.group_ids = Math.abs(Number(e.target.dataset.ban_id))
+        } else {
+            params.user_ids = Number(e.target.dataset.ban_id)
+        }
+    } else {
+        if($('#usr_id')[0]) {
+            params.user_ids = $('#usr_id')[0].value
+        } else {
+            params.group_ids = $('#clb_id')[0].value
+        }
+    }
+
+    if(e.target.dataset.type == 'week') {
+        params.type = 'week'
+    }
+
+    result = await window.vk_api.call(`newsfeed.${verb}Ban`, params)
     
     if(result.error) {
         return
     }
-
+    
     if(hidenes == 0) {
         e.target.setAttribute('data-val', 1)
-        e.target.innerHTML = _('user_page.unhide_from_feed')
+
+        if(e.target.dataset.ban_id != null) {
+            e.target.value = _('user_page.unhide_from_feed')
+        } else {
+            e.target.innerHTML = _('user_page.unhide_from_feed')
+        }
     } else {
         e.target.setAttribute('data-val', 0)
-        e.target.innerHTML = _('user_page.hide_from_feed')
+        
+        if(e.target.dataset.ban_id != null) {
+            if(e.target.dataset.type == 'week') {
+                e.target.value = _('newsfeed.hide_source_from_feed_on_week')
+            } else {
+                e.target.value = _('user_page.hide_from_feed')
+            }
+        } else {
+            e.target.innerHTML = _('user_page.hide_from_feed')
+        }
+    }
+})
+
+$(document).on('click', '#_toggleInteressness', async (e) => {
+    e.preventDefault()
+    let interes = Number(e.currentTarget.dataset.val)
+    let verb = interes == 0 ? 'ignore' : 'unignore'
+    let post = e.target.closest('.post')
+    let id = post.dataset.postid.split('_')
+    let type = e.currentTarget.dataset.type
+
+    if(type == 'post') {
+        type = 'wall'
+    }
+
+    let result = await window.vk_api.call(`newsfeed.${verb}Item`, {'type': type, 'owner_id': id[0], 'item_id': id[1]})
+    
+    if(result.error) {
+        return
+    } else {
+        if(interes == 1) {
+            post.querySelector('.post_wrapper').style.display = 'block'
+            post.querySelector('.post_unignore_block').style.display = 'none'
+        } else {
+            post.querySelector('.post_wrapper').style.display = 'none'
+            post.querySelector('.post_unignore_block').style.display = 'block'
+        }
     }
 })
 
@@ -662,14 +726,52 @@ $(document).on('click', '.photo_attachment', (e) => {
 $(document).on('click', '.video_attachment_viewer_open', (e) => {
     e.preventDefault()
 
-    new MessageWindow(_('photos.photo'), async (insert, additional) => {
+    new MessageWindow(_('videos.video'), async (insert, additional) => {
         let id = e.target.closest('.ordinary_attachment').dataset.videoid
         let video = await window.vk_api.call('video.get', {'videos': id})
 
+        /*$('.fullscreen_buttons')[0].insertAdjacentHTML('afterbegin', `
+            <a href='#' data-ignore='1' id='_hider'><span>${_('messagebox.hide')}</span></a>
+        `)*/
+
         insert.insertAdjacentHTML('beforeend', `
             <div class='video_viewer'>
-                <iframe src='${video.response.items[0].player}'></iframe>
+                <iframe width="600" height="340" src='${video.response.items[0].player}' frameborder='0' sandbox='allow-same-origin allow-scripts allow-popups' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
             </div>
         `)
+
+        /*$('.fullscreen_buttons #_hider').on('click', (e) => {
+            this.close()
+        })*/
     })
+})
+
+// newsfeed
+
+$(document).on('click', '.newsfeed_wrapper #__newsfeedrefresh', async (e) => {
+    window.main_classes['wall'].clear()
+    await window.main_classes['wall'].nextPage()
+})
+
+$(document).on('change', '.newsfeed_wrapper #__newsfeedreturntype', async (e) => {
+    window.main_classes['wall'].clear()
+    if(e.target.value == 'all') {
+        delete window.main_classes['wall'].method_params.filters
+    } else {
+        window.main_classes['wall'].method_params.filters = e.target.value
+    }
+
+    window.main_classes['wall'].nextPage()
+
+    window.s_url.searchParams.set('news_type', e.target.value)
+    replace_state(window.s_url.href)
+})
+
+$(document).on('click', '.newsfeed_wrapper #__newsfeedreturnbanned', async (e) => {
+    window.main_classes['wall'].clear()
+    window.main_classes['wall'].method_params.return_banned = Number(e.target.checked)
+    window.main_classes['wall'].nextPage()
+
+    window.s_url.searchParams.set('return_banned', Number(e.target.checked))
+    replace_state(window.s_url.href)
 })

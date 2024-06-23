@@ -833,6 +833,10 @@ function club_template(club)
                         ${club.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='club' data-addid='${club.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
                         ${!club.isClosed() && !club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
                         ${!club.isClosed() && club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
+                        ${club.isMember() ? `
+                            ${!club.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='0'> ${_('user_page.hide_from_feed')}</a>` : ''}
+                            ${club.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='1'> ${_('user_page.unhide_from_feed')}</a>` : ''}
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -897,29 +901,17 @@ function process_attachments(attachments)
                     )
                     break
                 case 'video':
-                    let op_video = attachment.video
-                    let video_id = op_video.owner_id + '_' + op_video.id
-                    let preview = ''
-    
-                    if(op_video.image) {
-                        if(op_video.image[3]) {
-                            preview = op_video.image[3].url
-                        } else if(op_video.image[2]) {
-                            preview = op_video.image[2].url
-                        } else {
-                            preview = op_video.image[1].url
-                        }
-                    }
-    
+                    let video = new Video(attachment.video)
+
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <div class='ordinary_attachment video_attachment_viewer_open video_attachment' data-videoid='${video_id}'>
+                            <div class='ordinary_attachment video_attachment_viewer_open video_attachment' data-videoid='${video.getId()}'>
                                 <img src='assets/images/playicon.png' class='play_button'>
     
                                 <div class='time_block'>
-                                    <span>${format_seconds(op_video.duration)}</span>
+                                    <span>${video.getDuration()}</span>
                                 </div>
-                                ${op_video.image ? `<img src='${preview}'>` : ''}
+                                ${video.info.image ? `<img src='${video.getPreview()}'>` : ''}
                             </div>
                         `
                     )
@@ -1003,6 +995,30 @@ function post_template(post, additional_options = {})
 {
     let owner = post.getOwner()
     let signer = post.getSigner()
+
+    if(additional_options.added_photos == 1) {
+        if(!post.info.post_source) {
+            post.info.post_source = {}
+        }
+
+        post.info.post_source.data = 'added_photos'
+    }
+    
+    if(additional_options.uploaded_videos == 1) {
+        if(!post.info.post_source) {
+            post.info.post_source = {}
+        }
+
+        post.info.post_source.data = 'added_videos'
+    }
+        
+    if(additional_options.tagged_photo == 1) {
+        if(!post.info.post_source) {
+            post.info.post_source = {}
+        }
+
+        post.info.post_source.data = 'tagged_on_photos'
+    }
     
     let template = ``
     template += 
@@ -1016,6 +1032,14 @@ function post_template(post, additional_options = {})
         </div>
         <div class='post_hidden_by_default post_unarchive_block'>
             ${_('wall.post_has_unarchived')}
+        </div>
+        <div class='post_hidden_by_default post_unignore_block'>
+            ${_('wall.post_has_ignored', post.info.type)}
+            
+            <div>
+                <input type='button' id='_toggleHiddeness' data-val='0' data-ban_id='${post.getOwnerID()}' data-type='week' value='${_('newsfeed.hide_source_from_feed_on_week')}'>
+                <input type='button' id='_toggleHiddeness' data-val='0' data-ban_id='${post.getOwnerID()}' value='${_('newsfeed.hide_source_from_feed')}'>
+            </div>
         </div>
         <div class='post_wrapper'>
         <div class='post_author'>
@@ -1069,6 +1093,7 @@ function post_template(post, additional_options = {})
                                 ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
                                 ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
                                 <a href='https://vk.com/wall${post.getId()}' target='_blank'><p>${_('wall.go_to_vk')}</p></a>
+                                ${post.info.source_id ? `<p id='_toggleInteressness' data-val='0' data-type='${post.info.type}' data-addid='${post.getId()}'>${_('wall.not_interesting')}</p>` : ''}
                             </div>
                         </div>
                     </div>` : ''}

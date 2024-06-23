@@ -59,6 +59,9 @@ window.page_class = new class {
             } else if(text.indexOf('app') != -1) {
                 let id = text.replace('app', '')
                 link = link_start + 'site_pages/app_page.html?id='+id
+            } else if(text.indexOf('wall') != -1) {
+                let id = text.replace('wall', '')
+                link = link_start + 'site_pages/post.html?post='+id
             } else {
                 let res = await window.vk_api.call('utils.resolveScreenName', {'screen_name': text})
                 let page = ''

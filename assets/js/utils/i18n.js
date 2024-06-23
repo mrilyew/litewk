@@ -182,6 +182,7 @@ window.langs = [
             'close': 'Закрыть',
             'cancel': 'Отмена',
             'enter': 'Ввести',
+            'hide': 'Скрыть',
 
             'yes': 'Да',
             'no': 'Нет'
@@ -488,7 +489,7 @@ window.langs = [
             'unsubscribe': 'Отписаться',
             'send_request': 'Подать заявку',
             'cancel_request': 'Отменить заявку',
-            'recomend_to_friends': 'Рекоммендовать друзьям',
+            'recomend_to_friends': 'Рекомендовать друзьям',
             'invite_friends': 'Пригласить друзей',
             'age_limits': 'Возрастные ограничения',
         },
@@ -509,6 +510,7 @@ window.langs = [
             'fave_post': 'Добавить в закладки',
             'unfave_post': 'Убрать из закладок',
             'go_to_vk': 'Перейти в ВК',
+            'not_interesting': 'Не интересно',
     
             'all_posts': 'Все записи',
             'owner_posts': 'Свои записи',
@@ -518,6 +520,8 @@ window.langs = [
             'post_has_deleted': `Пост удалён. <a href='javascript:void(0)' id='_postRestore'>Восстановить?</a>`,
             'post_has_archived': `Пост был архивирован. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='1'>Вернуть?</a>`,
             'post_has_unarchived': `Пост был возвращён из архива. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='0'>Архивировать?</a>`,
+            'post_has_ignored': `Пост был убран из ленты. <a href='javascript:void(0)' id='_toggleInteressness' data-val='1' data-type='$1'>Отменить?</a>`,
+            
             'no_posts_in_tab': 'Постов не обнаружено.',
             'no_posts_in_search': 'По запросу ничего не найдено.',
             'no_comments': 'Комментариев нет.',
@@ -573,7 +577,32 @@ window.langs = [
             'newsfeed': 'Новости',
             'section_default': 'Новое',
             'section_smart_feed': 'Интересное',
-            'section_recommend': 'Рекоммендации',
+            'section_recommend': 'Рекомендации',
+            'section_friends': 'Новости друзей',
+
+            'newsfeed_refresh': 'Обновить новости',
+            'newsfeed_params': 'Параметры новостей',
+            'newsfeed_lists': 'Списки новостей',
+            'newsfeed_return_banned': 'Скрытые посты',
+
+            'newsfeed_type': 'Тип новостей',
+            'newsfeed_type_all': 'Все новости',
+            'newsfeed_type_posts': 'Посты',
+            'newsfeed_type_photo': 'Фотографии',
+            'newsfeed_type_photo_tags': 'Отметки на фотографиях',
+            'newsfeed_type_wall_photo': 'Новые фото',
+            'newsfeed_type_friends': 'Друзья',
+            'newsfeed_type_note': 'Заметки (устаревшие)',
+            'newsfeed_type_audio': 'Аудиозаписи',
+            'newsfeed_type_video': 'Видео',
+            'newsfeed_type_clips': 'Клипы',
+
+            'added_photos': 'добавлены фото',
+            'added_videos': 'добавлены видео',
+            'tagged_on_photos': 'отмечен на фото',
+
+            'hide_source_from_feed': 'Скрыть из ленты',
+            'hide_source_from_feed_on_week': 'Скрыть из ленты на неделю',
         },
 
         'photos': {
@@ -581,6 +610,8 @@ window.langs = [
         },
 
         'videos': {
+            'video': 'Видеозапись',
+
             'views_count_zero': 'Нет просмотров',
             'views_count_one': '$1 просмотр',
             'views_count_few': '$1 просмотра',

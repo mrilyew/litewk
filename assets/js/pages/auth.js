@@ -5,7 +5,7 @@ window.page_class = new class {
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', `
             <div class="onpage_error" style='width: 400px;'>
-                <table cellspacing="0" cellpadding="5" width="60%">
+                <table width="60%">
                     <tbody>
                         <tr>
                             <td style='width:120px;'>

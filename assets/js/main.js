@@ -8,7 +8,7 @@ window.default_left_menu = [
     },
     {
         'name': '_navigation.my_news',
-        'href': 'site_pages/news_page.html',
+        'href': 'site_pages/news_page.html?news_type=post',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -110,7 +110,7 @@ window.main_class = new class {
     load_layout() {
         window.saved_pages = []
         window.main_classes = {}
-        window.typical_fields = 'image_status,online,friend_status,photo_50,photo_200,sex'
+        window.typical_fields = 'is_hidden_from_feed,image_status,online,friend_status,photo_50,photo_200,sex'
         
         let menu_html = ``
         window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu
