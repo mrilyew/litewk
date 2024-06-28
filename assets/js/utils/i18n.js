@@ -29,6 +29,7 @@ window.langs = [
             'my_page': 'Моя Страница',
             'my_news': 'Новости',
             'my_friends': 'Друзья',
+            'my_groups': 'Группы',
             'my_messages': 'Сообщения',
             'my_photos': 'Фотографии',
             'my_audios': 'Аудиозаписи',
@@ -294,6 +295,11 @@ window.langs = [
             'military_unit': 'Воинская часть',
             'military_year_start': 'Год начала службы',
             'military_year_end': 'Год окончания службы',
+
+            'create_message': 'Написать сообщение',
+            'list_friends': 'Посмотреть друзей',
+
+            'go_to_user_page': 'перейти к странице',
         },
 
         'relation': {
@@ -473,7 +479,7 @@ window.langs = [
         },
 
         'online_types': {
-            'online_from_mobile_version': 'с мобильной версии',
+            'online_from_mobile_version': 'с m.vk.com',
             'online_from_iphone': 'с iPhone',
             'online_from_ipad': 'с iPad',
             'online_from_android': 'с Android',
@@ -511,6 +517,7 @@ window.langs = [
             'unfave_post': 'Убрать из закладок',
             'go_to_vk': 'Перейти в ВК',
             'not_interesting': 'Не интересно',
+            'geo': 'Геолокация',
     
             'all_posts': 'Все записи',
             'owner_posts': 'Свои записи',
@@ -607,6 +614,8 @@ window.langs = [
 
         'photos': {
             'photo': 'Фотография',
+            'graffiti': 'Граффити',
+            'attached_link': 'Превью ссылки',
         },
 
         'videos': {
@@ -628,6 +637,31 @@ window.langs = [
             'get_status': 'Получить статус',
         },
 
+        'friends': {
+            'friends': 'Друзья',
+            'came_last': 'был в сети',
+
+            'all_friends': 'Все друзья',
+            'users_friends': 'Друзья пользователя',
+            'online_friends': 'Друзья онлайн',
+            'friends_requests': 'Заявки',
+            'recomended_friends': 'Рекомендуемые',
+            'cleanup_friends': 'Редко взаимодействуете',
+            'mutual_friends': 'Общие друзья',
+
+            'incoming_requests': 'Входящие заявки',
+            'outcoming_requests': 'Исходящие заявки',
+            
+            'incoming': 'Входящие',
+            'outcoming': 'Исходящие',
+            'followers': 'Подписчики',
+
+            'search_friends': 'Поиск',
+            'search_friends_longer': 'Поиск друзей',
+            'friends_lists': 'Списки друзей',
+            'friends_list': 'Список друзей',
+        },
+
         'errors': {
             'not_all_fields_filled': 'Не все поля заполнены',
             'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',
@@ -640,10 +674,14 @@ window.langs = [
             'wall_not_found': 'Стена не найдена,',
             'post_not_found': `Пост не найден.`,
             'not_authorized': 'Ты не авторизовался.',
-            'error_getting_wall': 'Ошибка при получении стены. Текст: $1',
+            'error_getting_wall': 'Ошибка при выполнении метода. Текст: $1',
             'error_getting_news': 'Ошибка при получении новостей. Текст: $1',
 
-            'template_insert_failed': `Вставка шаблона не удалась по причине "$1". Расскажи разработчику.`
+            'template_insert_failed': `Вставка шаблона не удалась по причине "$1". Расскажи разработчику.`,
+            'friends_not_found': 'Друзей не найдено.',
+            'friends_online_not_found': 'Друзей в онлайне не найдено.',
+            'followers_not_found': 'Подписчиков не найдено.',
+            'unable_to_add_acc': 'Не удалось добавить аккаунт.',
         },
     }
 ]

@@ -17,6 +17,13 @@ window.default_left_menu = [
         'name': '_navigation.my_friends',
         'href': 'site_pages/friends.html',
         'new_page': false,
+        'disabled': false,
+        'hidden': false,
+    },
+    {
+        'name': '_navigation.my_groups',
+        'href': 'site_pages/groups.html',
+        'new_page': false,
         'disabled': true,
         'hidden': false,
     },
@@ -110,7 +117,7 @@ window.main_class = new class {
     load_layout() {
         window.saved_pages = []
         window.main_classes = {}
-        window.typical_fields = 'is_hidden_from_feed,image_status,online,friend_status,photo_50,photo_200,sex'
+        window.typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_200,photo_orig,status,sex'
         
         let menu_html = ``
         window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu
@@ -137,13 +144,14 @@ window.main_class = new class {
         </style>
         
         <div class='dimmer'></div>
-        <div class='to_the_sky'>
+        <div class='to_the_sky menu_up_hover_click'>
             <span class='to_up'>${_('navigation.to_up')}</span>
             <span class='come_back'>${_('navigation.come_back')}</span>
         </div>
         <div class="wrapper">
             <div class="menu">
                 ${menu_html}
+                <div class='menu_up_hover menu_up_hover_click'></div>
             </div>
     
             <div class="page_content">

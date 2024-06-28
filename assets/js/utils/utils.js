@@ -92,6 +92,7 @@ function add_error(message, id, wait_time = 5000, type = '')
 
 function add_onpage_error(message)
 {
+    $('.page_content')[0].innerHTML = ''
     $('.page_content')[0].insertAdjacentHTML('beforeend', `
         <div class='onpage_error'>
             ${message}

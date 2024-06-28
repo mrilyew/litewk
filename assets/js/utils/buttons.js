@@ -9,12 +9,15 @@ $(document).on('click', 'a', async (e) => {
 
     if(window.edit_mode) {
         e.preventDefault()
-
         return
     }
 
     if(target.href.indexOf('#') != -1) {
         e.preventDefault()
+        return
+    }
+
+    if(target.getAttribute('target') == '_blank') {
         return
     }
 
@@ -39,14 +42,23 @@ window.addEventListener('popstate', async (e) => {
     await window.router.route(location.href, false)
 })
 
-$(document).on('click', '.to_the_sky', (e) => {
+$(document).on('click', '.menu_up_hover_click', (e) => {
     if(scrollY > 1000) {
         window.temp_scroll = scrollY
-
-        window.scrollTo(0, 1)
+        window.scrollTo(0, 10)
+        
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     } else {
         if(window.temp_scroll) {
-            window.scrollTo(0, window.temp_scroll)
+            window.scrollTo(0, window.temp_scroll - 10)
+
+            window.scrollTo({
+                top: window.temp_scroll,
+                behavior: "smooth"
+            });
         }
     }
 
@@ -78,8 +90,6 @@ $(document).on('click', '.onpage_error #aut', async () => {
 
     if(await window.accounts.addAccount(api_url, token)) {
         window.location.assign(document.querySelector('base').href)
-    } else {
-        add_error('', 'hh')
     }
 })
 
@@ -115,7 +125,7 @@ $(document).on('click', '#_toggleFriend', async (e) => {
 
     switch(friend_status) {
         case 0:
-            let data = await window.vk_api.call('friends.add', {'user_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let data = await window.vk_api.call('friends.add', {'user_id': e.currentTarget.dataset.addid})
             
             if(!data.error) {
                 if(data.response == 1 || data.response == 4) {
@@ -131,7 +141,7 @@ $(document).on('click', '#_toggleFriend', async (e) => {
 
             break
         case 1:
-            let data1 = await window.vk_api.call('friends.delete', {'user_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let data1 = await window.vk_api.call('friends.delete', {'user_id': e.currentTarget.dataset.addid})
 
             if(!data1.error) {
                 e.target.setAttribute('data-val', 0)
@@ -142,7 +152,7 @@ $(document).on('click', '#_toggleFriend', async (e) => {
 
             break
         case 2:
-            let data2 = await window.vk_api.call('friends.delete', {'user_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let data2 = await window.vk_api.call('friends.add', {'user_id': e.currentTarget.dataset.addid, 'follow': 1})
             
             if(!data2.error) {
                 $('#_toggleFriend').remove()
@@ -156,14 +166,14 @@ $(document).on('click', '#_toggleFriend', async (e) => {
             
             break
         case 4:
-            let data3 = await window.vk_api.call('friends.add', {'user_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let data3 = await window.vk_api.call('friends.add', {'user_id': e.currentTarget.dataset.addid})
 
             if(!data3.error) {
                 $('#_toggleFriend').remove()
 
                 $('#_actions')[0].insertAdjacentHTML('afterbegin', 
                 `
-                    <a class='action' id='_toggleFriend' data-val='3' href='#'> ${_('users_relations.destroy_friendship')}</a>
+                    <a class='action' id='_toggleFriend' data-val='3' href='#' data-addid='${e.currentTarget.dataset.addid}'> ${_('users_relations.destroy_friendship')}</a>
                 `)
             } else {
                 return
@@ -171,7 +181,7 @@ $(document).on('click', '#_toggleFriend', async (e) => {
 
             break
         case 3:
-            let data4 = await window.vk_api.call('friends.delete', {'user_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let data4 = await window.vk_api.call('friends.delete', {'user_id': e.currentTarget.dataset.addid})
 
             if(!data4.error) {
                 e.target.setAttribute('data-val', 4)
@@ -258,7 +268,7 @@ $(document).on('click', '#_toggleBlacklist', async (e) => {
 
             if(!eetog.error) {
                 e.target.setAttribute('data-val', 0)
-                e.target.innerHTML = _('blacklist.add_user_to_blacklist')
+                e.target.innerHTML = _('blacklist.add_to_blacklist')
             } else {
                 return
             }
@@ -602,6 +612,13 @@ $(document).on('click', '.wall_select_block a', (e) => {
     $(e.target).addClass('selectd')
 
     window.main_classes['wall'].setSection($('.wall_select_block a.selectd')[0].dataset.section)
+    
+    let temp_url = window.s_url
+    temp_url.searchParams.delete('wall_query')
+    temp_url.searchParams.set('wall_section', $('.wall_select_block a.selectd')[0].dataset.section)
+    push_state(temp_url)
+
+    temp_url = null
 })
 
 $(document).on('change', `input[type='query']`, (e) => {
@@ -644,8 +661,22 @@ $(document).on('click', '#_invert_wall', (e) => {
 
 $(document).on('click', '.paginator a', async (e) => {
     e.preventDefault()
+    
+    if(e.target.tagName == 'INPUT') {
+        return
+    }
 
     if(e.target.classList.contains('active')) {
+        e.target.innerHTML = `
+            <input type='text' value='${e.target.dataset.page}' id='__enterpage' maxlength='5' data-pagescount=${e.target.closest('.paginator').dataset.pagescount}>
+        `
+
+        $('.paginator #__enterpage').on('input', (e) => {
+            e.target.style.width = (e.target.value.length * 4) + 19 + 'px'
+        })
+
+        $('.paginator #__enterpage').trigger('input')
+
         return
     }
 
@@ -658,8 +689,27 @@ $(document).on('click', '.paginator a', async (e) => {
     $('.paginator').remove()
     window.main_classes['wall'].createNextPage()
 
-    log($('#insert_paginator_here_bro')[0])
-    log(paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+})
+
+$(document).on('change', '#__enterpage', async (e) => {
+    let new_page = Number(e.target.value)
+
+    if(isNaN(new_page) || new_page < 1 || new_page > e.target.dataset.pagescount) {
+        e.target.parentNode.innerHTML = e.target.parentNode.dataset.page
+
+        return
+    }
+
+    window.main_classes['wall'].clear()
+    await window.main_classes['wall'].page(new_page - 1)
+
+    window.s_url.searchParams.set('page', new_page)
+    push_state(window.s_url)
+
+    $('.paginator').remove()
+    window.main_classes['wall'].createNextPage()
+
     $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
 })
 
@@ -714,7 +764,7 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
 $(document).on('click', '.photo_attachment', (e) => {
     e.preventDefault()
 
-    new MessageWindow(_('photos.photo'), (insert, additional) => {
+    new MessageWindow(!e.target.dataset.type ? _('photos.photo') : _(`photos.${e.target.dataset.type}`), (insert, additional) => {
         insert.insertAdjacentHTML('beforeend', `
             <div class='photo_viewer'>
                 <img src='${e.target.dataset.full}'>
@@ -746,6 +796,20 @@ $(document).on('click', '.video_attachment_viewer_open', (e) => {
     })
 })
 
+$(document).on('click', '.doc_attachment', (e) => {
+    e.preventDefault()
+
+    new MessageWindow(_('docs.doc'), async (insert, additional) => {
+        let doc = e.target.closest('.doc_attachment')
+
+        insert.insertAdjacentHTML('beforeend', `
+            <div class='doc_viewer'>
+                <img src='${doc.dataset.url}'>
+            </div>
+        `)
+    })
+})
+
 // newsfeed
 
 $(document).on('click', '.newsfeed_wrapper #__newsfeedrefresh', async (e) => {
@@ -774,4 +838,11 @@ $(document).on('click', '.newsfeed_wrapper #__newsfeedreturnbanned', async (e) =
 
     window.s_url.searchParams.set('return_banned', Number(e.target.checked))
     replace_state(window.s_url.href)
+})
+
+$(document).on('change', '#__friendssearch', (e) => {
+    window.s_url.searchParams.set('query', e.target.value)
+    replace_state(window.s_url.href)
+
+    window.router.restart()
 })

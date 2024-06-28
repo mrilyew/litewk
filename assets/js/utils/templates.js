@@ -44,18 +44,18 @@ async function user_page_template(user)
             <div class='user_page_wrapper_grid'>
                 <div class="left_block bordered_block">
                     <div class='block_parallax'>
-                        <img id='avatar_img' src='${user.getAvatar()}' alt='${_('user_page.user_avatar')}'>
+                        <img id='avatar_img' class='photo_attachment' src='${user.getAvatar()}' data-full='${user.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
                         <div id='_actions'>
                             ${user.isThisUser() ?
                                 `
                                 ${`<a class='action' href='site_pages/edit_page.html'> ${_('user_page.edit_page')}</a>`}
                                 ` :
                                 `
-                                ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0'> ${_('users_relations.start_friendship')}</a>` : ''}
-                                ${user.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1'> ${_('users_relations.cancel_friendship')}</a>` : ''}
-                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4'> ${_('users_relations.accept_friendship')}</a>` : ''}
-                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2'> ${_('users_relations.decline_friendship')}</a>` : ''}
-                                ${user.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3'> ${_('users_relations.destroy_friendship')}</a>` : ''}
+                                ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0' data-addid='${user.getId()}'> ${_('users_relations.start_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1' data-addid='${user.getId()}'> ${_('users_relations.cancel_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4' data-addid='${user.getId()}'> ${_('users_relations.accept_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2' data-addid='${user.getId()}'> ${_('users_relations.decline_friendship')}</a>` : ''}
+                                ${user.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3' data-addid='${user.getId()}'> ${_('users_relations.destroy_friendship')}</a>` : ''}
                                 ${!user.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${user.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
                                 ${user.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${user.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
                                 ${!user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='0'> ${_('blacklist.add_to_blacklist')}</a>` : ''}
@@ -506,9 +506,9 @@ async function user_page_template(user)
                                     ${user.has('counters') && user.info.counters.albums ? `<a href='#'>${_('counters.albums_count', user.info.counters.albums)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.audios ? `<a href='#'>${_('counters.audios_count', user.info.counters.audios)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.badges ? `<a href='#'>${_('counters.badges_count', user.info.counters.badges)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.friends ? `<a href='#'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='#'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
-                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='#'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.friends ? `<a href='site_pages/friends.html?id=${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='site_pages/friends.html?id=${user.getId()}&section=online'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
+                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='site_pages/friends.html?id=${user.getId()}&section=mutual'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.gifts ? `<a href='#'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.groups ? `<a href='#'>${_('counters.groups_count', user.info.counters.groups)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.pages ? `<a href='#'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
@@ -517,7 +517,7 @@ async function user_page_template(user)
                                     ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
-                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='#'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
+                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='site_pages/friends.html?id=${user.getId()}&section=followers'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -823,7 +823,7 @@ function club_template(club)
             </div>
             <div class="right_block bordered_block">
                 <div class='block_parallax'>
-                    <img id='avatar_img' src='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'>
+                    <img id='avatar_img' class='photo_attachment' data-full='${club.info.photo_max_orig}' src='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'>
                     <div id='_actions'>
                         ${club.isClosed() == 0 ? `
                             ${!club.isMember() ? `<a class='action' id='_toggleSub' data-val='0' data-addid='${club.getId()}'> ${_('groups.subscribe')}</a>` : ''}
@@ -917,28 +917,28 @@ function process_attachments(attachments)
                     )
                     break
                 case 'doc':
-                    let op_doc = attachment.doc
-                    let doc_id = op_doc.owner_id + '_' + op_doc.id
+                    let doc = new Doc()
+                    doc.hydrate(attachment.doc)
                     
-                    if(op_doc.ext == 'gif' || op_doc.ext == 'jpg' || op_doc.ext == 'png') {
+                    if(doc.getExtension() == 'gif' || doc.getExtension() == 'jpg' || doc.getExtension() == 'png') {
                         attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <div class='ordinary_attachment doc_attachment' data-docid='${doc_id}'>
+                            <div class='ordinary_attachment doc_attachment' data-url='${doc.getURL()}' data-docid='${doc.getId()}' title='${doc.getTitle()}'>
                                 <div class='ext_block'>
-                                    <span>${escape_html(op_doc.ext.toUpperCase())} | ${human_file_size(op_doc.size)}</span>
+                                    <span>${escape_html(doc.getExtension().toUpperCase())} | ${doc.getFileSize()}</span>
                                 </div>
-                                <img src='${op_doc.preview.photo.sizes[3].src}'>
+                                <img src='${doc.getPreview()}'>
                             </div>
                         `)
                     } else {
                         attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <a href='${op_doc.url}'>
-                                <div class='list_attachment doc_list_attachment' data-docid='${doc_id}'>
-                                    <div class='list_attachment_format'>${op_doc.ext}</div>
+                            <a href='${doc.getURL()}'>
+                                <div class='list_attachment doc_list_attachment' data-docid='${doc.getId()}'>
+                                    <div class='list_attachment_format'>${doc.getExtension()}</div>
                                     <div class='list_attachment_info'>
-                                        <p><b>${escape_html(op_doc.title)}</b></p>
-                                        <p>${human_file_size(op_doc.size)}</p>
+                                        <p><b>${doc.getTitle()}</b></p>
+                                        <p>${doc.getFileSize()}</p>
                                     </div>
                                 </div>
                             </a>
@@ -947,7 +947,8 @@ function process_attachments(attachments)
                     break
                 case 'poll':
                     let op_poll = new Poll(attachment.poll)
-    
+                    op_poll.hydrate(attachment.poll)
+
                     attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
                     `
                         <div class='list_attachment poll_list_attachment' data-pollid='${op_poll.getId()}'>
@@ -977,6 +978,69 @@ function process_attachments(attachments)
                             <span>${op_audio.getDuration()}</span>
                         </div>
                     `)
+                    break
+                case 'link':
+                    let op_link = new Link
+                    op_link.hydrate(attachment.link)
+                    let att_photo = op_link.getPhoto()
+
+                    if(!att_photo.isVertical()) {
+                        attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <div class='list_attachment link_attachment'>
+                                ${op_link.hasPhoto() ? `
+                                <div class='link_attachment_photo'>
+                                    <img class='photo_attachment' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
+                                </div>` : ''}
+    
+                                <div class='link_attachment_info'>
+                                    ${op_link.has('caption') ? `<a href='site_pages/resolve_link.html?id=${op_link.getCaption()}' target='_blank'><span>${op_link.getCaption()}</span></a>` : ''}
+                                    <a href='${op_link.getURL()}' target='_blank'><b>${op_link.getTitle()}</b></a>
+                                </div>
+                            </div>
+                        `)
+                    } else {
+                        attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <div class='list_attachment link_attachment link_attachment_vertical'>
+                                ${op_link.hasPhoto() ? `
+                                <div class='link_attachment_photo'>
+                                    <img class='photo_attachment' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
+                                </div>` : ''}
+    
+                                <div class='link_attachment_info'>
+                                    ${op_link.has('caption') ? `<a href='${op_link.getURL()}' target='_blank'><b>${op_link.getTitle()}</b></a>` : ''}
+                                    <a href='site_pages/resolve_link.html?id=${op_link.getCaption()}' target='_blank'><span>${op_link.getCaption()}</span></a>
+                                </div>
+                            </div>
+                        `)
+                    }
+
+                    break
+                case 'graffiti':
+                    let graf = attachment.graffiti
+                    let url = ''
+
+                    if(graf.photo_586) {
+                        url = graf.photo_586
+                    } else if(graf.photo_604) {
+                        url = graf.photo_604
+                    }
+                    
+                    attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
+                        `
+                            <img class='ordinary_attachment photo_attachment' data-type='graffiti' data-full='${url}' src='${url}'>
+                        `
+                    )
+                    break
+                case 'sticker':
+                    attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
+                    `
+                        <div class='list_attachment sticker_attachment'>
+                            <div class='sticker'></div>
+                        </div>
+                    `)
+
                     break
                 default:
                     attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
@@ -1115,6 +1179,10 @@ function post_template(post, additional_options = {})
                 </div>` : ''}
                 ${post.isAd() ? `<div class='is_ad special_post_block'>
                     <span>${_('wall.is_ad')}</span>
+                </div>` : ''}
+                ${post.hasGeo() ? `<div class='geo_block special_post_block'>
+                    ${_('wall.geo')}:
+                    <span>${post.getShortGeo()}</span>
                 </div>` : ''}
             </div>
 
@@ -1295,7 +1363,7 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
     }
 
     let template = `
-        <div class='paginator'></div>
+        <div class='paginator' data-pagescount='${pagesCount}'></div>
     `
 
     //pagesCount -= 1
@@ -1346,7 +1414,7 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
     if(activePage < pagesCount - (stepCount - 1)) {
         temp_url.searchParams.set('page', pagesCount)
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${pagesCount - 1}' href='${temp_url}'>»</a>
+            <a data-ignore='1' data-page='${pagesCount}' href='${temp_url}'>»</a>
         `
     }
 

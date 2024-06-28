@@ -44,7 +44,7 @@
 
 #### execute.groupsGet
 
-Проклятый метод. Не, я серьёзно, он возвращает забаненные и сомнительные группы
+Возвращает рекомендуемые тебе группы. Но если передать `count`: -1, то будет возвращать забаненные и сомнительные группы.
 
 #### execute.getNotificationsSettings
 
@@ -61,6 +61,12 @@
 #### execute.searchGetHintsWithAttachments
 
 search.getHints
+
+### friends
+
+#### friends.getFriendsDeletionSuggestions
+
+С какими друзьями ты мало взаимодействующих и каких стоило бы удалить. Работает только с токеном веб-версии.
 
 ### groups
 
@@ -237,6 +243,8 @@ search.getHints
 `smart` — сначала интересные
 
 `is_from_post_author`: Пометка "Автор" у комментария.
+
+`attachment`:`sticker`: не возвращает `images` по определённым причинам (может из-за vk admin?)
 
 #### wall.getSubscriptions
 

@@ -117,7 +117,7 @@ class User extends Faveable {
     }
 
     async fromId(id = 0) {
-        let info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_nft,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'})
+        let info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_nft,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,photo_max_orig,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'})
         
         this.info = info.response[0]
     }
@@ -129,6 +129,14 @@ class User extends Faveable {
             this.info.career = [
                 {'group_id': this.info.occupation.id}
             ]
+        }
+
+        if(!this.has('id') && this.has('user_id')) {
+            this.info.id = this.info.user_id
+        }
+
+        if(!this.has('common_count')) {
+            this.info.common_count = 0
         }
     }
 
@@ -250,6 +258,10 @@ class User extends Faveable {
     getCountry() {
         return escape_html(this.info.country.title)
     }
+
+    getCountryncity() {
+        return (this.has('country') ? this.getCountry() + ', ' : '') + (this.has('city') ? this.getCity() : '')
+    }
     
     getHometown() {
         return escape_html(this.info.hometown)
@@ -336,6 +348,10 @@ class User extends Faveable {
 
     getFullOnline() {
         let gend = 'male'
+
+        if(!this.info.last_seen) {
+            return _('online_types.online_is_hidden')
+        }
 
         if(this.isWoman()) {
             gend = 'female'
@@ -454,9 +470,56 @@ class User extends Faveable {
     }
 }
 
+class UserListView extends User {
+    getTemplate() {
+        return `
+            <div class='short_list_item'>
+                <div class='short_list_item_avatar avatar'>
+                    <a href='${this.getUrl()}'>
+                        <img src='${this.getAvatar(true)}'>
+                    </a>
+                </div>
+
+                <div class='short_list_item_name'>
+                    <div style='display: flex;'>
+                        <a href='${this.getUrl()}' ${this.isFriend() ? `class='friended'` : ''}>
+                            <b>${this.getName()}</b>
+                        </a>
+
+                        ${this.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+                        `<div class='smiley' data-id='${this.getId()}' title='${this.getImageStatus().name}'>
+                            <img src='${this.getImageStatusURL()}'>
+                        </div>` : ``}
+                    </div>
+
+                    ${this.has('status') ? `<span>"${this.getTextStatus()}"</span>` : ''}
+                    <span>${this.getFullOnline()}</span>
+                    ${this.has('city') ? `<span>${this.getCountryncity()}</span>` : ''}
+                    ${!this.isFriend() ? `<a href='site_pages/friends.html?id=${this.getId()}&section=mutual'>${_('counters.mutual_friends_count', this.info.common_count)}</a>` : ''}
+                </div>
+
+                <div class='short_list_item_actions' id='_actions'>
+                    ${!this.isThisUser() ?
+                    `
+                    ${this.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0' data-addid='${this.getId()}'> ${_('users_relations.start_friendship')}</a>` : ''}
+                    ${this.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1' data-addid='${this.getId()}'> ${_('users_relations.cancel_friendship')}</a>` : ''}
+                    ${this.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4' data-addid='${this.getId()}'> ${_('users_relations.accept_friendship')}</a>` : ''}
+                    ${this.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2' data-addid='${this.getId()}'> ${_('users_relations.decline_friendship')}</a>` : ''}
+                    ${this.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3' data-addid='${this.getId()}'> ${_('users_relations.destroy_friendship')}</a>` : ''}
+                    <a class="action">${_('user_page.create_message')}</a>
+                    <a class="action" href='site_pages/friends.html?id=${this.getId()}'>${_('user_page.list_friends')}</a>
+                    ${!this.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${this.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
+                    ${this.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${this.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
+                    ` : ''}
+                </div>
+            </div>
+        `
+    }
+}
+
 class Club extends Faveable {
     async fromId(id = 0) {
-        let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
+        let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
         
         if(info.error || !info.response.groups) {
             return
@@ -607,6 +670,16 @@ class Post extends PostLike {
 
     getId() {
         return this.info.owner_id + '_' + this.info.id
+    }
+
+    getGeo() {
+        return this.info.geo
+    }
+
+    getShortGeo() {
+        let geo = this.getGeo()
+
+        return `<a href='https://www.google.com/maps/place/${geo.coordinates}' target='_blank'>${escape_html(geo.place.title)}, ${escape_html(geo.place.country)}</a>`
     }
 
     getViews() {
@@ -767,6 +840,10 @@ class Post extends PostLike {
     hasSigner() {
         return this.has('signer_id')
     }
+
+    hasGeo() {
+        return this.has('geo')
+    }
     
     hasAttachments() {
         return this.info.attachments && this.info.attachments.length > 0
@@ -819,6 +896,15 @@ class Photo extends PostLike {
 
     hasSize(type = 'z') {
         return this.info.sizes.find(size => size.type == type)
+    }
+
+    isVertical() {
+        try {
+            let size = this.info.sizes[0]
+            return size.height > size.width
+        } catch(e) {
+            return false
+        }
     }
 }
 
@@ -885,11 +971,6 @@ class Audio extends PostLike {
 }
 
 class Poll extends PostLike {
-    constructor(info) {
-        super(info)
-        this.info = info
-    }
-
     getQuestion() {
         return escape_html(this.info.question)
     }
@@ -899,6 +980,60 @@ class Poll extends PostLike {
     }
 }
 
+class Link extends PostLike {
+    hasPhoto() {
+        return this.has('photo')
+    }
+
+    getPhoto() {
+        let photo = new Photo
+        photo.hydrate(this.info.photo)
+
+        return photo
+    }
+
+    getURL() {
+        return 'site_pages/resolve_link.html?id=' + this.info.url
+    }
+
+    getTitle() {
+        return this.info.title
+    }
+    
+    getCaption() {
+        return this.info.caption
+    }
+}
+
+class Doc extends PostLike {
+    getExtension() {
+        return this.info.ext
+    }
+
+    getFileSize() {
+        return human_file_size(this.info.size)
+    }
+
+    getTitle() {
+        return escape_html(this.info.title)
+    }
+
+    getURL() {
+        return this.info.url
+    }
+
+    getPreview() {
+        if(this.info.preview.photo) {
+            if(this.info.preview.photo.sizes[3]) {
+                return this.info.preview.photo.sizes[3].src
+            } else {
+                return this.info.preview.photo.sizes[0].src
+            }
+        }
+
+        return ''
+    }
+}
 class Comment extends PostLike {
     hydrate(info, profiles, groups) {
         this.info = info
@@ -926,9 +1061,9 @@ class Comment extends PostLike {
     }
 
     getOwner() {
-        if(this.info.deleted) {
+        /*if(this.info.deleted) {
             return null
-        }
+        }*/
 
         return super.getOwner()
     }
@@ -1124,7 +1259,11 @@ class ClassicListView {
                 return
             }
 
-            await this.page(this.objects.page)
+            try {
+                await this.page(this.objects.page)
+            } catch(e) {
+                return 'ERR'
+            }
 
             page_condition = this.objects.page >= 0
         } else {
@@ -1138,7 +1277,14 @@ class ClassicListView {
                 this.objects.page = 0
             }
 
-            await this.page(this.objects.page)
+            try {
+                await this.page(this.objects.page)
+            } catch(e) {
+                log(e)
+
+                return 'ERR'
+            }
+            
             page_condition = this.objects.pagesCount > this.objects.page
         }
 
@@ -1167,35 +1313,64 @@ class ClassicListView {
             this.objects.count = 0
             this.objects.pagesCount = 0
 
-            this.insert_node.insertAdjacentHTML('beforeend', `
+            this.getInsertNode().insertAdjacentHTML('beforeend', `
                 <div class='bordered_block'>${_('errors.error_getting_wall', objects_data.error.error_msg ? objects_data.error.error_msg : 'unknown error :( maybe timeout')}</div>
             `)
         }
 
         try {
             objects_data = await window.vk_api.call(this.method_name, this.method_params, false)
+
+            if(!objects_data.response) {
+                objects_data.response = {}
+                objects_data.count = 0
+            }
         } catch(e) {
             error()
             return
         }
 
-        if(objects_data.response.current_level_count) {
-            this.objects.count = objects_data.response.current_level_count
-        } else {
-            this.objects.count = objects_data.response.count
+        let messej = _('wall.no_posts_in_tab')
+        let items  = objects_data.response.items
+        let count  = objects_data.response.count
+
+        switch(this.method_name) {
+            default:
+                messej  = _('wall.no_posts_in_tab')
+                break
+            case 'wall.getComments':
+                count = objects_data.response.current_level_count
+                break
+            case 'wall.search':
+                messej = _('wall.no_posts_in_search')
+                break
+            case 'friends.get':
+            case 'friends.getRequests':
+            case 'friends.getSuggestions':
+            case 'friends.getFriendsDeletionSuggestions':
+            case 'friends.search':
+                messej = _('errors.friends_not_found')
+                break
+            case 'friends.getOnline':
+                // сака
+                items = objects_data.response.profiles
+                count = objects_data.response.total_count
+                messej = _('errors.friends_online_not_found')
+                break
+            case 'users.getFollowers':
+                messej = _('errors.followers_not_found')
+                break
         }
-        
+
+        this.objects.count = count
+
+        log(objects_data)
         if(objects_data.error) {
             error()
             return
         }
 
-        if(this.method_name != 'wall.getComments' && this.objects.count < 1) {
-            let messej = _('wall.no_posts_in_tab')
-            if(this.method_name == 'wall.search') {
-                messej = _('wall.no_posts_in_search')
-            }
-
+        if(this.method_name != 'wall.getComments' && this.objects.count < 1 || !this.objects.count) {
             this.getInsertNode().insertAdjacentHTML('beforeend', `
                 <div class='bordered_block'>${messej}</div>
             `)
@@ -1208,22 +1383,25 @@ class ClassicListView {
         }
 
         let templates = ''
-        
-        objects_data.response.items.forEach(obj => {
-            let ob_j = new this.object_class
-            ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
 
-            try {
-                templates += ob_j.getTemplate()
-            } catch(e) {
-                log(e)
-                templates += `
-                    <div class='error_template bordered_block'>
-                        <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
-                    </div>
-                `
-            }
-        })
+        if(items) {
+            items.forEach(obj => {
+                let ob_j = new this.object_class
+                ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
+    
+                try {
+                    templates += ob_j.getTemplate()
+                } catch(e) {
+                    log(e)
+    
+                    templates += `
+                        <div class='error_template bordered_block'>
+                            <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
+                        </div>
+                    `
+                }
+            })
+        }
 
         if(this.inverse) {
             this.objects.page = Number(number) - 1
@@ -1252,15 +1430,8 @@ class ClassicListView {
         temp_params.offset = 0
         this.objects.page = -1
 
-        this.setParams('wall.get', temp_params)
+        this.setParams(this.method_name, temp_params)
         this.clear()
-
-        let temp_url = window.s_url
-        temp_url.searchParams.delete('wall_query')
-        temp_url.searchParams.set('wall_section', section)
-        push_state(temp_url)
-
-        temp_url = null
 
         this.nextPage()
     }
@@ -1702,6 +1873,7 @@ window.router = new class {
             'html': $('.page_content')[0].innerHTML,
             'classes': tempar,
             'scroll': window.scrollY,
+            'temp_scroll': window.temp_scroll,
             'title': document.title
         }
 
@@ -1718,6 +1890,7 @@ window.router = new class {
     load_saved_page(page) {
         window.main_classes = null
         window.main_classes = page.classes
+        window.temp_scroll  = page.temp_scroll
         document.title = page.title
         
         replace_state(page.url)
@@ -1726,6 +1899,7 @@ window.router = new class {
         init_observers()
         
         window.scrollTo(0, page.scrollY)
+        $(document).trigger('scroll')
     }
 
     reset_page() {
@@ -1733,6 +1907,7 @@ window.router = new class {
         $('.page_content')[0].innerHTML = ``
         
         window.page_class = null
+        window.temp_scroll = null
     }
     
     restart(add) {
@@ -1771,6 +1946,7 @@ window.router = new class {
         this.save_page(url)
 
         init_observers()
+        $(document).trigger('scroll')
     }
 }
 
