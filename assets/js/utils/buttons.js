@@ -286,7 +286,7 @@ $(document).on('click', '#_toggleSub', async (e) => {
         verb = 'leave'
     }
 
-    let result = await window.vk_api.call('groups.'+verb, {'group_id': e.target.closest('.page_content').querySelector('#clb_id').value})
+    let result = await window.vk_api.call('groups.'+verb, {'group_id': e.target.dataset.addid})
     
     if(!result.error) {
         if(sub_status == 0) {
@@ -843,6 +843,13 @@ $(document).on('click', '.newsfeed_wrapper #__newsfeedreturnbanned', async (e) =
 $(document).on('change', '#__friendssearch', (e) => {
     window.s_url.searchParams.set('query', e.target.value)
     replace_state(window.s_url.href)
+
+    window.router.restart()
+})
+
+
+$(document).on('click', '#__clearrecentgroups', async (e) => {
+    await window.vk_api.call('groups.removeRecents')
 
     window.router.restart()
 })

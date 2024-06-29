@@ -476,7 +476,7 @@ class UserListView extends User {
             <div class='short_list_item'>
                 <div class='short_list_item_avatar avatar'>
                     <a href='${this.getUrl()}'>
-                        <img src='${this.getAvatar(true)}'>
+                        <img src='${this.info.photo_100}'>
                     </a>
                 </div>
 
@@ -582,8 +582,13 @@ class Club extends Faveable {
         }
     }
 
-    getDescription() {
-        return format_text(this.info.description)
+    getDescription(cut = 0) {
+        let str = this.info.description
+        if(cut > 0) {
+            str = cut_string(str, cut)
+        }
+
+        return format_text(str)
     }
     
     getDomain() {
@@ -658,6 +663,41 @@ class Club extends Faveable {
 
     isOnline() {
         return false
+    }
+}
+
+class ClubListView extends Club {
+    getTemplate() {
+        return `
+            <div class='short_list_item'>
+                <div class='short_list_item_avatar avatar'>
+                    <a href='${this.getUrl()}'>
+                        <img src='${this.info.photo_100}'>
+                    </a>
+                </div>
+
+                <div class='short_list_item_name'>
+                    <div style='display: flex;'>
+                        <a href='${this.getUrl()}'>
+                            <b>${this.getName()}</b>
+                        </a>
+                    </div>
+
+                    ${this.has('activity') ? `<span>${this.getActivity()}</span>` : ''}
+                    ${this.has('description') ? `<span>"${this.getDescription(200)}"</span>` : ''}
+                    <a href='site_pages/members.html?id=${this.getId()}'>${_('counters.subscriptions_count', this.info.members_count)}</a>
+                </div>
+
+                <div class='short_list_item_actions' id='_actions'>
+                    ${this.isClosed() == 0 ? `
+                        ${!this.isMember() ? `<a class='action' id='_toggleSub' data-val='0' data-addid='${this.getId()}'> ${_('groups.subscribe')}</a>` : ''}
+                        ${this.isMember() ? `<a class='action' id='_toggleSub' data-val='1' data-addid='${this.getId()}'> ${_('groups.unsubscribe')}</a>` : ''}
+                    ` : ``}
+                    ${!this.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='club' data-addid='${this.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
+                    ${this.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='club' data-addid='${this.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
+                </div>
+            </div>
+        `
     }
 }
 
@@ -1360,6 +1400,10 @@ class ClassicListView {
             case 'users.getFollowers':
                 messej = _('errors.followers_not_found')
                 break
+            case 'groups.get':
+            case 'groups.getRecents':
+                messej = _('errors.groups_not_found')
+                break
         }
 
         this.objects.count = count
@@ -1370,7 +1414,7 @@ class ClassicListView {
             return
         }
 
-        if(this.method_name != 'wall.getComments' && this.objects.count < 1 || !this.objects.count) {
+        if(this.method_name != 'wall.getComments' && this.objects.count < 1) {
             this.getInsertNode().insertAdjacentHTML('beforeend', `
                 <div class='bordered_block'>${messej}</div>
             `)
@@ -1499,7 +1543,6 @@ class Newsfeed extends ClassicListView {
         }
 
         try {
-            let object_data = {}
             if(window.use_execute) {
                 objects_data = await window.vk_api.call('execute', {'code': `
                     var all = []; 
@@ -1580,14 +1623,59 @@ class Newsfeed extends ClassicListView {
 
         if(objects_data.response.news.items.length > 9) {
             this.createNextPage()
-        } else [
+        } else {
             $('.show_more').remove()
-        ]
+        }
     }
 
     clear() {
         delete this.method_params.start_from
         this.getInsertNode().innerHTML = ''
+    }
+}
+
+class RecommendedGroups extends Newsfeed {
+    t_count = 0
+    
+    async nextPage() {
+        let recoms = await window.vk_api.call(this.method_name, this.method_params)
+        let templates = ''
+        this.t_count += 10
+
+        if(recoms.response.items.length < 1 || this.t_count > recoms.response.count) {
+            $('.show_more').remove()
+            return
+        }
+
+        recoms.response.items.forEach(obj => {
+            let ob_j = new ClubListView
+            ob_j.hydrate(obj.group)
+
+            try {
+                templates += ob_j.getTemplate()
+            } catch(e) {
+                templates += `
+                    <div class='error_template bordered_block'>
+                        <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
+                    </div>
+                `
+            }
+        })
+
+        this.method_params.start_from = recoms.response.next_from
+
+        if(window.site_params.get('ux.save_scroll', '0') == '1') {
+            window.s_url.searchParams.set('start_hash', recoms.response.next_from)
+            push_state(window.s_url)
+        }
+
+        this.getInsertNode().insertAdjacentHTML('beforeend', templates)
+
+        if(recoms.response.items.length > 8) {
+            this.createNextPage()
+        } else {
+            $('.show_more').remove()
+        }
     }
 }
 

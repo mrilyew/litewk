@@ -67,7 +67,7 @@ window.page_class = new class {
                 let page = ''
     
                 if(!res.response.type) {
-                    $('.page_content')[0].innerHTML = '404'
+                    window.location.assign('https://vk.com/' + text)
                     return
                 }
 

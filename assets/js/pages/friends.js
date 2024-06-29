@@ -4,9 +4,9 @@ window.page_class = new class {
         
         let section = window.s_url.searchParams.get('section') ?? 'all'
 
-        let id = window.s_url.searchParams.get('id')
+        let id = Number(window.s_url.searchParams.get('id'))
         let us_info = null
-        if(id == 0 || id == null) {
+        if(id == 0 || id == null || isNaN(id)) {
             id = window.active_account.vk_info.id
         }
 
@@ -18,8 +18,6 @@ window.page_class = new class {
             us_info = new User
             us_info.hydrate(window.active_account.vk_info)
         }
-
-        log(us_info)
 
         let tabs_html = `
             <a href='site_pages/friends.html?id=${id}&section=all' data-section='all'>${_('friends.all_friends')}</a>
@@ -160,7 +158,7 @@ window.page_class = new class {
                                 </div>
 
                                 <div class='two_big_blocks_wrapper_user_info_name'>
-                                    <b>${us_info.getName()}</b>
+                                    <b>${cut_string(us_info.getName(), 15)}</b>
                                     <span>${_('user_page.go_to_user_page')}</span>
                                 </div>
                             </a>
@@ -178,7 +176,7 @@ window.page_class = new class {
                             <a href='site_pages/friends.html?id=${id}&section=followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
                             `}
                             
-                            <div class='wall_wrapper_newsfeed_params'>
+                            <div class='wall_wrapper_newsfeed_params' style='display:none;'>
                                 <span>${_('friends.friends_lists')}</span>
                             </div>
                             <div id='__insertlists'></div>
@@ -221,6 +219,8 @@ window.page_class = new class {
         friends_lists = friends_lists.response
 
         if(friends_lists.count > 0) {
+            $('.wall_wrapper_newsfeed_params')[0].style.display = 'block'
+
             friends_lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
@@ -228,8 +228,6 @@ window.page_class = new class {
                     `
                 )
             })
-        } else {
-            $('.wall_wrapper_newsfeed_params').remove()
         }
 
     }

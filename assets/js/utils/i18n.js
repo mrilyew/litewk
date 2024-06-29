@@ -429,6 +429,7 @@ window.langs = [
             'posts_on_wall_count_few': '$1 записи',
             'posts_on_wall_count_other': '$1 записей',
             
+            'subscriptions_count': 'Нет подписчиков',
             'subscriptions_count_zero': '0 подписчиков',
             'subscriptions_count_one': '$1 подписчик',
             'subscriptions_count_few': '$1 подписчика',
@@ -491,6 +492,8 @@ window.langs = [
         },
 
         'groups': {
+            'groups': 'Группы',
+
             'subscribe': 'Подписаться',
             'unsubscribe': 'Отписаться',
             'send_request': 'Подать заявку',
@@ -498,6 +501,17 @@ window.langs = [
             'recomend_to_friends': 'Рекомендовать друзьям',
             'invite_friends': 'Пригласить друзей',
             'age_limits': 'Возрастные ограничения',
+
+            'all_groups': 'Все группы',
+            'managed_groups': 'Управляемые',
+            'events': 'События',
+            'recommended': 'Рекомендуемое',
+            'recent': 'Недавние',
+
+            'managed_groups_title': 'Управляемые группы',
+            'events_title': 'Ваши события',
+            'recommended_title': 'Рекомендуемое вам',
+            'recent_title': 'Недавно посещённые вами группы',
         },
 
         'wall': {
@@ -682,6 +696,7 @@ window.langs = [
             'friends_online_not_found': 'Друзей в онлайне не найдено.',
             'followers_not_found': 'Подписчиков не найдено.',
             'unable_to_add_acc': 'Не удалось добавить аккаунт.',
+            'groups_not_found': 'Группы не найдены',
         },
     }
 ]

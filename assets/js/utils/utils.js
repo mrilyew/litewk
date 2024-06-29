@@ -337,3 +337,9 @@ function not_found_not_specified()
 {
     window.location.assign('https://youtu.be/BHj7U_bQpkc')
 }
+
+function cut_string(string, length = 0) {
+    const newString = string.substring(0, length)
+
+    return newString + (string !== newString ? "…" : "")
+}

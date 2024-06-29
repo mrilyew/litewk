@@ -24,7 +24,7 @@ window.default_left_menu = [
         'name': '_navigation.my_groups',
         'href': 'site_pages/groups.html',
         'new_page': false,
-        'disabled': true,
+        'disabled': false,
         'hidden': false,
     },
     {
@@ -117,7 +117,7 @@ window.main_class = new class {
     load_layout() {
         window.saved_pages = []
         window.main_classes = {}
-        window.typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_200,photo_orig,status,sex'
+        window.typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_100,photo_200,photo_orig,status,sex'
         
         let menu_html = ``
         window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu

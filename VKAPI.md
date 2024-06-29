@@ -74,6 +74,18 @@ search.getHints
 
 Возвращает рекомендуемые тебе группы.
 
+#### groups.getRecents
+
+недавние группы
+
+#### groups.removeRecents
+
+Удалить недавние группы.
+
+параметр `from_catalog` — для аналитики админам вк
+
+#### groups.getContentForTabs
+
 ### newsfeed
 
 #### newsfeed.addBan
@@ -171,6 +183,8 @@ search.getHints
 `clips_likes` — судя по названию, количество лайков в ВК Клипах
 
 `clips_views` — судя по названию, количество просмотров в ^.
+
+`groups` — возвращается не всегда.
 
 ### wall
 
