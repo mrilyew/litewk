@@ -125,12 +125,15 @@ window.langs = [
             'transitions_everywhere': 'Плавные переходы везде',
             'round_avatars': 'Круглые аватарки',
             'highlight_friends': 'Подсвечивать друзей зелёным цветом',
-            'hide_onliner': `Скрыть отображение статуса "онлайн" у постов и комментариев`
+            'hide_onliner': `Скрыть отображение статуса "онлайн" у постов и комментариев`,
+
+            'hide_counters': 'Скрыть счётчики в меню навигации',
         },
         
         'settings_ux': {
             'settings_save_hash_progress': 'Сохранять прогресс прокрутки страницы',
             'settings_auto_scroll': 'Автопрокрутка',
+            'settings_send_online': 'Пробуждать аккаунт в онлайн каждые 5 минут',
 
             'settings_default_sort': 'Сортировка комментариев по умолчанию',
         },
@@ -676,6 +679,36 @@ window.langs = [
             'friends_list': 'Список друзей',
         },
 
+        'bookmarks': {
+            'bookmarks': 'Закладки',
+            'mark_as_viewed': 'Пометить прочитанными',
+
+            'all_bookmarks': 'Контент',
+            'pages_bookmarks': 'Страницы',
+            'user_bookmarks': 'Пользователи',
+            'group_bookmarks': 'Группы',
+            'post_bookmarks': 'Посты',
+            'article_bookmarks': 'Статьи',
+            'link_bookmarks': 'Ссылки',
+            'podcast_bookmarks': 'Подкасты',
+            'video_bookmarks': 'Видео',
+            'game_bookmarks': 'Игры',
+
+            'content_bookmarks_title': 'Контент | Закладки',
+            'pages_bookmarks_title': 'Страницы | Закладки',
+            'user_bookmarks_title': 'Пользователи | Закладки',
+            'group_bookmarks_title': 'Группы | Закладки',
+            'post_bookmarks_title': 'Посты | Закладки',
+            'article_bookmarks_title': 'Статьи | Закладки',
+            'link_bookmarks_title': 'Ссылки | Закладки',
+            'podcast_bookmarks_title': 'Подкасты | Закладки',
+            'video_bookmarks_title': 'Видео | Закладки',
+            'game_bookmarks_title': 'Игры | Закладки',
+
+            'tags': 'Теги',
+            'search_by_loaded_bookmarks': 'Поиск по прогруженным закладкам',
+        },
+
         'errors': {
             'not_all_fields_filled': 'Не все поля заполнены',
             'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',
@@ -697,6 +730,8 @@ window.langs = [
             'followers_not_found': 'Подписчиков не найдено.',
             'unable_to_add_acc': 'Не удалось добавить аккаунт.',
             'groups_not_found': 'Группы не найдены',
+
+            'bookmarks_all_not_found': 'Никаких закладок не найдено.'
         },
     }
 ]

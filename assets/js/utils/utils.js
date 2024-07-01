@@ -33,10 +33,10 @@ function log(txt)
 
 function init_observers()
 {
-    if(window.site_params.get('ux.auto_scroll', '1') == '0') {
+    if(window.site_params.get('ux.auto_scroll', '1') == '0' || $('.show_more')[0] == undefined) {
         return 
     }
-    
+
     showMoreObserver.observe($('.show_more')[0])
 }
 
@@ -247,13 +247,13 @@ function append_script(link, toBody = false)
 }
 
 // https://gist.github.com/walsh9/c4722c5f3c90e1cc0a5b
-function jsonp(url, timeout = 1000) {
+function jsonp(url, def_timeout = 20000) {
     function urlJoinChar(url) {
         return url.indexOf('?') >= 0 ? '&' : '?'
     }
 
     return new Promise( function (resolve, reject) {
-        var timeout = timeout || 10000; // default timeout
+        var timeout = def_timeout || 10000; // default timeout
         var callbackName = 'jsonp_callback_' + Date.now();
         var head = document.getElementsByTagName('head')[0] || document.documentElement;
         var script = document.createElement('script');
@@ -267,13 +267,13 @@ function jsonp(url, timeout = 1000) {
 
         script.onerror = function() {
             cleanUp()
-            reject( Error("Network error loading " + script.src) )
+            reject(new Error("Network error loading " + script.src) )
         }
 
         head.appendChild(script)
         var timeoutFunction = setTimeout(function() {
             cleanUp();
-            reject( Error("Request to " + url + " failed to execute callback after " + timeout + "ms.") )  
+            reject(new Error("Request to " + url + " failed to execute callback after " + timeout + "ms.") )  
         }, timeout);
   
         function cleanUp() {
@@ -342,4 +342,62 @@ function cut_string(string, length = 0) {
     const newString = string.substring(0, length)
 
     return newString + (string !== newString ? "…" : "")
+}
+
+async function refresh_counters() {
+    let counters = await window.vk_api.call('account.getCounters')
+    counters = counters.response
+
+    $('.counter').remove()
+
+    if(counters.faves && $('.menu #_faves')[0]) {
+        $('.menu #_faves')[0].innerHTML += `
+            <span class='counter'>${counters.faves}</span>
+        `
+    }
+    
+    if(counters.messages && $('.menu #_messages')[0]) {
+        $('.menu #_messages')[0].innerHTML += `
+            <span class='counter'>${counters.messages}</span>
+        `
+    }
+        
+    if(counters.groups && $('.menu #_groups_invites')[0]) {
+        $('.menu #_groups_invites')[0].innerHTML += `
+            <span class='counter'>${counters.groups}</span>
+        `
+    }
+            
+    if(counters.notifications && $('.menu #_notifications')[0]) {
+        $('.menu #_notifications')[0].innerHTML += `
+            <span class='counter'>${counters.notifications}</span>
+        `
+    }
+                
+    if(counters.videos && $('.menu #_videos')[0]) {
+        $('.menu #_videos')[0].innerHTML += `
+            <span class='counter'>${counters.videos}</span>
+        `
+    }
+                    
+    if(counters.photos && $('.menu #_photos')[0]) {
+        $('.menu #_photos')[0].innerHTML += `
+            <span class='counter'>${counters.photos}</span>
+        `
+    }
+}
+
+function array_deep_search(obj, query) 
+{
+    if(typeof obj !== 'object' || obj === null) {
+        return String(obj).toLowerCase().includes(query.toLowerCase())
+    }
+  
+    return Object.values(obj).some(value => {
+        if(Array.isArray(value)) {
+            return value.some(item => array_deep_search(item, query))
+        }
+
+        return array_deep_search(value, query)
+    })
 }

@@ -24,7 +24,7 @@ window.page_class = new class {
         `
 
         let method = 'groups.get'
-        let method_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': 'activity,photo_100,description,members_count'}
+        let method_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.typical_group_fields}
 
         switch(section) {
             default:

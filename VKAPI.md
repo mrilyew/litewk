@@ -138,6 +138,12 @@ search.getHints
 
 #### podcasts.getEpisode
 
+### queue
+
+#### queue.subscribe
+
+Подписывает на живую очередь сообщений/уведомлений, а может вообще новостей.
+
 ### status
 
 #### status.getImagePopup
@@ -195,6 +201,7 @@ search.getHints
 Принимает параметры: 
 
 `owner_id`: Ваш ID понятное дело
+
 `post_id`: ID поста, который нужно архивировать
 
 Возвращает: 1.
@@ -206,6 +213,7 @@ search.getHints
 Принимает параметры: 
 
 `owner_id`: Ваш ID
+
 `post_id`: ID поста, который нужно архивировать
 
 Возвращает: 1.

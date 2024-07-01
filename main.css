@@ -95,6 +95,7 @@ input[type='button'] {
     color: var(--main-text-lighter-color);
     border: 1px ridge var(--main-text-lighter-color);
     cursor: pointer;
+    text-align: center;
 }
 
 input[type='button']:active {
@@ -339,6 +340,14 @@ select {
     top: 0px;
 }
 
+.wall_wrapper_tabs hr {
+    padding: 0px;
+    margin: -1px 0px;
+    border: none;
+    height: 1px;
+    background: var(--main-text-lighter-color);
+}
+
 .wall_wrapper_tabs .wall_additional_tabs {
     padding: 4px 3px;
 }
@@ -363,6 +372,25 @@ select {
     font-size: 15px;
     text-decoration: none;
 }
+
+.wrapper .menu a {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wrapper .menu a .counter {
+    background: var(--main-text-lighter-color);
+    color: var(--main-background-color);
+    padding: 2px 5px;
+    height: 22px;
+    margin-top: -2px;
+    margin-bottom: -4px;
+}
+
+/*.wrapper .menu a:hover .counter {
+    background: var(--main-background-color);
+    color: var(--main-text-lighter-color);
+}*/
 
 .wrapper .menu a:hover, #_actions .action:hover, .wall_wrapper_tabs a:hover, .wall_wrapper_tabs a.selectd {
     cursor: pointer;
@@ -1500,6 +1528,16 @@ body.dimmed > .dimmer {
     padding: 4px 6px;
 }
 
+.bookmarks_insert .list_attachment .link_attachment_actions {
+    width: 134px;
+}
+
+.bookmarks_insert .link_attachment.link_attachment_vertical {
+    display: grid;
+    grid-template-columns: 0fr 1fr 0fr;
+    max-height: 115px;
+}
+
 /* Viewers */
 
 .photo_viewer img {
@@ -1579,9 +1617,9 @@ body.dimmed > .dimmer {
     padding: 0px 0px 5px 0px;
 }
 
-.short_list .short_list_item:last-of-type {
+/*.short_list .short_list_item:last-of-type {
     border-bottom: unset !important;
-}
+}*/
 
 .short_list .short_list_item .short_list_item_name {
     display: flex;
@@ -1622,8 +1660,28 @@ body.dimmed > .dimmer {
     display: flex;   
 }
 
-.friends_insert .bordered_block, .groups_insert .bordered_block {
+.friends_insert .bordered_block, .groups_insert .bordered_block, .bookmarks_insert > div {
     padding: 0px;
+    border: unset;
+}
+
+.bookmarks_insert .post {
+    border: unset;
+    padding: 0px 0px 7px 0px;
+    border-bottom: 1px dotted var(--main-text-lighter-color);
+}
+
+.bookmarks_insert .bordered_block {
+    border: unset;
+    padding: 0px 0px 7px 0px;
+}
+
+.bookmarks_insert .error_block {
+    padding: 0px;
+}
+
+.bookmarks_insert .link_attachment {
+    max-width: unset;
     border: unset;
 }
 
@@ -1658,4 +1716,15 @@ body.dimmed > .dimmer {
 .friend_select_tab .tabs_f_lex {
     display: flex;
     justify-content: space-between;
+}
+
+#__inserttags .tag_selector:hover {
+    background: unset;
+    color: unset;
+    outline: 1px dotted var(--main-text-lighter-color);
+}
+
+#__inserttags .tag_selector.selectd {
+    color: var(--main-elements-color);
+    background: var(--main-text-lighter-color);
 }

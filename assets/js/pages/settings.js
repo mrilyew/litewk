@@ -66,6 +66,15 @@ textarea {
 }
   
 `
+    },
+    {
+        'name': 'settings_ui_tweaks.hide_counters',
+        'internal_name': 'Hide counters in navigation',
+        'code': `/* Hide counters in navigation */
+.counter {
+    display: none;   
+}        
+`
     }
 ]
 
@@ -384,6 +393,10 @@ window.page_class = new class {
                                 <input type='checkbox' data-sett='ux.auto_scroll' ${window.site_params.get('ux.auto_scroll', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_auto_scroll')}
                             </label>
+                            <label>
+                                <input type='checkbox' data-sett='ux.send_online' ${window.site_params.get('ux.send_online', '1') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_send_online')}
+                            </label>
                         </div>
                     </div>
                 `)
@@ -599,6 +612,8 @@ window.page_class = new class {
 
                     window.accounts.setActiveAccount(e.currentTarget.dataset.id)
                     window.router.restart('accounts')
+
+                    refresh_counters()
                 })
 
                 $('#_logoutacc').on('click', (e) => {

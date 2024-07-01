@@ -510,7 +510,7 @@ async function user_page_template(user)
                                     ${user.has('counters') && user.info.counters.online_friends ? `<a href='site_pages/friends.html?id=${user.getId()}&section=online'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
                                     ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='site_pages/friends.html?id=${user.getId()}&section=mutual'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.gifts ? `<a href='#'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
-                                    <a href='site_pages/groups.html?id=${user.getId()}'>${_('counters.groups_count', user.info.counters.groups ?? 0)}</a>
+                                    <a href='site_pages/groups.html?id=${user.getId()}'>${_('counters.groups_count', user.info.counters && user.info.counters.groups ? user.info.counters.groups : 0)}</a>
                                     ${user.has('counters') && user.info.counters.pages ? `<a href='#'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.photos ? `<a href='#'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.posts ? `<a href='site_pages/wall.html?id=${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}

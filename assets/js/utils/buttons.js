@@ -220,6 +220,10 @@ $(document).on('click', '#_toggleFave', async (e) => {
             params.owner_id = realid[0]
             params.id = realid[1]
             break
+        case 'link':
+            api_type = 'Link'
+            params.link = e.target.dataset.link 
+            break
     }
 
     switch(fave_status) {
@@ -852,4 +856,19 @@ $(document).on('click', '#__clearrecentgroups', async (e) => {
     await window.vk_api.call('groups.removeRecents')
 
     window.router.restart()
+})
+
+$(document).on('click', '#__markbookmarks', async (e) => {
+    await window.vk_api.call('fave.markSeen')
+    window.router.restart()
+
+    $('.menu #_faves .counter').remove()
+})
+
+$(document).on('change', `#_bookmarks_search input[type='text']`, async (e) => {
+    window.main_classes['wall'].localSearch(e.target.value)
+})
+
+$(document).on('click', `#_bookmarks_search input[type='button']`, async (e) => {
+    $(`#_bookmarks_search input[type='text']`).trigger('change')
 })

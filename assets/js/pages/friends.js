@@ -229,6 +229,5 @@ window.page_class = new class {
                 )
             })
         }
-
     }
 }
