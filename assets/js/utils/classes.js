@@ -520,7 +520,7 @@ class UserListView extends User {
 class Club extends Faveable {
     async fromId(id = 0) {
         let info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
-        
+
         if(info.error || !info.response.groups) {
             return
         }
@@ -887,7 +887,7 @@ class Post extends PostLike {
     }
 
     hasRepost() {
-        return this.info.copy_history != null
+        return this.info.copy_history != null && this.info.copy_history.length > 0
     }
 
     hasSigner() {
@@ -1477,6 +1477,7 @@ class ClassicListView {
                 let ob_j = new this.object_class
                 ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
     
+
                 try {
                     templates += ob_j.getTemplate()
                 } catch(e) {
@@ -1917,7 +1918,15 @@ class VkApi {
 
     async call(method, params = [], force = true) {
         let path = this.url + method + `?v=5.199&access_token=` + this.token + '&' + $.param(params)
-        let result = JSON.parse(await jsonp(path))
+        let result = null
+
+        if(window.site_params.get('internal.use_proxy', '0') == '1') {
+            path = `https://api.allorigins.win/get?url=${encodeURIComponent(path)}`
+            result = JSON.parse(await jsonp(path))
+            result = JSON.parse(result.contents)
+        } else {
+            result = JSON.parse(await jsonp(path))
+        }
         
         log(`Called method ${method} with params ${JSON.stringify(params)} with force=${String(force)}`)
         
@@ -2158,6 +2167,13 @@ class Accounts {
         }
         
         window.site_params.set('active_account', acc.vk_token)
+    }
+
+    getAccount(token)
+    {
+        let accs = JSON.parse(window.site_params.get('accounts') ?? '[]')
+
+        return accs.find(acc => acc.vk_token == token)
     }
 
     getActiveAccount()

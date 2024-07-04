@@ -92,12 +92,14 @@ window.page_class = new class {
 
         await window.main_classes['wall'].nextPage()
 
-        window.main_classes['wall'].lists.items.forEach(list => {
-            $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
-                `
-                <a href='site_pages/news_page.html?news_section=custom&news_section_list=${list.id}&news_type=post' ${Number(window.s_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
-                `
-            )
-        })
+        if(window.main_classes['wall'].lists) {
+            window.main_classes['wall'].lists.items.forEach(list => {
+                $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
+                    `
+                    <a href='site_pages/news_page.html?news_section=custom&news_section_list=${list.id}&news_type=post' ${Number(window.s_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
+                    `
+                )
+            })
+        }
     }
 }

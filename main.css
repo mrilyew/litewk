@@ -584,8 +584,21 @@ body.dimmed > .dimmer {
 
 /* Auth */
 
-.onpage_error table td {
-    padding-bottom: 6px;
+.onpage_error.auth_block {
+    width: 400px !important;
+    padding: 8px !important;
+}
+
+.auth_block .tabs {
+    margin-bottom: 4px;
+}
+
+.auth_block .auth_bait {
+    margin-bottom: 4px;
+}
+
+.auth_block input[type='text'], .auth_block #__appChoose {
+    margin-bottom: 8px;
 }
 
 /* Settings. */
@@ -1617,9 +1630,9 @@ body.dimmed > .dimmer {
     padding: 0px 0px 5px 0px;
 }
 
-/*.short_list .short_list_item:last-of-type {
+.friends_insert.short_list .short_list_item:last-of-type, .groups_insert.short_list .short_list_item:last-of-type {
     border-bottom: unset !important;
-}*/
+}
 
 .short_list .short_list_item .short_list_item_name {
     display: flex;

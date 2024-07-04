@@ -397,6 +397,10 @@ window.page_class = new class {
                                 <input type='checkbox' data-sett='ux.send_online' ${window.site_params.get('ux.send_online', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_send_online')}
                             </label>
+                            <label>
+                                <input type='checkbox' data-sett='internal.use_proxy' ${window.site_params.get('internal.use_proxy', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_use_proxy')}
+                            </label>
                         </div>
                     </div>
                 `)
@@ -623,33 +627,7 @@ window.page_class = new class {
 
                 break
             case 'about':
-                let fonts = [`"Comic Sans MS", "Comic Sans", cursive`, 'Verdana', 'Impact']
-                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
-                    <div class='settings_block litewk_titles'>
-                        <h4 class='litewk_title' style='font-family: ${fonts[random_int(0, fonts.length)]};color:;'>LiteWK.</h4>
-
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td><b>${_('settings_about.settings_about_authors')}</b></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>${_('settings_about.settings_api_vk')}</td>
-                                    <td><a href='https://vk.company/ru/' target='_blank'>VK Group</a></td>
-                                </tr>
-                                <tr>
-                                    <td>${_('settings_about.settings_about_main_code')}</td>
-                                    <td>udjhh</td>
-                                </tr>
-                                <tr>
-                                    <td>${_('settings_about.settings_about_cover')}</td>
-                                    <td>priwetvsem</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `)
+                window.open('https://github.com/udjhh/litewk/blob/main/README.md', '_blank').focus();
                 
                 break
         }
