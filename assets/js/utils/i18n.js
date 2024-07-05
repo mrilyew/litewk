@@ -136,7 +136,8 @@ window.langs = [
             'settings_send_online': 'Пробуждать аккаунт в онлайн каждые 5 минут',
 
             'settings_default_sort': 'Сортировка комментариев по умолчанию',
-            'settings_use_proxy': 'Использовать allorigins.win (на ваш риск)'
+            'settings_use_proxy': 'Использовать allorigins.win (на ваш риск)',
+            'settings_show_registration_date': 'Показывать дату регистрации пользователя',
         },
 
         'settings_language': {
@@ -190,7 +191,8 @@ window.langs = [
             'hide': 'Скрыть',
 
             'yes': 'Да',
-            'no': 'Нет'
+            'no': 'Нет',
+            'loading_shy': 'загружаю...',
         },
 
         'auth': {
@@ -312,6 +314,7 @@ window.langs = [
             'list_friends': 'Посмотреть друзей',
 
             'go_to_user_page': 'перейти к странице',
+            'error_getting_registration_date': 'Не удалось получить.',
         },
 
         'relation': {

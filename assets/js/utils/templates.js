@@ -142,7 +142,7 @@ async function user_page_template(user)
                                                 <span>${_('user_page.register_date')}</span>
                                             </td>
                                             <td>
-                                                <span><a href='https://vk.com/foaf.php?id=${user.getId()}#ya:created'>01.01.1970</a></span>
+                                                <span id='__regdate'>--.--.----</span>
                                             </td>
                                         </tr>
                                         ${user.has('relation') ? `

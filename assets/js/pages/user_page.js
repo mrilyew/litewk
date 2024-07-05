@@ -17,6 +17,16 @@ window.page_class = new class {
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', await user.getTemplate())
     
+        // Show reg date
+        if(window.site_params.get('ux.show_reg', '0') == '1') {
+            $('#__regdate')[0].innerHTML = _('messagebox.loading_shy')
+            try {
+                $('#__regdate')[0].innerHTML = await user.getRegistrationDate()
+            } catch(e) {
+                $('#__regdate')[0].innerHTML = _('user_page.error_getting_registration_date')
+            }
+        }
+        
         // Drawing wall
         if(user.hasAccess() && !user.isDeactivated()) {
             // Wall sections

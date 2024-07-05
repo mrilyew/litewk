@@ -401,6 +401,10 @@ window.page_class = new class {
                                 <input type='checkbox' data-sett='internal.use_proxy' ${window.site_params.get('internal.use_proxy', '0') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_use_proxy')}
                             </label>
+                            <label>
+                                <input type='checkbox' data-sett='ux.show_reg' ${window.site_params.get('ux.show_reg', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_show_registration_date')}
+                            </label>
                         </div>
                     </div>
                 `)
@@ -453,7 +457,7 @@ window.page_class = new class {
                         window.lang = null
                         window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
                         
-                        setTimeout(() => {window.router.restart('language')}, 50)
+                        setTimeout(() => {window.router.restart('language', 'ignore_menu')}, 50)
                     })
                 })
     

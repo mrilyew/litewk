@@ -160,6 +160,26 @@ class User extends Faveable {
         return this.getId()
     }
 
+    async getRegistrationDate()
+    {
+        const path = `https://api.allorigins.win/get?url=${encodeURIComponent('https://vk.com/foaf.php?id='+this.getId())}`
+        const parser = new DOMParser()
+
+        let result = JSON.parse(await jsonp(path))
+        result = parser.parseFromString(result.contents, "text/xml")
+
+        let date = result.getElementsByTagName('ya:created')[0]
+        date = date.getAttribute('dc:date')
+
+        if(date) {
+            let js_date = moment(date, 'YYYY.MM.DDThh:mm:ss')
+            
+            return short_date(js_date.unix(), true)
+        } else {
+            return '01.01.1970'
+        }
+    }
+
     getCover() {
         return this.info.cover
     }
@@ -1934,7 +1954,6 @@ class VkApi {
             //log(`NO FORCE, result: `)
             //log(result)
 
-            document.cookie = ''
             return result
         }
 
@@ -2244,7 +2263,7 @@ window.router = new class {
         window.temp_scroll = null
     }
     
-    restart(add) {
+    restart(add, condition = '') {
         let temp_menu = $('.menu')[0].innerHTML
 
         $('style').remove()
@@ -2252,7 +2271,10 @@ window.router = new class {
 
         window.main_class.load_layout(add)
         $(document).trigger('scroll')
-        $('.menu')[0].innerHTML = temp_menu
+
+        if(condition != 'ignore_menu') {
+            $('.menu')[0].innerHTML = temp_menu
+        }
     }
 
     async route(url, history_log = true) {

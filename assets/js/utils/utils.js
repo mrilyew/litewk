@@ -280,6 +280,8 @@ function jsonp(url, def_timeout = 20000) {
             timeoutFunction && clearTimeout(timeoutFunction)
             window[callbackName] && delete window[callbackName]
             script && head.removeChild(script)
+
+            document.cookie = ''
         }
     } )
 }
