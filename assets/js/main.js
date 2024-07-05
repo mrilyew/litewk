@@ -82,7 +82,7 @@ window.default_left_menu = [
         'name': '_navigation.my_search',
         'href': 'site_pages/search.html',
         'new_page': false,
-        'disabled': true,
+        'disabled': false,
         'hidden': false,
     },
     {

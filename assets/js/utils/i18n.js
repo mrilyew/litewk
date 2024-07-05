@@ -721,6 +721,19 @@ window.langs = [
             'search_by_loaded_bookmarks': 'Поиск по прогруженным закладкам',
         },
 
+        'search': {
+            'search': 'Поиск',
+
+            'search_all_section': 'Всё',
+            'search_users_section': 'Пользователи',
+            'search_groups_section': 'Группы',
+            'search_posts_section': 'Записи',
+            'search_audios_section': 'Аудиозаписи',
+            'search_videos_section': 'Видеозаписи',
+            'search_photos_section': 'Фотографии',
+            'search_games_section': 'Игры',
+        },
+
         'errors': {
             'not_all_fields_filled': 'Не все поля заполнены',
             'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',

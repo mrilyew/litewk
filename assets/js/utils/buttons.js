@@ -856,3 +856,14 @@ $(document).on('change', `#_bookmarks_search input[type='text']`, async (e) => {
 $(document).on('click', `#_bookmarks_search input[type='button']`, async (e) => {
     $(`#_bookmarks_search input[type='text']`).trigger('change')
 })
+
+$(document).on('change', `#_global_search input[type='text']`, async (e) => {
+    window.s_url.searchParams.set('query', e.target.value)
+    replace_state(window.s_url.href)
+
+    window.router.restart()
+})
+
+$(document).on('click', `#_global_search input[type='button']`, async (e) => {
+    $(`#_global_search input[type='text']`).trigger('change')
+})

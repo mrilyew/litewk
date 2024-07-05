@@ -817,7 +817,7 @@ function club_template(club)
                         ${club.has('counters') && club.info.counters.topics ? `<a href='#'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
-                        ${club.has('members_count') && club.info.members_count ? `<a href='#'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
+                        ${club.has('members_count') && club.info.members_count ? `<a href='site_pages/search.html?section=users&group_id=${club.getId()}'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
                     </div>
                 </div>
             </div>
