@@ -1,6 +1,6 @@
 window.page_class = new class {
     async render_page() {
-        let id = window.s_url.searchParams.get('id')
+        let id = window.main_class['hash_params'].id
         if(id == 0 || id == null) {
             id = window.active_account.vk_info.id
         }

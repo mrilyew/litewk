@@ -2,7 +2,7 @@ window.page_class = new class {
     async render_page() {
         document.title = _('search.search')
           
-        let section = window.s_url.searchParams.get('section') ?? 'all'
+        let section = window.main_class['hash_params'].section ?? 'all'
         let tabs_html = ``
         let method = 'users.search'
         let method_params = {'count': 10, 'extended': 1, 'fields': window.typical_group_fields + ',' + window.typical_fields}
@@ -35,7 +35,7 @@ window.page_class = new class {
 
         document.title = _(`search.search_${section}_section`)
         tabs_html = `
-            <a href='site_pages/search.html?section=${section}' data-section='${section}'>${_('search.search')}</a>
+            <a href='#search/${section}' data-section='${section}'>${_('search.search')}</a>
         `
 
         let sections_list = ``
@@ -50,7 +50,7 @@ window.page_class = new class {
             }
 
             sections_list += `
-                <a href='site_pages/search.html?section=${el}' ${section == el ? 'class=\'selectd\'' : ''}>${_(`search.search_${el}_section`)}</a>
+                <a href='#search/${el}' ${section == el ? 'class=\'selectd\'' : ''}>${_(`search.search_${el}_section`)}</a>
             `
         })
 

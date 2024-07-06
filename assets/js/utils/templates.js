@@ -9,13 +9,13 @@ async function work_template(work)
     <div class='career_work  ${!tmp_club ? 'no_group' : ''}'>
         ${tmp_club ? 
         `<div class='career_work_avatar avatar'>
-            <a href='site_pages/club_page.html?id=${work.group_id}'>
+            <a href='#club${work.group_id}'>
                 <img class='avatar' src='${tmp_club.photo_50}'>
             </a>
         </div>` : ''}
 
         <div class='career_work_info'>
-            ${tmp_club ? `<a href='site_pages/club_page.html?id=${work.group_id}'><b>${escape_html(tmp_club.name ?? 'no name')}</b></a>` : `<b>${escape_html(work.company)}</b>`}
+            ${tmp_club ? `<a href='#club${work.group_id}'><b>${escape_html(tmp_club.name ?? 'no name')}</b></a>` : `<b>${escape_html(work.company)}</b>`}
             <p>${work.position ? `${_('user_page.job_post')}: ` + escape_html(work.position) : ''}</p>
             <p>${work.from  ? `${_('user_page.job_year_start')}: ` + work.from : ''}</p>
             <p>${work.until ? `${_('user_page.job_year_end')}: ` + work.until : ''}</p>
@@ -48,7 +48,7 @@ async function user_page_template(user)
                         <div id='_actions'>
                             ${user.isThisUser() ?
                                 `
-                                ${`<a class='action' href='site_pages/edit_page.html'> ${_('user_page.edit_page')}</a>`}
+                                ${`<a class='action' href='#edit'> ${_('user_page.edit_page')}</a>`}
                                 ` :
                                 `
                                 ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0' data-addid='${user.getId()}'> ${_('users_relations.start_friendship')}</a>` : ''}
@@ -506,18 +506,18 @@ async function user_page_template(user)
                                     ${user.has('counters') && user.info.counters.albums ? `<a href='#'>${_('counters.albums_count', user.info.counters.albums)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.audios ? `<a href='#'>${_('counters.audios_count', user.info.counters.audios)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.badges ? `<a href='#'>${_('counters.badges_count', user.info.counters.badges)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.friends ? `<a href='site_pages/friends.html?id=${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='site_pages/friends.html?id=${user.getId()}&section=online'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
-                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='site_pages/friends.html?id=${user.getId()}&section=mutual'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.friends ? `<a href='#friends${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='#friends${user.getId()}/online'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
+                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='#friends${user.getId()}/mutual'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.gifts ? `<a href='#'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
-                                    <a href='site_pages/groups.html?id=${user.getId()}'>${_('counters.groups_count', user.info.counters && user.info.counters.groups ? user.info.counters.groups : 0)}</a>
+                                    <a href='#groups${user.getId()}'>${_('counters.groups_count', user.info.counters && user.info.counters.groups ? user.info.counters.groups : 0)}</a>
                                     ${user.has('counters') && user.info.counters.pages ? `<a href='#'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.photos ? `<a href='#'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.posts ? `<a href='site_pages/wall.html?id=${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.posts ? `<a href='#wall${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
                                     ${user.has('counters') && user.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
-                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='site_pages/friends.html?id=${user.getId()}&section=followers'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
+                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='#friends${user.getId()}/followers'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -664,7 +664,7 @@ async function user_page_template(user)
                 `
                     <tr>
                         <td>${_('user_page.relative_' + relative.type)}</td>
-                        <td>${relative.id > 0 ? `<a href='site_pages/user_page.html?id=${relative.id}'>${relative.id}</a>` : escape_html(relative.name)}</td>
+                        <td>${relative.id > 0 ? `<a href='#id${relative.id}'>${relative.id}</a>` : escape_html(relative.name)}</td>
                     </tr>
                 `
             )
@@ -817,7 +817,7 @@ function club_template(club)
                         ${club.has('counters') && club.info.counters.topics ? `<a href='#'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
                         ${club.has('counters') && club.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
-                        ${club.has('members_count') && club.info.members_count ? `<a href='site_pages/search.html?section=users&group_id=${club.getId()}'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
+                        ${club.has('members_count') && club.info.members_count ? `<a href='?group_id=${club.getId()}#search/users'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
                     </div>
                 </div>
             </div>
@@ -882,7 +882,7 @@ function process_attachments(attachments)
                     ${video.hasPreview() ? `<img class='video_preview' src='${video.getPreview(3)}'>` : ''}
                 </div>
                 <div class='video_attachment_info'>
-                    <b><a href='site_pages/video.html?id=${video.getId()}'>${video.getTitle()}</a></b>
+                    <b><a href='#video${video.getId()}'>${video.getTitle()}</a></b>
                     <p>${_('videos.views_count', video.getViews())}</p>
                 </div>
             </div>
@@ -994,7 +994,7 @@ function process_attachments(attachments)
                                 </div>` : ''}
     
                                 <div class='link_attachment_info'>
-                                    ${op_link.has('caption') ? `<a href='site_pages/resolve_link.html?id=${op_link.getCaption()}' target='_blank'><span>${op_link.getCaption()}</span></a>` : ''}
+                                    ${op_link.has('caption') ? `<a href='?id=${op_link.getCaption()}#away' target='_blank'><span>${op_link.getCaption()}</span></a>` : ''}
                                     <a href='${op_link.getURL()}' target='_blank'><b>${op_link.getTitle()}</b></a>
                                 </div>
                             </div>
@@ -1009,8 +1009,8 @@ function process_attachments(attachments)
                                 </div>` : ''}
     
                                 <div class='link_attachment_info'>
-                                    ${op_link.has('caption') ? `<a href='${op_link.getURL()}' target='_blank'><b>${op_link.getTitle()}</b></a>` : ''}
-                                    <a href='site_pages/resolve_link.html?id=${op_link.getCaption()}' target='_blank'><span>${op_link.getCaption()}</span></a>
+                                    ${op_link.has('caption') ? `<a href='?id=${op_link.getURL()}#away' target='_blank'><b>${op_link.getTitle()}</b></a>` : ''}
+                                    <a href='?id=${op_link.getCaption()}#away' target='_blank'><span>${op_link.getCaption()}</span></a>
                                 </div>
                             </div>
                         `)
@@ -1132,7 +1132,7 @@ function post_template(post, additional_options = {})
                     ${post.hasUpperText() ? post.getUpperText() : ''}
                     </p>
                 </div>
-                <p><a href='site_pages/post.html?post=${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
+                <p><a href='#wall${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
             </div>
             `
 
@@ -1194,7 +1194,7 @@ function post_template(post, additional_options = {})
                         <span>${post.getLikes()}</span>
                     </a>
                     ${!additional_options.hide_comments ? `
-                    <a href='site_pages/post.html?post=${post.getId()}' class='comment'>
+                    <a href='#wall${post.getId()}' class='comment'>
                         <div class='comment_icon icons1'></div>
                         <span>${post.getCommentsCount()}</span>
                     </a>` : ''}
@@ -1348,8 +1348,9 @@ async function wall_template(owner_id, tabs, default_tab = 'all')
     template_div.innerHTML = template
 
     tabs.forEach(el => {
+        log(default_tab)
         template_div.querySelector('.tabs #_insertTabs').insertAdjacentHTML('beforeend', `
-            <a href='site_pages/wall.html?id=${owner_id}&wall_section=${el}' data-ignore='1' data-section='${el}' ${default_tab == el ? `class='selectd'` : ''}>${_(`wall.${el}_posts`)}</a>
+            <a href='#wall${owner_id}/${el}' data-ignore='1' data-section='${el}' ${default_tab == el ? `class='selectd'` : ''}>${_(`wall.${el}_posts`)}</a>
         `)
     })
 
@@ -1372,7 +1373,6 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
     template_div.innerHTML = template
 
     let pages = []
-    let temp_url = new URL(location.href)
 
     for(let t_page = (activePage - (stepCount - 1)); t_page <= (activePage + (stepCount - 1)); t_page++) {
         if(t_page < 1 || t_page > pagesCount) {
@@ -1383,38 +1383,38 @@ function paginator_template(pagesCount, activePage, stepCount = 3)
     }
         
     if(activePage > stepCount - 1) {
-        temp_url.searchParams.set('page', 1)
+        window.s_url.searchParams.set('page', 1)
+
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='1' href='${temp_url}'>«</a>
+            <a data-ignore='1' data-page='1' href='?page=1${window.s_url.hash}'>«</a>
         `
     }
 
     if(activePage > 1) {
-        temp_url.searchParams.set('page', activePage - 1)
+        window.s_url.searchParams.set('page', activePage - 1)
+
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage - 1}' href='${temp_url}'>‹</a>
+            <a data-ignore='1' data-page='${activePage - 1}' href='?page=${activePage - 1}${window.s_url.hash}'>‹</a>
         `
     }
 
     pages.forEach(page => {
-        temp_url.searchParams.set('page', page)
+        window.s_url.searchParams.set('page', page)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${page}' data-page='${activePage}' href='${temp_url}' ${activePage == page ? `class='active'` : ''}>${page}</a>
+            <a data-ignore='1' data-page='${page}' data-page='${activePage}' href='?page=${page}${window.s_url.hash}' ${activePage == page ? `class='active'` : ''}>${page}</a>
         `
     })
 
     if(activePage < pagesCount) {
-        temp_url.searchParams.set('page', activePage + 1)
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage + 1}' href='${temp_url}'>›</a>
+            <a data-ignore='1' data-page='${activePage + 1}' href='?page=${activePage + 1}${window.s_url.hash}'>›</a>
         `
     }
 
     if(activePage < pagesCount - (stepCount - 1)) {
-        temp_url.searchParams.set('page', pagesCount)
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${pagesCount}' href='${temp_url}'>»</a>
+            <a data-ignore='1' data-page='${pagesCount}' href='?page=${pagesCount}${window.s_url.hash}'>»</a>
         `
     }
 

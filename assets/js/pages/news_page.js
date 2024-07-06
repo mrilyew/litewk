@@ -1,6 +1,6 @@
 window.page_class = new class {
     async render_page() {
-        let tab = window.s_url.searchParams.get('news_section') ?? 'def'
+        let tab = window.main_class['hash_params'].section ?? 'def'
         
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `
@@ -10,9 +10,9 @@ window.page_class = new class {
                 </div>
                 <div class='wall_wrapper_tabs bordered_block'>
                     <div>
-                        <a href='site_pages/news_page.html?news_section=def' ${tab == 'def' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_default`)}</a>
-                        <a href='site_pages/news_page.html?news_section=smart' ${tab == 'smart' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_smart_feed`)}</a>
-                        <a href='site_pages/news_page.html?news_section=recommend' ${tab == 'recommend' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_recommend`)}</a>
+                        <a href='#feed/def' ${tab == 'def' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_default`)}</a>
+                        <a href='#feed/smart' ${tab == 'smart' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_smart_feed`)}</a>
+                        <a href='#feed/recommend' ${tab == 'recommend' ? 'class=\'selectd\'' : ''}>${_(`newsfeed.section_recommend`)}</a>
                     </div>
                     <div class='wall_wrapper_newsfeed_params'>
                         <span>${_('newsfeed.newsfeed_lists')}</span>
@@ -78,6 +78,7 @@ window.page_class = new class {
             case 'custom':
                 method = 'newsfeed.get'
 
+                log(window.s_url.searchParams.get('news_section_list'))
                 method_params.source_ids = 'list' + window.s_url.searchParams.get('news_section_list')
                 break
         }
@@ -96,7 +97,7 @@ window.page_class = new class {
             window.main_classes['wall'].lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
-                    <a href='site_pages/news_page.html?news_section=custom&news_section_list=${list.id}&news_type=post' ${Number(window.s_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
+                    <a href='?news_section_list=${list.id}&news_type=post#feed/custom' ${Number(window.s_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
                     `
                 )
             })

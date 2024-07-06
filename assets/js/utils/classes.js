@@ -250,20 +250,20 @@ class User extends Faveable {
             case 1:
                 return is_woman ? _('relation.female_single') : _('relation.male_single')
             case 2:
-                return _('relation.meets_with') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '') // "есть друг/есть подруга" в документации кстати
+                return _('relation.meets_with') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '') // "есть друг/есть подруга" в документации кстати
             case 3:
-                return (is_woman ? _('relation.female_engaged') : _('relation.male_engaged')) + (partner ? ` ${_('with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
+                return (is_woman ? _('relation.female_engaged') : _('relation.male_engaged')) + (partner ? ` ${_('relation.with_rus_preposition')} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 4:
                 let preposition = !is_woman ? _('prepositions.for_rus_preposition') : _('prepositions.on_rus_preposition')
-                return is_woman ? _('relation.female_married') : _('relation.male_married') + (partner ? ` ${preposition} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
+                return is_woman ? _('relation.female_married') : _('relation.male_married') + (partner ? ` ${preposition} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 5:
-                return _('relation.relations_complicated') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
+                return _('relation.relations_complicated') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 6:
                 return _('relation.active_search')
             case 7:
-                return is_woman ? _('relation.female_inlove') : _('relation.male_inlove') + (partner ? ` ${_('prepositions.another_on_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
+                return is_woman ? _('relation.female_inlove') : _('relation.male_inlove') + (partner ? ` ${_('prepositions.another_on_rus_preposition')} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '')
             case 8:
-                return _('relation.in_a_civil_marriage') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='site_pages/user_page.html?id=${partner.getId()}'>` + partner.getName() + '</a>' : '')
+                return _('relation.in_a_civil_marriage') + (partner ? ` ${_('prepositions.with_rus_preposition')} <a href='#id${partner.getId()}'>` + partner.getName() + '</a>' : '')
         }
     }
 
@@ -346,8 +346,7 @@ class User extends Faveable {
     }
 
     getOnlineType() {
-        switch(this.info.last_seen.platform)
-        {
+        switch(this.info.last_seen.platform) {
             case 1:
                 return _('online_types.online_from_mobile_version')
             case 2:
@@ -402,7 +401,7 @@ class User extends Faveable {
     }
 
     getUrl() {
-        return 'site_pages/user_page.html?id=' + this.getId()
+        return '#id' + this.getId()
     }
 
     isFriend() {
@@ -515,7 +514,7 @@ class UserListView extends User {
                     ${this.has('status') ? `<span>"${this.getTextStatus()}"</span>` : ''}
                     <span>${this.getFullOnline()}</span>
                     ${this.has('city') ? `<span>${this.getCountryncity()}</span>` : ''}
-                    ${!this.isFriend() ? `<a href='site_pages/friends.html?id=${this.getId()}&section=mutual'>${_('counters.mutual_friends_count', this.info.common_count)}</a>` : ''}
+                    ${!this.isFriend() && this.info.common_count > 0 ? `<a href='#friends${this.getId()}/mutual'>${_('counters.mutual_friends_count', this.info.common_count)}</a>` : ''}
                 </div>
 
                 <div class='short_list_item_actions' id='_actions'>
@@ -527,7 +526,7 @@ class UserListView extends User {
                     ${this.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2' data-addid='${this.getId()}'> ${_('users_relations.decline_friendship')}</a>` : ''}
                     ${this.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3' data-addid='${this.getId()}'> ${_('users_relations.destroy_friendship')}</a>` : ''}
                     <a class="action">${_('user_page.create_message')}</a>
-                    <a class="action" href='site_pages/friends.html?id=${this.getId()}'>${_('user_page.list_friends')}</a>
+                    <a class="action" href='#friends${this.getId()}'>${_('user_page.list_friends')}</a>
                     ${!this.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${this.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
                     ${this.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${this.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
                     ` : ''}
@@ -561,7 +560,7 @@ class Club extends Faveable {
     }
     
     getUrl() {
-        return 'site_pages/club_page.html?id=' + this.getId()
+        return '#club' + this.getId()
     }
 
     getId() {
@@ -705,7 +704,7 @@ class ClubListView extends Club {
 
                     ${this.has('activity') ? `<span>${this.getActivity()}</span>` : ''}
                     ${this.has('description') ? `<span>"${this.getDescription(200)}"</span>` : ''}
-                    <a href='site_pages/members.html?id=${this.getId()}'>${_('counters.subscriptions_count', this.info.members_count)}</a>
+                    <a href='?group_id=${this.getId()}#search/users'>${_('counters.subscriptions_count', this.info.members_count)}</a>
                 </div>
 
                 <div class='short_list_item_actions' id='_actions'>
@@ -853,7 +852,7 @@ class Post extends PostLike {
             let sub_link = ''
             if(copyright.link.indexOf('wall')) {
                 let subid = (new URL(copyright.link).pathname).replace('/wall', '')
-                return `<a href='site_pages/post.html?post=${subid}'>${escape_html(copyright.link)}</a>`
+                return `<a href='#wall${subid}'>${escape_html(copyright.link)}</a>`
             }
         }
     }
@@ -1066,7 +1065,7 @@ class Link extends PostLike {
     }
 
     getURL() {
-        return 'site_pages/resolve_link.html?id=' + this.info.url
+        return '?id=' + this.info.url + '#away'
     }
 
     getTitle() {
@@ -1089,7 +1088,7 @@ class LinkListView extends Link {
 
             <div class='link_attachment_info'>
                 ${this.has('caption') ? `<a href='${this.getURL()}' target='_blank'><b>${this.getTitle()}</b></a>` : ''}
-                <a href='site_pages/resolve_link.html?id=${this.getCaption()}' target='_blank'><span>${this.getCaption()}</span></a>
+                <a href='?id=${this.getCaption()}#away' target='_blank'><span>${this.getCaption()}</span></a>
             </div>
 
             <div class='link_attachment_actions' id='_actions'>
@@ -1547,6 +1546,7 @@ class ClassicListView {
 
     async search(query) 
     {
+        //debugger
         this.objects.perPage = 100
         let temp_params = this.method_params
         temp_params.owner_id = this.method_params.owner_id
@@ -1561,10 +1561,10 @@ class ClassicListView {
 
         // Баг это или фича, но при вызове wall.search 'count' недействительный. Так что вот так вот.
         temp_params.count  = 100
-
         this.setParams('wall.search', temp_params)
 
         let temp_url = window.s_url
+
         temp_url.searchParams.set('wall_section', 'search')
         temp_url.searchParams.set('wall_query', query)
 
@@ -1873,7 +1873,7 @@ class Bookmarks extends ClassicListView {
                 obj.tags.forEach(tag => {
                     templater += `
                         <div>
-                            <a href='site_pages/faves.html?section=${obj.type}&tag_id=${tag.id}'>${escape_html(tag.name)}</a>
+                            <a href='#fave/${tag.id}/${obj.type}'>${escape_html(tag.name)}</a>
                         </div>
                     `
                 })
@@ -2153,6 +2153,7 @@ class Accounts {
 
         if(make_active) {
             window.site_params.set('active_account', token)
+            window.active_account = window.accounts.getActiveAccount()
         }
 
         temp_api = null
@@ -2217,6 +2218,135 @@ class Accounts {
 }
 
 window.router = new class {
+    constructor() {
+        this.routes = [
+            {
+                'url': 'id{id}',
+                'script_name': 'user_page'
+            },
+            {
+                'url': 'groups{id}/{section}',
+                'script_name': 'groups_page'
+            },
+            {
+                'url': 'groups{id}',
+                'script_name': 'groups_page'
+            },
+            {
+                'url': 'groups',
+                'script_name': 'groups_page'
+            },
+            {
+                'url': 'groups/{section}',
+                'script_name': 'groups_page'
+            },
+            {
+                'url': 'event{id}',
+                'script_name': 'club_page'
+            },
+            {
+                'url': 'public{id}',
+                'script_name': 'club_page'
+            },
+            {
+                'url': 'group{id}',
+                'script_name': 'club_page'
+            },
+            {
+                'url': 'club{id}',
+                'script_name': 'club_page'
+            },
+            {
+                'url': 'login/{section}',
+                'script_name': 'auth_page'
+            },
+            {
+                'url': 'login',
+                'script_name': 'auth_page'
+            },
+            {
+                'url': 'fave/{tag}/{section}',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'fave/{section}',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'fave',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'bookmarks/{tag}/{section}',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'bookmarks/{section}',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'bookmarks',
+                'script_name': 'faves_page'
+            },
+            {
+                'url': 'settings/{section}',
+                'script_name': 'settings_page'
+            },
+            {
+                'url': 'settings',
+                'script_name': 'settings_page'
+            },
+            {
+                'url': 'friends{id}/{section}',
+                'script_name': 'friends_page'
+            },
+            {
+                'url': 'friends{id}',
+                'script_name': 'friends_page'
+            },
+            {
+                'url': 'friends/{section}',
+                'script_name': 'friends_page'
+            },
+            {
+                'url': 'friends',
+                'script_name': 'friends_page'
+            },
+            {
+                'url': 'feed/{section}',
+                'script_name': 'news_page'
+            },
+            {
+                'url': 'feed',
+                'script_name': 'news_page'
+            },
+            {
+                'url': 'wall{owner_id}_{post_id}',
+                'script_name': 'post_page'
+            },
+            {
+                'url': 'wall{owner_id}/{section}',
+                'script_name': 'wall_page'
+            },
+            {
+                'url': 'wall{owner_id}',
+                'script_name': 'wall_page'
+            },
+            {
+                'url': 'away',
+                'script_name': 'resolve_link'
+            },
+            {
+                'url': 'search/{section}',
+                'script_name': 'search_page'
+            },
+            {
+                'url': 'search',
+                'script_name': 'search_page'
+            },
+        ]
+    }
+
     save_page(url) {
         let maybe = window.saved_pages.find(el => el.url == url)
         let tempar = Object.assign({}, window.main_classes)
@@ -2268,7 +2398,7 @@ window.router = new class {
 
         $('style').remove()
         $('div').remove()
-
+        
         window.main_class.load_layout(add)
         $(document).trigger('scroll')
 
@@ -2277,11 +2407,40 @@ window.router = new class {
         }
     }
 
-    async route(url, history_log = true) {
-        let may = window.saved_pages.find(page => page.url == url)
+    parse_route(url) {
+        for(let route of this.routes) {
+            const formatted_route = escape_html(route.url)
+            const pattern = formatted_route.replace(/\{([^}]+)\}/g, '([^/]+)')
+            const match = url.match(pattern)
+            
+            if(match) {
+                const t_matches = route.url.match(/\{([^}]+)\}/g)
+                let params = []
 
-        if(window.s_url.href != url) {
-            this.save_page(window.s_url.href)
+                if(t_matches && t_matches.length > 0) {
+                    params = t_matches.map(placeholder => placeholder.slice(1, -1))
+                }
+
+                return {'route': route, 'params': params, 'match': match}
+            }
+        }
+
+        return null
+    }
+
+    async route(input_url, history_log = true) {
+        let url = input_url
+        if(!url || url == '') {
+            if(window.active_account) {
+                url = location.origin + location.pathname + '#id0'
+            } else {
+                url = location.origin + location.pathname + '#settings'
+            }
+        }
+
+        let may = window.saved_pages.find(page => page.url == url)
+        if(window.s_url.hash != url) {
+            this.save_page(window.s_url.hash)
         }
 
         if(may && may.url.indexOf('auth') == -1 && may.url.indexOf('settings') == -1 && may.url.indexOf('resolve') == -1) {
@@ -2289,20 +2448,31 @@ window.router = new class {
             return
         }
 
-        let main_part = ((new URL(url)).pathname.split('.')[0]).split('/')[2]
-    
-        if(main_part == 'site_pages') {
-            main_part = ((new URL(url)).pathname.split('.')[0]).split('/')[3]
-        }
-
         this.reset_page()
 
-        if(history_log && window.s_url.href != url) {
-            push_state(url)
-        }
+        let splitted_url = url.split('#')
+        let found_route  = this.parse_route(splitted_url[1])
 
-        await append_script(`assets/js/pages/${main_part}.js`, true) // т.н. костыль?
-        this.save_page(url)
+        if(found_route) {
+            if(history_log && window.s_url.hash != url) {
+                push_state(url)
+            }
+
+            let matches = found_route['match']
+            let params  = found_route['params']
+            let final_params = {}
+
+            params.forEach((name, index) => {
+                final_params[name] = matches[index + 1]
+            })
+
+            window.main_class['hash_params'] = final_params
+            await append_script(`assets/js/pages/${found_route['route'].script_name}.js`, true)
+
+            this.save_page(url)
+        } else {
+            $('.page_content')[0].innerHTML = '404'
+        }
 
         init_observers()
         $(document).trigger('scroll')

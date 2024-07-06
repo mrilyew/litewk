@@ -2,7 +2,7 @@ window.page_class = new class {
     async render_page() {
         document.title = _('bookmarks.bookmarks')
         
-        let section = window.s_url.searchParams.get('section') ?? 'all'
+        let section = window.main_class['hash_params'].section ?? 'all'
         let tabs_html = ``
         let method = 'fave.get'
         let method_params = {'count': 10, 'extended': 1, 'fields': window.typical_fields}
@@ -53,12 +53,12 @@ window.page_class = new class {
                 break
         }
 
-        if(window.s_url.searchParams.has('tag_id')) {
-            method_params.tag_id = window.s_url.searchParams.get('tag_id')
+        if(window.main_class['hash_params'].tag) {
+            method_params.tag_id = window.main_class['hash_params'].tag
         }
 
         tabs_html = `
-            <a href='site_pages/faves.html?section=${section}' data-section='${section}'>${_('bookmarks.bookmarks')}</a>
+            <a href='#fave/${section}' data-section='${section}'>${_('bookmarks.bookmarks')}</a>
         `
 
         let sections_list = ``
@@ -72,7 +72,7 @@ window.page_class = new class {
                 return
             }
             sections_list += `
-                <a href='site_pages/faves.html?section=${el}${window.s_url.searchParams.has('tag_id') ? `&tag_id=${window.s_url.searchParams.get('tag_id')}` : ''}' ${section == el ? 'class=\'selectd\'' : ''}>${_(`bookmarks.${el}_bookmarks`)}</a>
+                <a href='#fave${method_params.tag_id ? '/' + method_params.tag_id : ''}/${el}' ${section == el ? 'class=\'selectd\'' : ''}>${_(`bookmarks.${el}_bookmarks`)}</a>
             `
         })
 
@@ -134,11 +134,11 @@ window.page_class = new class {
             $('.wall_wrapper_newsfeed_params')[0].style.display = 'block'
 
             tags.items.forEach(tag => {
-                let is_this = Number(window.s_url.searchParams.get('tag_id')) == tag.id
+                let is_this = Number(window.main_class['hash_params'].tag) == tag.id
 
                 $('#__inserttags')[0].insertAdjacentHTML('beforeend', 
                     `
-                        <a href='site_pages/faves.html?section=${section}${!is_this ? `&tag_id=${tag.id}` : ''}' class=\'${is_this ? 'selectd' : ''} tag_selector\'>${tag.name}</a>
+                        <a href='#fave${!is_this ? '/' + tag.id : ''}/${section}' class=\'${is_this ? 'selectd' : ''} tag_selector\'>${tag.name}</a>
                     `
                 )
             })

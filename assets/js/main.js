@@ -1,7 +1,7 @@
 window.default_left_menu = [
     {
         'name': '_navigation.my_page',
-        'href': 'site_pages/user_page.html',
+        'href': '#id0',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -9,7 +9,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_news',
         'anchor': '_news',
-        'href': 'site_pages/news_page.html?news_type=post',
+        'href': '#feed',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -17,7 +17,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_friends',
         'anchor': '_friends',
-        'href': 'site_pages/friends.html',
+        'href': '#friends',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -25,7 +25,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_groups',
         'anchor': '_groups_invites',
-        'href': 'site_pages/groups.html',
+        'href': '#groups',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -33,7 +33,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_messages',
         'anchor': '_messages',
-        'href': 'site_pages/messages.html',
+        'href': '#messages',
         'new_page': false,
         'disabled': true,
         'hidden': false,
@@ -41,7 +41,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_photos',
         'anchor': '_photos',
-        'href': 'site_pages/albums.html',
+        'href': '#albums',
         'new_page': false,
         'disabled': true,
         'hidden': false,
@@ -49,7 +49,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_audios',
         'anchor': '_audios',
-        'href': 'site_pages/audios.html',
+        'href': '#audios',
         'new_page': false,
         'disabled': true,
         'hidden': false,
@@ -57,7 +57,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_videos',
         'anchor': '_videos',
-        'href': 'site_pages/videos.html',
+        'href': '#videos',
         'new_page': false,
         'disabled': true,
         'hidden': false,
@@ -65,14 +65,14 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_faves',
         'anchor': '_faves',
-        'href': 'site_pages/faves.html',
+        'href': '#fave',
         'new_page': false,
         'disabled': false,
         'hidden': false,
     },
     {
         'name': '_navigation.my_notifications',
-        'href': 'site_pages/notifs.html',
+        'href': '#notifs',
         'anchor': '_notifications',
         'new_page': false,
         'disabled': true,
@@ -80,28 +80,28 @@ window.default_left_menu = [
     },
     {
         'name': '_navigation.my_search',
-        'href': 'site_pages/search.html',
+        'href': '#search',
         'new_page': false,
         'disabled': false,
         'hidden': false,
     },
     {
         'name': '_navigation.my_documents',
-        'href': 'site_pages/docs.html',
+        'href': '#docs',
         'new_page': false,
         'disabled': true,
         'hidden': false,
     },
     {
         'name': '_navigation.my_notes',
-        'href': 'site_pages/notes.html',
+        'href': '#notes',
         'new_page': false,
         'disabled': true,
         'hidden': false,
     },
     {
         'name': '_navigation.my_settings',
-        'href': 'site_pages/settings.html',
+        'href': '#settings',
         'new_page': false,
         'disabled': false,
         'hidden': false,
@@ -182,14 +182,14 @@ window.main_class = new class {
         window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
         if(!window.active_account) {
             $('.wrapper .menu')[0].innerHTML = `
-                <a href='site_pages/auth.html'>${_('navigation.authorize')}</a>
-                <a href='site_pages/settings.html'>${_('navigation.my_settings')}</a>
+                <a href='#login'>${_('navigation.authorize')}</a>
+                <a href='#settings'>${_('navigation.my_settings')}</a>
             `
         } else {
             window.vk_api = new VkApi(window.active_account.vk_path, window.active_account.vk_token)
         }
 
-        window.router.route(window.s_url.href)
+        window.router.route(window.s_url.hash)
 
         setInterval(async () => {
             if(window.site_params.get('ux.send_online', '1') == '1' && window.active_account) {

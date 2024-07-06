@@ -121,17 +121,17 @@ function nl2br(text)
 function format_links(text)
 {
     return text.replace(/(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig, 
-    `<a href='site_pages/resolve_link.html?id=$1' target='_blank'>$1</a>`)
+    `<a href='?id=$1#away' target='_blank'>$1</a>`)
 }
 
 function format_hashtags(text) 
 {
-    return text.replace(/#(\S*)/g, `<a href='site_pages/search.html?section=posts&query=#$1'>#$1</a>`)
+    return text.replace(/#(\S*)/g, `<a href='?query=$1#search/posts'>#$1</a>`)
 }
 
 function format_mentions(text)
 {
-    return text.replace(/\[([^|]+)\|([^\]]+)\]/g, `<a href="site_pages/resolve_link.html?id=$1">$2</a>`)
+    return text.replace(/\[([^|]+)\|([^\]]+)\]/g, `<a href="?id=$1#away">$2</a>`)
 }
 
 function format_emojis(text)

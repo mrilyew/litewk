@@ -2,17 +2,13 @@
 
 $(document).on('click', 'a', async (e) => {
     let target = e.target
+    //debugger
 
     if(target.tagName != 'A') {
         target = e.target.closest('a')
     }
 
     if(window.edit_mode) {
-        e.preventDefault()
-        return
-    }
-
-    if(target.href.indexOf('#') != -1) {
         e.preventDefault()
         return
     }
@@ -35,6 +31,7 @@ $(document).on('click', 'a', async (e) => {
     }
 })
 
+window.addEventListener('hashchange', window.router.route(location.href, false));
 window.addEventListener('popstate', async (e) => {
     e.preventDefault();
     replace_state(location.href)
@@ -531,7 +528,7 @@ $(document).on('change', '#post_comment_sort select', async (e) => {
 
 $(document).on('change', '#thread_comment_sort select', async (e) => {
     let comm_block = e.target.closest('.main_comment_block')
-    log(comm_block)
+
     let cid = comm_block.dataset.cid
     
     comm_block.setAttribute('data-sort', e.target.value)
@@ -612,6 +609,7 @@ $(document).on('click', '.wall_select_block a', (e) => {
 $(document).on('change', `input[type='query']`, (e) => {
     e.preventDefault()
 
+    window.main_classes['wall'].objects.page = -1
     window.main_classes['wall'].search(e.target.value)
 })
 
@@ -859,7 +857,7 @@ $(document).on('click', `#_bookmarks_search input[type='button']`, async (e) => 
 
 $(document).on('change', `#_global_search input[type='text']`, async (e) => {
     window.s_url.searchParams.set('query', e.target.value)
-    replace_state(window.s_url.href)
+    replace_state(location.origin + location.pathname + `?query=${e.target.value}` + location.hash)
 
     window.router.restart()
 })

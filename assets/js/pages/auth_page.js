@@ -3,13 +3,13 @@ window.page_class = new class {
     {
         document.title = _('auth.auth')
         let max_scope = 501202911
-        let current_tab = window.s_url.searchParams.get('auth') ?? 'oauth'
+        let current_tab = window.main_class['hash_params'].section ?? 'oauth'
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', `
             <div class='onpage_error auth_block'>
                 <div class='tabs'>
-                    <a href='site_pages/auth.html?auth=oauth' data-section='ouath' ${current_tab == 'oauth' ? `class='selectd'` : ''}>OAuth</a>
-                    <a href='site_pages/auth.html?auth=token' data-section='token' ${current_tab == 'token' ? `class='selectd'` : ''}>${_('auth.by_token')}</a>
+                    <a href='#login/oauth' data-section='ouath' ${current_tab == 'oauth' ? `class='selectd'` : ''}>OAuth</a>
+                    <a href='#login/token' data-section='token' ${current_tab == 'token' ? `class='selectd'` : ''}>${_('auth.by_token')}</a>
                 </div>
 
                 <div class='auth_block_input'></div>
@@ -51,7 +51,7 @@ window.page_class = new class {
                     
                     window.open(so_link)
 
-                    $(`.tabs a[data-section='token']`).trigger('click')
+                    $(`.tabs a[data-section='token']`)[0].click()
                 })
 
                 break
@@ -67,7 +67,7 @@ window.page_class = new class {
 
                 $('.auth_block_input #_aut').on('click', async () => {
                     if(await window.accounts.addAccount($('#__apiUrl')[0].value, $('#__ouathToken')[0].value)) {
-                        window.router.route(document.querySelector('base').href + `site_pages/user_page.html`)
+                        window.router.route(document.querySelector('base').href + `#id0`)
                     }
                 })
 

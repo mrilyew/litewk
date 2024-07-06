@@ -1,9 +1,9 @@
 window.page_class = new class {
     async render_page() {
         document.title = _('groups.groups')
-        let section = window.s_url.searchParams.get('section') ?? 'all'
+        let section = window.main_class['hash_params'].section ?? 'all'
 
-        let id = Number(window.s_url.searchParams.get('id'))
+        let id = Number(window.main_class['hash_params'].id)
         let us_info = null
         if(id == 0 || id == null || isNaN(id)) {
             id = window.active_account.vk_info.id
@@ -19,8 +19,8 @@ window.page_class = new class {
         }
 
         let tabs_html = `
-            <a href='site_pages/groups.html?id=${id}&section=all' data-section='all'>${_('groups.all_groups')}</a>
-            ${is_this ? `<a href='site_pages/groups.html?id=${id}&section=managed' data-section='managed'>${_('groups.managed_groups')}</a>` : ''}
+            <a href='#groups${id}/all' data-section='all'>${_('groups.all_groups')}</a>
+            ${is_this ? `<a href='#groups${id}/managed' data-section='managed'>${_('groups.managed_groups')}</a>` : ''}
         `
 
         let method = 'groups.get'
@@ -38,7 +38,7 @@ window.page_class = new class {
                 document.title = _('groups.events_title')
 
                 tabs_html = `
-                    <a href='site_pages/groups.html?id=${id}&section=events' data-section='events'>${_('groups.events')}</a>
+                    <a href='#groups${id}/events' data-section='events'>${_('groups.events')}</a>
                 `
 
                 method_params.filter = 'events'
@@ -55,8 +55,8 @@ window.page_class = new class {
 
                 tabs_html = `
                     <div class='tabs_f_lex'>
-                        <a href='site_pages/groups.html?id=${id}&section=recents' data-section='recents'>${_('groups.recent')}</a>
-                        <input type='button' value='Очистить' id='__clearrecentgroups'>
+                        <a href='#groups${id}/recents' data-section='recents'>${_('groups.recent')}</a>
+                        <input type='button' value='${_('groups.clear_recents')}' id='__clearrecentgroups'>
                     </div>
                 `
 
@@ -90,12 +90,12 @@ window.page_class = new class {
                         </a>
 
                         ${is_this ? `
-                            <a href='site_pages/groups.html?id=${id}&section=all' ${section == 'all' || section == 'managed' ? 'class=\'selectd\'' : ''}>${_(`groups.all_groups`)}</a>
-                            <a href='site_pages/groups.html?id=${id}&section=events' ${section == 'events' ? 'class=\'selectd\'' : ''}>${_(`groups.events`)}</a>
-                            <a href='site_pages/groups.html?id=${id}&section=recommend' ${section == 'recommend' ? 'class=\'selectd\'' : ''}>${_(`groups.recommended`)}</a>
-                            <a href='site_pages/groups.html?id=${id}&section=recents' ${section == 'recents' ? 'class=\'selectd\'' : ''}>${_(`groups.recent`)}</a>
+                            <a href='#groups${id}/all' ${section == 'all' || section == 'managed' ? 'class=\'selectd\'' : ''}>${_(`groups.all_groups`)}</a>
+                            <a href='#groups${id}/events' ${section == 'events' ? 'class=\'selectd\'' : ''}>${_(`groups.events`)}</a>
+                            <a href='#groups${id}/recommend' ${section == 'recommend' ? 'class=\'selectd\'' : ''}>${_(`groups.recommended`)}</a>
+                            <a href='#groups${id}/recents' ${section == 'recents' ? 'class=\'selectd\'' : ''}>${_(`groups.recent`)}</a>
                         ` : `
-                            <a href='site_pages/groups.html?id=${id}&section=all' ${section == 'all' || section == 'managed' ? 'class=\'selectd\'' : ''}>${_(`groups.all_groups`)}</a>
+                            <a href='#groups${id}/all' ${section == 'all' || section == 'managed' ? 'class=\'selectd\'' : ''}>${_(`groups.all_groups`)}</a>
                         `}
                     </div>
                 </div>
@@ -129,6 +129,8 @@ window.page_class = new class {
             tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
-        $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        if(section != 'recents') {
+            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        }
     }
 }

@@ -1,6 +1,6 @@
 window.page_class = new class {
     async render_page() {
-        let id = window.s_url.searchParams.get('id')
+        let id = window.main_class['hash_params'].id
         if(!id || id == '0') {
             add_onpage_error(':(')
             return

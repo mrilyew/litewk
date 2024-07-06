@@ -2,9 +2,9 @@ window.page_class = new class {
     async render_page() {
         document.title = _('friends.friends')
         
-        let section = window.s_url.searchParams.get('section') ?? 'all'
+        let section = window.main_class['hash_params'].section ?? 'all'
 
-        let id = Number(window.s_url.searchParams.get('id'))
+        let id = Number(window.main_class['hash_params'].id)
         let us_info = null
         if(id == 0 || id == null || isNaN(id)) {
             id = window.active_account.vk_info.id
@@ -20,9 +20,9 @@ window.page_class = new class {
         }
 
         let tabs_html = `
-            <a href='site_pages/friends.html?id=${id}&section=all' data-section='all'>${_('friends.all_friends')}</a>
-            <a href='site_pages/friends.html?id=${id}&section=online' data-section='online'>${_('friends.online_friends')}</a>
-            ${!is_this ? `<a href='site_pages/friends.html?id=${id}&section=mutual' data-section='mutual'>${_('friends.mutual_friends')}</a>` : ''}
+            <a href='#friends${id}/all' data-section='all'>${_('friends.all_friends')}</a>
+            <a href='#friends${id}/online' data-section='online'>${_('friends.online_friends')}</a>
+            ${!is_this ? `<a href='#friends${id}/mutual' data-section='mutual'>${_('friends.mutual_friends')}</a>` : ''}
         `
         
         if(id == 0 || id == null) {
@@ -67,8 +67,8 @@ window.page_class = new class {
                 wall_params.out = 0
 
                 tabs_html = `
-                    <a href='site_pages/friends.html?id=${id}&section=incoming' data-section='incoming'>${_('friends.incoming')}</a>
-                    <a href='site_pages/friends.html?id=${id}&section=outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
+                    <a href='#friends${id}/incoming' data-section='incoming'>${_('friends.incoming')}</a>
+                    <a href='#friends${id}/outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
                 `
                 break
             case 'outcoming':
@@ -78,8 +78,8 @@ window.page_class = new class {
                 wall_params.out = 1
                 
                 tabs_html = `
-                    <a href='site_pages/friends.html?id=${id}&section=incoming' data-section='incoming'>${_('friends.incoming')}</a>
-                    <a href='site_pages/friends.html?id=${id}&section=outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
+                    <a href='#friends${id}/incoming' data-section='incoming'>${_('friends.incoming')}</a>
+                    <a href='#friends${id}/outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
                 `
                 break
             case 'suggests':
@@ -99,7 +99,7 @@ window.page_class = new class {
 
                 method = 'users.getFollowers'
                 tabs_html = `
-                    <a href='site_pages/friends.html?id=${id}&section=followers' data-section='followers'>${_('friends.followers')}</a>
+                    <a href='#friends${id}/followers' data-section='followers'>${_('friends.followers')}</a>
                 `
                 break
             case 'mutual':
@@ -130,7 +130,7 @@ window.page_class = new class {
             case 'list':
                 document.title = _('friends.friends_list')
                 tabs_html = `
-                    <a href="site_pages/friends.html?id=${id}&section=list" data-section='list' data-ignore='1' class="selectd">${_('friends.friends_list')}</a>
+                    <a href="#friends${id}/list" data-section='list' data-ignore='1' class="selectd">${_('friends.friends_list')}</a>
                 `
 
                 method = 'friends.get'
@@ -164,16 +164,16 @@ window.page_class = new class {
                             </a>
 
                             ${is_this ? `
-                                <a href='site_pages/friends.html?section=all' ${section == 'all' || section == 'online' ? 'class=\'selectd\'' : ''}>${_(`friends.all_friends`)}</a>
-                                <a href='site_pages/friends.html?section=search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
-                                <a href='site_pages/friends.html?section=incoming' ${section == 'incoming' || section == 'outcoming' ? 'class=\'selectd\'' : ''}>${_(`friends.friends_requests`)}</a>
-                                <a href='site_pages/friends.html?section=suggests' ${section == 'suggests' ? 'class=\'selectd\'' : ''}>${_(`friends.recomended_friends`)}</a>
-                                <a href='site_pages/friends.html?section=cleanup' ${section == 'cleanup' ? 'class=\'selectd\'' : ''}>${_(`friends.cleanup_friends`)}</a>
-                                <a href='site_pages/friends.html?id=${id}&section=followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
+                                <a href='#friends/all' ${section == 'all' || section == 'online' ? 'class=\'selectd\'' : ''}>${_(`friends.all_friends`)}</a>
+                                <a href='#friends/search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
+                                <a href='#friends/incoming' ${section == 'incoming' || section == 'outcoming' ? 'class=\'selectd\'' : ''}>${_(`friends.friends_requests`)}</a>
+                                <a href='#friends/suggests' ${section == 'suggests' ? 'class=\'selectd\'' : ''}>${_(`friends.recomended_friends`)}</a>
+                                <a href='#friends/cleanup' ${section == 'cleanup' ? 'class=\'selectd\'' : ''}>${_(`friends.cleanup_friends`)}</a>
+                                <a href='#friends${id}/followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
                             ` : `
-                            <a href='site_pages/friends.html?id=${id}&section=all' ${section == 'all' || section == 'online' || section == 'mutual' ? 'class=\'selectd\'' : ''}>${_(`friends.users_friends`)}</a>
-                            <a href='site_pages/friends.html?id=${id}&section=search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
-                            <a href='site_pages/friends.html?id=${id}&section=followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
+                            <a href='#friends${id}/all' ${section == 'all' || section == 'online' || section == 'mutual' ? 'class=\'selectd\'' : ''}>${_(`friends.users_friends`)}</a>
+                            <a href='#friends${id}/search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
+                            <a href='#friends${id}/followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
                             `}
                             
                             <div class='wall_wrapper_newsfeed_params' style='display:none;'>
@@ -224,7 +224,7 @@ window.page_class = new class {
             friends_lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
-                    <a href='site_pages/friends.html?id=${id}&section=list&section_id=${list.id}' ${Number(window.s_url.searchParams.get('section_id')) == list.id ? 'class=\'selectd\'' : ''}>${list.name}</a>
+                    <a href='?section_id=${list.id}#friends${id}/list' ${Number(window.s_url.searchParams.get('section_id')) == list.id ? 'class=\'selectd\'' : ''}>${list.name}</a>
                     `
                 )
             })

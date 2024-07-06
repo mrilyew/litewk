@@ -82,7 +82,7 @@ window.page_class = new class {
     async render_page(section = null) 
     {
         if(section == null) {
-            section = window.s_url.searchParams.get('section') ?? 'ui'
+            section = window.main_class['hash_params'].section ?? 'ui'
         }
 
         document.title = _('settings.settings_' + section)
@@ -109,7 +109,7 @@ window.page_class = new class {
             }
 
             this.render_page(e.target.dataset.section)
-            window.s_url.searchParams.set('section', e.target.dataset.section)
+            window.s_url.hash = 'settings/' + e.target.dataset.section
             push_state(window.s_url)
         })
     
@@ -581,7 +581,7 @@ window.page_class = new class {
     
                             <div class='additional_buttons'>
                                 ${!window.site_params.has('active_account') ? '' : `<input type='button' id='_logoutacc' value='${_('settings_accounts.accounts_logout')}'>`}
-                                <a href='site_pages/auth.html'><input type='button' value='${_('settings_accounts.accounts_add')}'></a>
+                                <a href='#login'><input type='button' value='${_('settings_accounts.accounts_add')}'></a>
                             </div>
                         </div>
                         <div class='settings_accounts'></div>
@@ -619,14 +619,14 @@ window.page_class = new class {
                     }
 
                     window.accounts.setActiveAccount(e.currentTarget.dataset.id)
-                    window.router.restart('accounts')
+                    window.router.restart('accounts', 'ignore_menu')
 
                     refresh_counters()
                 })
 
                 $('#_logoutacc').on('click', (e) => {
                     window.site_params.delete('active_account')
-                    window.router.restart('accounts')
+                    window.router.restart('accounts', 'ignore_menu')
                 })
 
                 break

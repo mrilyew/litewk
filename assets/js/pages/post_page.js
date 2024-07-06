@@ -1,6 +1,6 @@
 window.page_class = new class {
     async render_page() {
-        let id = window.s_url.searchParams.get('post')
+        let id = window.main_class['hash_params'].owner_id + '_' + window.main_class['hash_params'].post_id
         let splitted = id.split('_')
 
         if(!id || id == '0' || id.split(',').length > 1) {
@@ -32,7 +32,7 @@ window.page_class = new class {
         }
 
         document.title = _('wall.post')
-        tabs.forEach(tab => {tabs_ += `<a href='site_pages/wall.html?id=${splitted[0]}&wall_section=${tab}'>${_(`wall.${tab}_posts`)}</a>`})
+        tabs.forEach(tab => {tabs_ += `<a href='#wall${splitted[0]}/${tab}'>${_(`wall.${tab}_posts`)}</a>`})
 
         let comm_sort = window.s_url.searchParams.get('comm_sort') ?? window.site_params.get('ux.default_sort', 'asc')
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
@@ -59,7 +59,7 @@ window.page_class = new class {
                     </div>
                     <div class='wall_wrapper_tabs bordered_block'>
                         ${tabs_}
-                        <a href='site_pages/wall.html?id=${splitted[0]}&wall_section=search'>${_(`wall.search_posts`)}</a>
+                        <a href='#wall${splitted[0]}/search'>${_(`wall.search_posts`)}</a>
                         <a data-ignore='1' class='selectd'>${_(`wall.post`)}</a>
                     </div>
                 </div>

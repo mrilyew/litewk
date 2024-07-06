@@ -1,7 +1,7 @@
 window.page_class = new class {
     async render_page() {
-        let id = window.s_url.searchParams.get('id')
-        let section = window.s_url.searchParams.get('wall_section') ?? 'all'
+        let id = window.main_class['hash_params'].owner_id
+        let section = window.main_class['hash_params'].section ?? 'all'
 
         if(!id) {
             add_onpage_error(_('errors.wall_not_found', id))
@@ -19,7 +19,7 @@ window.page_class = new class {
         tabs.push('search')
 
         document.title = _('wall.wall')
-        tabs.forEach(tab => {tabs_ += `<a href='site_pages/wall.html?id=${id}&wall_section=${tab}' ${tab == section ? 'class=\'selectd\'' : ''}>${_(`wall.${tab}_posts`)}</a>`})
+        tabs.forEach(tab => {tabs_ += `<a href='#wall${id}/${tab}' ${tab == section ? 'class=\'selectd\'' : ''}>${_(`wall.${tab}_posts`)}</a>`})
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `

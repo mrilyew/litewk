@@ -527,6 +527,8 @@ window.langs = [
             'events_title': 'Ваши события',
             'recommended_title': 'Рекомендуемое вам',
             'recent_title': 'Недавно посещённые вами группы',
+
+            'clear_recents': 'Очистить',
         },
 
         'wall': {
