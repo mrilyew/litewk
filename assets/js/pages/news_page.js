@@ -23,23 +23,23 @@ window.page_class = new class {
 
                         <div>
                             <label>
-                                <input type='checkbox' id='__newsfeedreturnbanned' ${window.s_url.searchParams.get('return_banned') == '1' ? 'checked' : ''}>
+                                <input type='checkbox' id='__newsfeedreturnbanned' ${window.main_url.searchParams.get('return_banned') == '1' ? 'checked' : ''}>
                                 ${_('newsfeed.newsfeed_return_banned')}
                             </label>
 
                             ${tab == 'def' || tab == 'custom' ?
                             `<label>
                                 <select id='__newsfeedreturntype'>
-                                    <option value='all' ${window.s_url.searchParams.get('news_type', 'all') == 'all' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_all')}</option>
-                                    <option value='post' ${window.s_url.searchParams.get('news_type', 'all') == 'post' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_posts')}</option>
-                                    <!--<option value='photo' ${window.s_url.searchParams.get('news_type', 'all') == 'photo' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_photo')}</option>-->
-                                    <option value='photo_tag' ${window.s_url.searchParams.get('news_type', 'all') == 'photo_tag' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_photo_tags')}</option>
-                                    <option value='wall_photo' ${window.s_url.searchParams.get('news_type', 'all') == 'wall_photo' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_wall_photo')}</option>
-                                    <option value='video' ${window.s_url.searchParams.get('news_type', 'all') == 'video' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_video')}</option>
-                                    <option value='audio' ${window.s_url.searchParams.get('news_type', 'all') == 'audio' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_audio')}</option>
-                                    <option value='note' ${window.s_url.searchParams.get('news_type', 'all') == 'note' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_note')}</option>
-                                    <option value='clip' ${window.s_url.searchParams.get('news_type', 'all') == 'clip' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_clips')}</option>
-                                    <option value='friend' ${window.s_url.searchParams.get('news_type', 'all') == 'friend' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_friends')}</option>
+                                    <option value='all' ${window.main_url.searchParams.get('news_type', 'all') == 'all' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_all')}</option>
+                                    <option value='post' ${window.main_url.searchParams.get('news_type', 'all') == 'post' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_posts')}</option>
+                                    <!--<option value='photo' ${window.main_url.searchParams.get('news_type', 'all') == 'photo' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_photo')}</option>-->
+                                    <option value='photo_tag' ${window.main_url.searchParams.get('news_type', 'all') == 'photo_tag' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_photo_tags')}</option>
+                                    <option value='wall_photo' ${window.main_url.searchParams.get('news_type', 'all') == 'wall_photo' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_wall_photo')}</option>
+                                    <option value='video' ${window.main_url.searchParams.get('news_type', 'all') == 'video' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_video')}</option>
+                                    <option value='audio' ${window.main_url.searchParams.get('news_type', 'all') == 'audio' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_audio')}</option>
+                                    <option value='note' ${window.main_url.searchParams.get('news_type', 'all') == 'note' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_note')}</option>
+                                    <option value='clip' ${window.main_url.searchParams.get('news_type', 'all') == 'clip' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_clips')}</option>
+                                    <option value='friend' ${window.main_url.searchParams.get('news_type', 'all') == 'friend' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_friends')}</option>
                                 </select>
                             </label>` : ''}
                             <label>
@@ -55,11 +55,11 @@ window.page_class = new class {
         let method = 'newsfeed.get'
         let method_params = {'count': 10, 'fields': window.typical_fields, 'extended': 1}
 
-        if(window.s_url.searchParams.get('news_type', 'all') != 'all') {
-            method_params.filters = window.s_url.searchParams.get('news_type', 'all')
+        if(window.main_url.searchParams.get('news_type', 'all') != 'all') {
+            method_params.filters = window.main_url.searchParams.get('news_type', 'all')
         }
 
-        if(window.s_url.searchParams.get('return_banned') == '1' || window.s_url.searchParams.get('return_banned') == 'tanki') {
+        if(window.main_url.searchParams.get('return_banned') == '1' || window.main_url.searchParams.get('return_banned') == 'tanki') {
             method_params.return_banned = 1
         }
 
@@ -78,8 +78,7 @@ window.page_class = new class {
             case 'custom':
                 method = 'newsfeed.get'
 
-                log(window.s_url.searchParams.get('news_section_list'))
-                method_params.source_ids = 'list' + window.s_url.searchParams.get('news_section_list')
+                method_params.source_ids = 'list' + window.main_url.searchParams.get('news_section_list')
                 break
         }
 
@@ -87,8 +86,8 @@ window.page_class = new class {
         window.main_classes['wall'] = new Newsfeed('.newsfeed_wrapper_posts')
         window.main_classes['wall'].setParams(method, method_params)
         
-        if(window.s_url.searchParams.has('start_hash')) {
-            window.main_classes['wall'].method_params.start_from = window.s_url.searchParams.get('start_hash')
+        if(window.main_url.searchParams.has('start_hash')) {
+            window.main_classes['wall'].method_params.start_from = window.main_url.searchParams.get('start_hash')
         }
 
         await window.main_classes['wall'].nextPage()
@@ -97,7 +96,7 @@ window.page_class = new class {
             window.main_classes['wall'].lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
-                    <a href='?news_section_list=${list.id}&news_type=post#feed/custom' ${Number(window.s_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
+                    <a href='?news_section_list=${list.id}&news_type=post#feed/custom' ${Number(window.main_url.searchParams.get('news_section_list')) == list.id ? 'class=\'selectd\'' : ''}>${list.title}</a>
                     `
                 )
             })

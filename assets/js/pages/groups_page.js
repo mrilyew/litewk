@@ -6,16 +6,16 @@ window.page_class = new class {
         let id = Number(window.main_class['hash_params'].id)
         let us_info = null
         if(id == 0 || id == null || isNaN(id)) {
-            id = window.active_account.vk_info.id
+            id = window.active_account.info.id
         }
 
-        let is_this = (id == window.active_account.vk_info.id)
+        let is_this = (id == window.active_account.info.id)
         if(!is_this) {
             us_info = new User
             await us_info.fromId(id)
         } else {
             us_info = new User
-            us_info.hydrate(window.active_account.vk_info)
+            us_info.hydrate(window.active_account.info)
         }
 
         let tabs_html = `
@@ -24,7 +24,7 @@ window.page_class = new class {
         `
 
         let method = 'groups.get'
-        let method_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.typical_group_fields}
+        let method_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.Utils.typical_group_fields}
 
         switch(section) {
             default:
@@ -84,7 +84,7 @@ window.page_class = new class {
                             </div>
 
                             <div class='two_big_blocks_wrapper_user_info_name'>
-                                <b>${cut_string(us_info.getName(), 15)}</b>
+                                <b>${Utils.cut_string(us_info.getName(), 15)}</b>
                                 <span>${_('user_page.go_to_user_page')}</span>
                             </div>
                         </a>
@@ -115,8 +115,8 @@ window.page_class = new class {
         window.main_classes['wall'].setParams(method, method_params)
         window.main_classes['wall'].clear()
         
-        if(window.s_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        if(window.main_url.searchParams.has('page')) {
+            window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
         }
 
         await window.main_classes['wall'].nextPage()
@@ -129,8 +129,8 @@ window.page_class = new class {
             tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
-        if(section != 'recents') {
-            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        if(section != 'recents' && section != 'recommend') {
+            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
         }
     }
 }

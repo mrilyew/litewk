@@ -5,7 +5,7 @@ window.page_class = new class {
         let section = window.main_class['hash_params'].section ?? 'all'
         let tabs_html = ``
         let method = 'users.search'
-        let method_params = {'count': 10, 'extended': 1, 'fields': window.typical_group_fields + ',' + window.typical_fields}
+        let method_params = {'count': 10, 'extended': 1, 'fields': window.Utils.typical_group_fields + ',' + window.Utils.typical_fields}
         let SearchClass = null
 
         switch(section) {
@@ -14,22 +14,22 @@ window.page_class = new class {
             case 'users':
                 SearchClass = UserListView
                 method = 'users.search'
-                method_params.q = window.s_url.searchParams.get('query') ?? ''
+                method_params.q = window.main_url.searchParams.get('query') ?? ''
 
-                if(window.s_url.searchParams.get('group_id')) {
-                    method_params.group_id = window.s_url.searchParams.get('group_id')
+                if(window.main_url.searchParams.get('group_id')) {
+                    method_params.group_id = window.main_url.searchParams.get('group_id')
                 }
 
                 break
             case 'groups':
                 SearchClass = ClubListView
                 method = 'groups.search'
-                method_params.q = window.s_url.searchParams.get('query') ?? ''
+                method_params.q = window.main_url.searchParams.get('query') ?? ''
                 break
             case 'posts':
                 SearchClass = Post
                 method = 'newsfeed.search'
-                method_params.q = window.s_url.searchParams.get('query') ?? ''
+                method_params.q = window.main_url.searchParams.get('query') ?? ''
                 break
         }
 
@@ -65,7 +65,7 @@ window.page_class = new class {
                         </div>
 
                         <div class='friends_search_fuck_block' id='_global_search' style='margin-bottom: 10px;'>
-                            <input type='text' placeholder='${_('search.search')}' value='${window.s_url.searchParams.get('query') ?? ''}'>
+                            <input type='text' placeholder='${_('search.search')}' value='${window.main_url.searchParams.get('query') ?? ''}'>
                             <input type='button' style='margin-left: 5px;' value='${_('wall.search')}'>
                         </div>
 
@@ -87,8 +87,8 @@ window.page_class = new class {
         window.main_classes['wall'].setParams(method, method_params)
         window.main_classes['wall'].clear()
             
-        if(window.s_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        if(window.main_url.searchParams.has('page')) {
+            window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
         }
 
         await window.main_classes['wall'].nextPage()
@@ -96,6 +96,6 @@ window.page_class = new class {
             tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
-        $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
     }
 }

@@ -1,23 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="/litewk/">
-    <meta charset="UTF-8">
+    <base href='/litewk/'>
+    <meta charset='UTF-8'>
     <title>Untitled</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel='stylesheet' href='main.css'>
+    <link rel='shortcut icon' href='favicon.ico' type='image/x-icon'>
     
-    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src='https://code.jquery.com/jquery-3.6.3.js' integrity='sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=' crossorigin='anonymous'></script>
     <script src='https://momentjs.com/downloads/moment.js'></script>
-    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src='https://unpkg.com/twemoji@latest/dist/twemoji.min.js' crossorigin='anonymous'></script>
 </head>
 <body>
-    <script src="assets/js/utils/classes.js"></script>
-    <script src="assets/js/utils/i18n.js"></script>
-    <script src="assets/js/utils/utils.js"></script>
-    <script src="assets/js/utils/templates.js"></script>
-    <script src="assets/js/utils/buttons.js"></script>
+    <script src='assets/js/internal/classes/components/site_params.js'></script>
+    <script src='assets/js/internal/classes/components/left_menu.js'></script>
+    <script src='assets/js/internal/classes/components/accounts.js'></script>
+    <script src='assets/js/internal/classes/components/router.js'></script>
+    <script src='assets/js/internal/classes/components/tweaks.js'></script>
+    <script src='assets/js/internal/classes/components/message_box.js'></script>
+
+    <script src='assets/js/internal/classes/api/vk_api.js'></script>
+    <script src='assets/js/internal/classes/api/main_classes.js'></script>
+
+    <script src='assets/js/internal/classes/api/wallable/user.js'></script>
+    <script src='assets/js/internal/classes/api/wallable/club.js'></script>
+
+    <script src='assets/js/internal/classes/api/postable/post.js'></script>
+    <script src='assets/js/internal/classes/api/postable/photo.js'></script>
+    <script src='assets/js/internal/classes/api/postable/video.js'></script>
+    <script src='assets/js/internal/classes/api/postable/audio.js'></script>
+    <script src='assets/js/internal/classes/api/postable/poll.js'></script>
+    <script src='assets/js/internal/classes/api/postable/attached_link.js'></script>
+    <script src='assets/js/internal/classes/api/postable/doc.js'></script>
+    <script src='assets/js/internal/classes/api/postable/comment.js'></script>
+
+    <script src='assets/js/internal/classes/components/scrolling/api_list_views.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/list_views.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/bookmarks.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/wall.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/comments.js'></script>
+    <script src='assets/js/internal/classes/components/newsfeed/newsfeed_subclasses.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/friends.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/recommended_groups.js'></script>
+
+    <script src='assets/js/internal/langs/ru.js'></script>
+    <script src='assets/js/internal/langs/qqx.js'></script>
+    <script src='assets/js/internal/langs/i18n.js'></script>
+
+    <script src='assets/js/internal/classes/buttons.js'></script>
+    <script src='assets/js/internal/classes/utils.js'></script>
+
+    <script src='assets/js/internal/templates/main_template.js'></script>
+
+    <script src='assets/js/internal/templates/user_page_templates/work_template.js'></script>
+    <script src='assets/js/internal/templates/user_page_templates/school_template.js'></script>
+    <script src='assets/js/internal/templates/user_page_templates/univer_template.js'></script>
+    <script src='assets/js/internal/templates/user_page_templates/relative_template.js'></script>
+    <script src='assets/js/internal/templates/user_page_templates/mil_template.js'></script>
+
+    <script src='assets/js/internal/templates/user_page.js'></script>
+    <script src='assets/js/internal/templates/club_page.js'></script>
+    <script src='assets/js/internal/templates/attachments.js'></script>
+    <script src='assets/js/internal/templates/post.js'></script>
+    <script src='assets/js/internal/templates/comment.js'></script>
+    <script src='assets/js/internal/templates/wall.js'></script>
+    <script src='assets/js/internal/templates/paginator.js'></script>
     
-    <script src="assets/js/main.js"></script>
+    <script src='assets/js/main.js'></script>
 </body>
 </html>

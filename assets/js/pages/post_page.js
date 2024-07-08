@@ -9,24 +9,21 @@ window.page_class = new class {
         }
 
         // Drawing user page
-        let info = null
-        let post = null
+        let post = new Post
 
         try {
-            info = (await window.vk_api.call('wall.getById', {'posts': id, 'extended': 1, 'fields': window.typical_fields})).response
-            post = new Post
-            post.hydrate(info.items[0], info.profiles, info.groups)
+            await post.fromId(id)
         } catch(e) {}
 
-        if(!info) {
-            add_onpage_error(_('errors.post_not_found', id))
+        if(!post.info) {
+            main_class.add_onpage_error(_('errors.post_not_found', id))
             return
         }
 
         let tabs = ['all', 'owner']
         let tabs_ = ''
 
-        if(Number(splitted[0]) == window.active_account.vk_info.id) {
+        if(Number(splitted[0]) == window.active_account.info.id) {
             tabs.push('others')
             tabs.push('archived')
         }
@@ -34,7 +31,7 @@ window.page_class = new class {
         document.title = _('wall.post')
         tabs.forEach(tab => {tabs_ += `<a href='#wall${splitted[0]}/${tab}'>${_(`wall.${tab}_posts`)}</a>`})
 
-        let comm_sort = window.s_url.searchParams.get('comm_sort') ?? window.site_params.get('ux.default_sort', 'asc')
+        let comment_sort = window.main_url.searchParams.get('comment_sort') && ['asc', 'desc', 'smart'].indexOf(window.main_url.searchParams.get('comment_sort')) != -1 ? window.main_url.searchParams.get('comment_sort') : window.site_params.get('ux.default_sort', 'asc')
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `
                 <div class='default_wrapper wall_wrapper'>
@@ -49,9 +46,9 @@ window.page_class = new class {
                         ${post.info.comments.count > 1 ? `
                         <div id='post_comment_sort' class='comment_sort'>
                             <select>
-                                <option value='desc' ${comm_sort == 'desc' ? 'selected' : ''}>${_('wall.sort_new_first')}</option>
-                                <option value='asc' ${comm_sort == 'asc' ? 'selected' : ''}>${_('wall.sort_old_first')}</option>
-                                <option value='smart' ${comm_sort == 'smart' ? 'selected' : ''}>${_('wall.sort_interesting_first')}</option>
+                                <option value='desc' ${comment_sort == 'desc' ? 'selected' : ''}>${_('wall.sort_new_first')}</option>
+                                <option value='asc' ${comment_sort == 'asc' ? 'selected' : ''}>${_('wall.sort_old_first')}</option>
+                                <option value='smart' ${comment_sort == 'smart' ? 'selected' : ''}>${_('wall.sort_interesting_first')}</option>
                             </select>
                         </div>` : ''}
 
@@ -67,20 +64,18 @@ window.page_class = new class {
         )
 
         if(!post.needToHideComments()) {
-            let sort = window.s_url.searchParams.get('comm_sort') && ['asc', 'desc', 'smart'].indexOf(window.s_url.searchParams.get('comm_sort')) != -1 ? comm_sort : window.site_params.get('ux.default_sort', 'asc')
-
-            window.main_classes['wall'] = new ClassicListView(Comment, '.wall_wrapper_post .wall_wrapper_comments')
-            window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.info.owner_id, 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': window.typical_fields, 'sort': sort})
+            window.main_classes['wall'] = new Comments(Comment, '.wall_wrapper_post .wall_wrapper_comments')
+            window.main_classes['wall'].setParams('wall.getComments', {'owner_id': post.info.owner_id, 'post_id': post.getCorrectID(), 'need_likes': 1, 'extended': 1, 'thread_items_count': 3, 'fields': window.Utils.typical_fields + ',' + window.Utils.typical_group_fields, 'sort': comment_sort})
                 
-            if(window.s_url.searchParams.has('page')) {
-                window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+            if(window.main_url.searchParams.has('page')) {
+                window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
             }
     
             window.main_classes['wall'].clear()
             await window.main_classes['wall'].nextPage()
     
             $('.comment_select_block span')[0].innerHTML = _('wall.comments_count_with_threads', window.main_classes['wall'].objects.count, post.info.comments.count)
-            $('.comment_select_block')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+            $('.comment_select_block')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
         }
     }
 }

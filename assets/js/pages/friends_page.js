@@ -5,18 +5,17 @@ window.page_class = new class {
         let section = window.main_class['hash_params'].section ?? 'all'
 
         let id = Number(window.main_class['hash_params'].id)
-        let us_info = null
+        let us_info = new User
         if(id == 0 || id == null || isNaN(id)) {
-            id = window.active_account.vk_info.id
+            id = window.active_account.info.id
         }
 
-        let is_this = (id == window.active_account.vk_info.id)
+        let is_this = (id == window.active_account.info.id)
+
         if(!is_this) {
-            us_info = new User
             await us_info.fromId(id)
         } else {
-            us_info = new User
-            us_info.hydrate(window.active_account.vk_info)
+            us_info.hydrate(window.active_account.info)
         }
 
         let tabs_html = `
@@ -24,15 +23,15 @@ window.page_class = new class {
             <a href='#friends${id}/online' data-section='online'>${_('friends.online_friends')}</a>
             ${!is_this ? `<a href='#friends${id}/mutual' data-section='mutual'>${_('friends.mutual_friends')}</a>` : ''}
         `
-        
+
         if(id == 0 || id == null) {
-            id = window.active_account.vk_info.id
+            id = window.active_account.info.id
         }
 
         let method = 'friends.get'
-        let wall_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.typical_fields}
+        let wall_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.Utils.typical_fields}
 
-        if(id == window.active_account.vk_info.id) {
+        if(id == window.active_account.info.id) {
             wall_params.order = 'hints'
         }
 
@@ -53,12 +52,12 @@ window.page_class = new class {
                 method = 'friends.search'
                 tabs_html = `
                     <div class='friends_search_fuck_block'>
-                        <input type='text' value='${window.s_url.searchParams.get('query') ?? ''}' placeholder='${_('friends.search_friends_longer')}' id='__friendssearch'>
+                        <input type='text' value='${window.main_url.searchParams.get('query') ?? ''}' placeholder='${_('friends.search_friends_longer')}' id='__friendssearch'>
                         <input type='button' value='${_('friends.search_friends')}' id='__friendssearchbtn'>
                     </div>
                 `
 
-                wall_params.q = window.s_url.searchParams.get('query') ?? ''
+                wall_params.q = window.main_url.searchParams.get('query') ?? ''
                 break
             case 'incoming':
                 document.title = _('friends.incoming_requests')
@@ -134,7 +133,7 @@ window.page_class = new class {
                 `
 
                 method = 'friends.get'
-                wall_params.list_id = window.s_url.searchParams.get('section_id')
+                wall_params.list_id = window.main_url.searchParams.get('section_id')
                 break
         }
 
@@ -158,7 +157,7 @@ window.page_class = new class {
                                 </div>
 
                                 <div class='two_big_blocks_wrapper_user_info_name'>
-                                    <b>${cut_string(us_info.getName(), 15)}</b>
+                                    <b>${Utils.cut_string(us_info.getName(), 15)}</b>
                                     <span>${_('user_page.go_to_user_page')}</span>
                                 </div>
                             </a>
@@ -190,12 +189,12 @@ window.page_class = new class {
 
         tab_dom.addClass('selectd')
         
-        window.main_classes['wall'] = new ClassicListView(UserListView, '.friends_insert')
+        window.main_classes['wall'] = new Friends(UserListView, '.friends_insert')
         window.main_classes['wall'].setParams(method, wall_params)
         window.main_classes['wall'].clear()
             
-        if(window.s_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        if(window.main_url.searchParams.has('page')) {
+            window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
         }
 
         let val = await window.main_classes['wall'].nextPage()
@@ -209,10 +208,10 @@ window.page_class = new class {
                 return
             }
             
-            add_onpage_error(_('errors.friends_not_found', id))
+            main_class.add_onpage_error(_('errors.friends_not_found', id))
             return
         } else {
-            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
         }
 
         let friends_lists = await window.vk_api.call('friends.getLists', {'user_id': id}, false)
@@ -224,7 +223,7 @@ window.page_class = new class {
             friends_lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
-                    <a href='?section_id=${list.id}#friends${id}/list' ${Number(window.s_url.searchParams.get('section_id')) == list.id ? 'class=\'selectd\'' : ''}>${list.name}</a>
+                    <a href='?section_id=${list.id}#friends${id}/list' ${Number(window.main_url.searchParams.get('section_id')) == list.id ? 'class=\'selectd\'' : ''}>${list.name}</a>
                     `
                 )
             })

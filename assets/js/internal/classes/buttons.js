@@ -1,15 +1,14 @@
-// AJAX-navigation
+// AJAx
 
 $(document).on('click', 'a', async (e) => {
     let target = e.target
-    //debugger
-
     if(target.tagName != 'A') {
         target = e.target.closest('a')
     }
 
     if(window.edit_mode) {
         e.preventDefault()
+
         return
     }
 
@@ -17,26 +16,30 @@ $(document).on('click', 'a', async (e) => {
         return
     }
 
-    if(e.target.tagName != 'a') {
-        target = e.target.closest('a')
-    }
-
-    if(target.href && target.href.indexOf(window.s_url.origin) != -1) {
-        e.preventDefault()
-        if(target.dataset.ignore) {
-            return
+    if(target.dataset.ignore == '1') {
+        return
+    } else {
+        if(target.href && target.href.indexOf(location.origin) != -1) {
+            e.preventDefault()
+    
+            await window.router.route(target.href)
         }
-
-        await window.router.route(target.href)
     }
 })
 
-window.addEventListener('hashchange', window.router.route(location.href, false));
+// Работает на честном слове.
 window.addEventListener('popstate', async (e) => {
-    e.preventDefault();
-    replace_state(location.href)
+    e.preventDefault()
 
-    await window.router.route(location.href, false)
+    console.log(e)
+    if(!e.state || e.state.go == 1) {
+        return
+    }
+
+    console.log('Popstate event go.')
+    Utils.replace_state(location.href)
+
+    await window.router.route(location.href)
 })
 
 $(document).on('click', '.menu_up_hover_click', (e) => {
@@ -517,13 +520,10 @@ $(document).on('click', '.post #_pinPost', async (e) => {
 // Wall
 
 $(document).on('change', '#post_comment_sort select', async (e) => {
-    window.s_url.searchParams.set('comm_sort', e.target.value)
-    replace_state(window.s_url)
-
-    window.main_classes['wall'].clear()
-    window.main_classes['wall'].objects.page = 0
-    window.main_classes['wall'].method_params.sort = e.target.value
-    await window.main_classes['wall'].nextPage()
+    main_url.searchParams.set('comment_sort', e.target.value)
+    Utils.replace_state(window.main_url)
+    
+    window.main_classes['wall'].changeSort(e.target.value)
 })
 
 $(document).on('change', '#thread_comment_sort select', async (e) => {
@@ -535,7 +535,7 @@ $(document).on('change', '#thread_comment_sort select', async (e) => {
     comm_block.setAttribute('data-offset', 10)
 
     comm_block.querySelector('.comments_thread_insert_block').innerHTML = ''
-    let result = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': 0, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': e.target.value})
+    let result = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': 0, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.utils.typical_fields, 'sort': e.target.value})
     let comments = result.response.items
 
     comments.forEach(el => {
@@ -566,8 +566,8 @@ $(document).on('click', '.smiley', async (e) => {
             </div>
 
             <div class='smiley_message_text'>
-                <span class='smiley_message_title'>${escape_html(stats.response.popup.title)}</span>
-                <span class='smiley_message_text_span'>${format_text(stats.response.popup.text)}</span>
+                <span class='smiley_message_title'>${Utils.escape_html(stats.response.popup.title)}</span>
+                <span class='smiley_message_text_span'>${Utils.format_text(stats.response.popup.text)}</span>
                 
                 ${stats.response.popup.buttons && stats.response.popup.buttons.length > 0 ? `<a href='${stats.response.popup.buttons[0].action.url}' target='_blank'><input type='button' id='__getStatus' value='${_('image_status.get_status')}'></a>` : ''}
                 
@@ -598,10 +598,10 @@ $(document).on('click', '.wall_select_block a', (e) => {
 
     window.main_classes['wall'].setSection($('.wall_select_block a.selectd')[0].dataset.section)
     
-    let temp_url = window.s_url
+    let temp_url = main_url
     temp_url.searchParams.delete('wall_query')
     temp_url.searchParams.set('wall_section', $('.wall_select_block a.selectd')[0].dataset.section)
-    push_state(temp_url)
+    Utils.push_state(temp_url)
 
     temp_url = null
 })
@@ -630,18 +630,19 @@ $(document).on('click', '.wall_block .searchIcon', (e) => {
 
 $(document).on('click', '#_invert_wall', (e) => {
     if(e.target.checked) {
-        window.s_url.searchParams.append('wall_invert', 'yes')
+        main_url.searchParams.append('wall_invert', 'yes')
     } else {
-        window.s_url.searchParams.delete('wall_invert')
+        main_url.searchParams.delete('wall_invert')
     }
 
-    push_state(window.s_url)
+    Utils.push_state(window.main_url)
     let tempp = window.main_classes['wall'].method_params
     tempp.offset = 0
 
     window.main_classes['wall'].setParams(window.main_classes['wall'].method_name, tempp, e.target.checked)
     window.main_classes['wall'].clear()
     window.main_classes['wall'].objects.page = -1
+
     window.main_classes['wall'].nextPage()
 })
 
@@ -669,13 +670,13 @@ $(document).on('click', '.paginator a', async (e) => {
     window.main_classes['wall'].clear()
     await window.main_classes['wall'].page(e.target.dataset.page - 1)
 
-    window.s_url = new URL(e.target.href)
-    push_state(window.s_url)
+    main_url = new URL(e.target.href)
+    Utils.push_state(window.main_url)
 
     $('.paginator').remove()
     window.main_classes['wall'].createNextPage()
 
-    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, Number(window.main_url.searchParams.get('page'))))
 })
 
 $(document).on('change', '#__enterpage', async (e) => {
@@ -690,13 +691,13 @@ $(document).on('change', '#__enterpage', async (e) => {
     window.main_classes['wall'].clear()
     await window.main_classes['wall'].page(new_page - 1)
 
-    window.s_url.searchParams.set('page', new_page)
-    push_state(window.s_url)
+    main_url.searchParams.set('page', new_page)
+    Utils.push_state(window.main_url)
 
     $('.paginator').remove()
     window.main_classes['wall'].createNextPage()
 
-    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, Number(window.s_url.searchParams.get('page'))))
+    $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, Number(window.main_url.searchParams.get('page'))))
 })
 
 $(document).on('click', '.like', async (e) => {
@@ -727,7 +728,7 @@ $(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
     let cid = comm_block.dataset.cid
     let offset = comm_block.dataset.offset ?? '3'
     let sort = comm_block.dataset.sort ?? 'asc'
-    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.typical_fields, 'sort': sort})
+    let replies = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': offset, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.Utils.typical_fields + ',' + window.Utils.typical_group_fields, 'sort': sort})
 
     replies.response.items.forEach(element => {
         let comm = new Comment()
@@ -813,8 +814,8 @@ $(document).on('change', '.newsfeed_wrapper #__newsfeedreturntype', async (e) =>
 
     window.main_classes['wall'].nextPage()
 
-    window.s_url.searchParams.set('news_type', e.target.value)
-    replace_state(window.s_url.href)
+    main_url.searchParams.set('news_type', e.target.value)
+    Utils.replace_state(window.main_url.href)
 })
 
 $(document).on('click', '.newsfeed_wrapper #__newsfeedreturnbanned', async (e) => {
@@ -822,13 +823,13 @@ $(document).on('click', '.newsfeed_wrapper #__newsfeedreturnbanned', async (e) =
     window.main_classes['wall'].method_params.return_banned = Number(e.target.checked)
     window.main_classes['wall'].nextPage()
 
-    window.s_url.searchParams.set('return_banned', Number(e.target.checked))
-    replace_state(window.s_url.href)
+    main_url.searchParams.set('return_banned', Number(e.target.checked))
+    Utils.replace_state(window.main_url.href)
 })
 
 $(document).on('change', '#__friendssearch', (e) => {
-    window.s_url.searchParams.set('query', e.target.value)
-    replace_state(window.s_url.href)
+    main_url.searchParams.set('query', e.target.value)
+    Utils.replace_state(window.main_url.href)
 
     window.router.restart()
 })
@@ -856,8 +857,8 @@ $(document).on('click', `#_bookmarks_search input[type='button']`, async (e) => 
 })
 
 $(document).on('change', `#_global_search input[type='text']`, async (e) => {
-    window.s_url.searchParams.set('query', e.target.value)
-    replace_state(location.origin + location.pathname + `?query=${e.target.value}` + location.hash)
+   main_url.searchParams.set('query', e.target.value)
+    Utils.replace_state(location.origin + location.pathname + `?query=${e.target.value}` + location.hash)
 
     window.router.restart()
 })

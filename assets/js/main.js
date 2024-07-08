@@ -1,171 +1,21 @@
-window.default_left_menu = [
-    {
-        'name': '_navigation.my_page',
-        'href': '#id0',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_news',
-        'anchor': '_news',
-        'href': '#feed',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_friends',
-        'anchor': '_friends',
-        'href': '#friends',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_groups',
-        'anchor': '_groups_invites',
-        'href': '#groups',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_messages',
-        'anchor': '_messages',
-        'href': '#messages',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_photos',
-        'anchor': '_photos',
-        'href': '#albums',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_audios',
-        'anchor': '_audios',
-        'href': '#audios',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_videos',
-        'anchor': '_videos',
-        'href': '#videos',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_faves',
-        'anchor': '_faves',
-        'href': '#fave',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_notifications',
-        'href': '#notifs',
-        'anchor': '_notifications',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_search',
-        'href': '#search',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_documents',
-        'href': '#docs',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_notes',
-        'href': '#notes',
-        'new_page': false,
-        'disabled': true,
-        'hidden': false,
-    },
-    {
-        'name': '_navigation.my_settings',
-        'href': '#settings',
-        'new_page': false,
-        'disabled': false,
-        'hidden': false,
-    },
-    {
-        'name': 'Dota 2',
-        'anchor': '_dota2',
-        'href': 'steam://rungameid/570',
-        'new_page': true,
-        'disabled': false,
-        'hidden': true,
-    }
-]
-
 window.main_class = new class {
     load_layout() {
         console.clear()
         console.log('Доброго времени суток.')
 
+        // Main classes
         window.saved_pages = []
         window.main_classes = {}
-        window.typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_100,photo_200,photo_orig,status,sex'
-        window.typical_group_fields = 'activity,photo_100,description,members_count'
+        window.site_params = new LocalStorageParams
+        window.left_menu = new LeftMenu
+        window.router = new Router
+        window.accounts = new Accounts
+        window.active_account = window.accounts.getActiveAccount()
+        window.main_url = new URL(location.href)
+        window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
+        window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
 
-        let menu_html = ``
-        window.left_menu = window.site_params.has('ui.left_menu') ? JSON.parse(window.site_params.get('ui.left_menu')) : window.default_left_menu
-
-        window.left_menu.forEach(tab => {
-            let tempname = tab.name
-            if(tab.hidden) {
-                return
-            }
-
-            if(tab.name[0] == '_') {
-                tempname = _(tab.name.substr(1))
-            }
-
-            menu_html += `
-                <a href='${tab.href}' ${tab.new_page ? `target='_blank'` : ''} ${tab.anchor ? ` id='${tab.anchor}' ` : ''} ${tab.disabled ? `class='stopped'` : ''}>${tempname}</a>
-            `
-        })
-
-        document.querySelector('body').insertAdjacentHTML('afterbegin', 
-        `
-        <style id='_customcss'>
-            ${window.site_params.get('ui.custom_css') ? escape_html(window.site_params.get('ui.custom_css')) : '{}'}
-        </style>
-        
-        <div class='dimmer'></div>
-        <div class='to_the_sky menu_up_hover_click'>
-            <span class='to_up'>${_('navigation.to_up')}</span>
-            <span class='come_back'>${_('navigation.come_back')}</span>
-        </div>
-        <div class="wrapper">
-            <div class="menu">
-                ${menu_html}
-                <div class='menu_up_hover menu_up_hover_click'></div>
-            </div>
-    
-            <div class="page_content">
-    
-            </div>
-        </div>
-        `)
+        document.querySelector('body').insertAdjacentHTML('afterbegin', window.templates.main(window.left_menu.getHTML()))
         
         let custom_js = window.site_params.get('ui.custom_js')
         if(custom_js) {
@@ -176,33 +26,121 @@ window.main_class = new class {
             document.body.appendChild(tmp_script)
         }
 
-        window.s_url = new URL(location.href)
-        window.accounts = new Accounts
-        window.active_account = window.accounts.getActiveAccount()
-        window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
         if(!window.active_account) {
             $('.wrapper .menu')[0].innerHTML = `
                 <a href='#login'>${_('navigation.authorize')}</a>
                 <a href='#settings'>${_('navigation.my_settings')}</a>
             `
         } else {
-            window.vk_api = new VkApi(window.active_account.vk_path, window.active_account.vk_token)
+            window.vk_api = new VkApi(window.active_account.path, window.active_account.token)
         }
 
-        window.router.route(window.s_url.hash)
+        window.router.route(location.href)
 
         setInterval(async () => {
             if(window.site_params.get('ux.send_online', '1') == '1' && window.active_account) {
                 await window.vk_api.call('account.setOnline')
 
-                log('5 minutes exceeded and online was called')
+                console.log('5 minutes exceeded and online was called')
             }
         }, 300000);
 
         
         setInterval(async () => {
-            await refresh_counters()
+            await this.refresh_counters()
         }, 60000);
+    }
+
+    
+    init_observers() {
+        if(window.site_params.get('ux.auto_scroll', '1') == '0' || $('.show_more')[0] == undefined) {
+            return 
+        }
+
+        if(!window.show_more_observer) {
+            window.show_more_observer = new IntersectionObserver(entries => {
+                entries.forEach(x => {
+                    if(x.isIntersecting) {
+                        $(".show_more").click()
+                    }
+                })
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0
+            })
+        }
+
+        window.show_more_observer.observe($('.show_more')[0])
+    }
+
+    add_error(message, id, wait_time = 5000, type = '') {
+        if(document.querySelectorAll(`*[data-errid='${id}']`).length > 0) {
+            return
+        }
+        
+        window.scrollTo(0, 0)
+        $('.page_content')[0].insertAdjacentHTML('afterbegin', `
+            <div class='head_error ${type}' data-errid='${id}'>
+                <span>${message}</span>
+            </div>
+        `)
+
+        setTimeout(() => {
+            $(`div[data-errid='${id}']`).remove()
+        }, wait_time)
+    }
+
+    add_onpage_error(message) {
+        $('.page_content')[0].innerHTML = ''
+        $('.page_content')[0].insertAdjacentHTML('beforeend', `
+            <div class='onpage_error'>
+                ${message}
+            </div>
+        `)
+    }
+
+    async refresh_counters() {
+        let counters = await window.vk_api.call('account.getCounters')
+        counters = counters.response
+    
+        $('.counter').remove()
+    
+        if(counters.faves && $('.menu #_faves')[0]) {
+            $('.menu #_faves')[0].innerHTML += `
+                <span class='counter'>${counters.faves}</span>
+            `
+        }
+        
+        if(counters.messages && $('.menu #_messages')[0]) {
+            $('.menu #_messages')[0].innerHTML += `
+                <span class='counter'>${counters.messages}</span>
+            `
+        }
+            
+        if(counters.groups && $('.menu #_groups_invites')[0]) {
+            $('.menu #_groups_invites')[0].innerHTML += `
+                <span class='counter'>${counters.groups}</span>
+            `
+        }
+                
+        if(counters.notifications && $('.menu #_notifications')[0]) {
+            $('.menu #_notifications')[0].innerHTML += `
+                <span class='counter'>${counters.notifications}</span>
+            `
+        }
+                    
+        if(counters.videos && $('.menu #_videos')[0]) {
+            $('.menu #_videos')[0].innerHTML += `
+                <span class='counter'>${counters.videos}</span>
+            `
+        }
+                        
+        if(counters.photos && $('.menu #_photos')[0]) {
+            $('.menu #_photos')[0].innerHTML += `
+                <span class='counter'>${counters.photos}</span>
+            `
+        }
     }
 }
 
@@ -212,5 +150,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('textarea').trigger('input')
     $(document).trigger('scroll')
 
-    setTimeout(() => {refresh_counters()}, 3000)
+    setTimeout(() => {window.main_class.refresh_counters()}, 3000)
 })

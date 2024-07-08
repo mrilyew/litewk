@@ -1,11 +1,11 @@
 window.page_class = new class {
     async render_page() {
-        let text = window.s_url.searchParams.get('id')
-        let link_start = window.s_url.origin + window.s_url.pathname
+        let text = window.main_url.searchParams.get('id') ?? window.main_class['hash_params'].id
+        let link_start = window.main_url.origin + window.main_url.pathname
         let link = ''
 
         if(!text) {
-            not_found_not_specified()
+            Utils.not_found_not_specified()
         }
 
         const special_addresses = [

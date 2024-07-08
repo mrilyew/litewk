@@ -5,7 +5,7 @@ window.page_class = new class {
         let section = window.main_class['hash_params'].section ?? 'all'
         let tabs_html = ``
         let method = 'fave.get'
-        let method_params = {'count': 10, 'extended': 1, 'fields': window.typical_fields}
+        let method_params = {'count': 10, 'extended': 1, 'fields': window.Utils.typical_fields}
 
         switch(section) {
             default:
@@ -16,7 +16,7 @@ window.page_class = new class {
                 document.title = _('bookmarks.pages_bookmarks')
     
                 method = 'fave.getPages'
-                method_params.fields = window.typical_group_fields + ',' + window.typical_fields
+                method_params.fields = window.Utils.typical_group_fields + ',' + window.Utils.typical_fields
                 break
             case 'user':
                 document.title = _('bookmarks.user_bookmarks_title')
@@ -29,7 +29,7 @@ window.page_class = new class {
     
                 method = 'fave.getPages'
                 method_params.type = 'groups'
-                method_params.fields = window.typical_group_fields
+                method_params.fields = window.Utils.typical_group_fields
                 break
             case 'post':
                 document.title = _('bookmarks.post_bookmarks_title')
@@ -116,8 +116,8 @@ window.page_class = new class {
         window.main_classes['wall'].setParams(method, method_params)
         window.main_classes['wall'].clear()
             
-        if(window.s_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.s_url.searchParams.get('page')) - 1
+        if(window.main_url.searchParams.has('page')) {
+            window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
         }
 
         await window.main_classes['wall'].nextPage()
@@ -125,7 +125,7 @@ window.page_class = new class {
             tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
-        $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', paginator_template(window.main_classes['wall'].objects.pagesCount, (Number(window.s_url.searchParams.get('page') ?? 1))))
+        $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
        
         let tags = await window.vk_api.call('fave.getTags', false)
         tags = tags.response
