@@ -11,7 +11,7 @@ window.main_class = new class {
         window.router = new Router
         window.accounts = new Accounts
         window.active_account = window.accounts.getActiveAccount()
-        window.main_url = new URL(location.href)
+        window.main_url = new BetterURL(location.href)
         window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
         window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
 
@@ -27,7 +27,7 @@ window.main_class = new class {
         }
 
         if(!window.active_account) {
-            $('.wrapper .menu')[0].innerHTML = `
+            $('.main_wrapper .navigation')[0].innerHTML = `
                 <a href='#login'>${_('navigation.authorize')}</a>
                 <a href='#settings'>${_('navigation.my_settings')}</a>
             `
@@ -35,10 +35,15 @@ window.main_class = new class {
             window.vk_api = new VkApi(window.active_account.path, window.active_account.token)
         }
 
-        window.router.route(location.href)
+        try {
+            window.router.route(location.href)
+        } catch(e) {
+            Utils.add_onpage_error(`${_('errors.could_not_draw_page')}:<br>
+            ${e.message}`)
+        }
 
         setInterval(async () => {
-            if(window.site_params.get('ux.send_online', '1') == '1' && window.active_account) {
+            if(window.site_params.get('ux.online_status', 'none') == 'timeout' && window.active_account) {
                 await window.vk_api.call('account.setOnline')
 
                 console.log('5 minutes exceeded and online was called')
@@ -53,10 +58,6 @@ window.main_class = new class {
 
     
     init_observers() {
-        if(window.site_params.get('ux.auto_scroll', '1') == '0' || $('.show_more')[0] == undefined) {
-            return 
-        }
-
         if(!window.show_more_observer) {
             window.show_more_observer = new IntersectionObserver(entries => {
                 entries.forEach(x => {
@@ -71,7 +72,32 @@ window.main_class = new class {
             })
         }
 
-        window.show_more_observer.observe($('.show_more')[0])
+        if(!window.wall_observer) {
+            window.wall_observer = new IntersectionObserver(Utils.debounce(entries => {
+                const wrapper = $('.default_wrapper')[0]
+                entries.forEach(x => {
+                    requestAnimationFrame(() => {
+                        if(!x.isIntersecting) {
+                            wrapper.classList.add('overscrolled')
+                        } else {
+                            wrapper.classList.remove('overscrolled')
+                        }
+                    })
+                })
+            }), {
+                root: null,
+                rootMargin: "10px",
+                threshold: 0
+            })
+        }
+
+        if($('.show_more')[0] && window.site_params.get('ux.auto_scroll', '1') == '1') {
+            window.show_more_observer.observe($('.show_more')[0])
+        }
+
+        if($('#_smaller_block')[0] && $('.default_wrapper')[0]) {
+            //window.wall_observer.observe($('#_smaller_block')[0])
+        }
     }
 
     add_error(message, id, wait_time = 5000, type = '') {
@@ -106,38 +132,40 @@ window.main_class = new class {
     
         $('.counter').remove()
     
-        if(counters.faves && $('.menu #_faves')[0]) {
-            $('.menu #_faves')[0].innerHTML += `
+        if(counters.faves && $('.navigation #_faves')[0]) {
+            $('.navigation #_faves')[0].innerHTML += `
                 <span class='counter'>${counters.faves}</span>
             `
         }
         
-        if(counters.messages && $('.menu #_messages')[0]) {
-            $('.menu #_messages')[0].innerHTML += `
+        if(counters.messages && $('.navigation #_messages')[0]) {
+            $('.navigation #_messages')[0].innerHTML += `
                 <span class='counter'>${counters.messages}</span>
             `
         }
             
-        if(counters.groups && $('.menu #_groups_invites')[0]) {
-            $('.menu #_groups_invites')[0].innerHTML += `
+        if(counters.groups && $('.navigation #_groups_invites')[0]) {
+            $('.navigation #_groups_invites')[0].innerHTML += `
                 <span class='counter'>${counters.groups}</span>
             `
         }
                 
-        if(counters.notifications && $('.menu #_notifications')[0]) {
-            $('.menu #_notifications')[0].innerHTML += `
+        if(counters.notifications && $('.navigation #_notifications')[0]) {
+            $('.navigation #_notifications')[0].innerHTML += `
                 <span class='counter'>${counters.notifications}</span>
             `
+
+            document.title = `(${counters.notifications}) ` + document.title
         }
                     
-        if(counters.videos && $('.menu #_videos')[0]) {
-            $('.menu #_videos')[0].innerHTML += `
+        if(counters.videos && $('.navigation #_videos')[0]) {
+            $('.navigation #_videos')[0].innerHTML += `
                 <span class='counter'>${counters.videos}</span>
             `
         }
                         
-        if(counters.photos && $('.menu #_photos')[0]) {
-            $('.menu #_photos')[0].innerHTML += `
+        if(counters.photos && $('.navigation #_photos')[0]) {
+            $('.navigation #_photos')[0].innerHTML += `
                 <span class='counter'>${counters.photos}</span>
             `
         }
@@ -150,5 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('textarea').trigger('input')
     $(document).trigger('scroll')
 
-    setTimeout(() => {window.main_class.refresh_counters()}, 3000)
+    if(window.active_account) {
+        setTimeout(() => {window.main_class.refresh_counters()}, 3000)
+    }
 })

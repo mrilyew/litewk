@@ -1,8 +1,8 @@
 window.page_class = new class {
     async render_page() {
-        let text = window.main_url.searchParams.get('id') ?? window.main_class['hash_params'].id
+        let text = window.main_url.getParam('id') ?? window.main_class['hash_params'].id
         let link_start = window.main_url.origin + window.main_url.pathname
-        let link = ''
+        let link = null
 
         if(!text) {
             Utils.not_found_not_specified()
@@ -64,24 +64,57 @@ window.page_class = new class {
                 link = link_start + '#club'+Math.abs(inter)
             }
         } else {
+            let id = null
+
             if(text.indexOf('club') != -1) {
-                let id = text.replace('club', '')
-                link = link_start + '#club'+id
+                id = text.replace('club', '')
+
+                if(!isNaN(parseInt(id))) {
+                    link = link_start + '#club'+id
+                }
             } else if(text.indexOf('id') != -1) {
-                let id = text.replace('id', '')
-                link = link_start + '#id'+id
+                id = text.replace('id', '')
+                
+                if(!isNaN(parseInt(id))) {
+                    link = link_start + '#id'+id
+                }
             } else if(text.indexOf('app') != -1) {
-                let id = text.replace('app', '')
-                link = link_start + '#app'+id
+                id = text.replace('app', '')
+                
+                if(!isNaN(parseInt(id))) {
+                    link = link_start + '#app'+id
+                }
             } else if(text.indexOf('wall') != -1) {
-                let id = text.replace('wall', '')
-                link = link_start + '#wall'+id
-            } else {
+                id = text.replace('wall', '')
+
+                if(!isNaN(parseInt(id))) {
+                    link = link_start + '#wall'+id
+                }
+            }
+
+            if(!link) {
                 let res = await window.vk_api.call('utils.resolveScreenName', {'screen_name': text})
                 let page = ''
     
                 if(!res.response.type) {
-                    window.location.assign('https://vk.com/' + text)
+                    $('.page_content')[0].insertAdjacentHTML('beforeend', `
+                        <div class="onpage_error" style='width: 400px;'>
+                            ${_('navigation.not_found_shortcode')}
+        
+                            <div class='away_buttons'>
+                                <input type='button' id='__gono' value='${_('messagebox.no')}'>
+                                <input type='button' id='__goyes' value='${_('messagebox.yes')}'>
+                            </div>
+                        </div>
+                    `)
+        
+                    $('#__gono').on('click', (e) => {
+                        history.back()
+                    })
+        
+                    $('#__goyes').on('click', (e) => {
+                        window.open('https://vk.com/' + text, '_blank')
+                    })
                     return
                 }
 

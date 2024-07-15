@@ -2,25 +2,24 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.user_page = async (user) => {
+window.templates.user_page = (user) => {
     let template = `
         <input id='usr_id' type='hidden' value='${user.getId()}'>
-        <div class='default_wrapper entity_page_wrapper user_page_wrapper'>
-            ${user.hasCover() ? `
-                <div class='entity_page_cover'>
-                    <picture>
-                        <source srcset="${user.getCoverURL(1)}" media="(min-width: 1920px)" />
-                        <source srcset="${user.getCoverURL(2)}" media="(min-width: 700px)" />
-                        <source srcset="${user.getCoverURL(4)}" media="(min-width: 300px)" />
-                        <source srcset="${user.getCoverURL(3)}" media="(min-width: 100px)" />
-                        <img src='${user.getCoverURL(1)}'>
-                    </picture>
-                </div>
-            ` : ''}
-            <div class='user_page_wrapper_grid'>
-                <div class="left_block bordered_block">
-                    <div class='block_parallax'>
-                        <img id='avatar_img' class='photo_attachment' src='${user.getAvatar()}' data-full='${user.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
+        <div class='default_wrapper user_page_wrapper entity_page_wrapper'>
+            ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '0' ? `<div class='entity_page_cover'>
+                <picture>
+                    <source srcset="${user.getCoverURL(1)}" media="(min-width: 1920px)" />
+                    <source srcset="${user.getCoverURL(2)}" media="(min-width: 700px)" />
+                    <source srcset="${user.getCoverURL(4)}" media="(min-width: 300px)" />
+                    <source srcset="${user.getCoverURL(3)}" media="(min-width: 100px)" />
+                    <img src='${user.getCoverURL(1)}'>
+                </picture>
+            </div>` : ''}
+
+            <div class='user_page_grid'>
+                <div class='left_block' id='_smaller_block'>
+                    <div class='bordered_block'>
+                        <img id='avatar_img' class='photo_viewer_open outliner' src='${user.getAvatar()}' data-full='${user.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
                         <div id='_actions'>
                             ${user.isThisUser() ?
                                 `
@@ -48,51 +47,56 @@ window.templates.user_page = async (user) => {
                             }
                         </div>
                     </div>
-                </div>
-                <div class="right_block">
-                    <div class="info_block bordered_block">
-                        <div class='upper_block'>
-                            <div id="name_block">
-                                <div class='name_with_smiley'>
-                                    <span id='name' class='bolder ${user.isFriend() ? ' friended' : ''}'>${user.getFullName()}</span>
 
-                                    ${user.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                                    `<div class='smiley' data-id='${user.getId()}' title='${user.getImageStatus().name}'>
-                                        <img src='${user.getImageStatusURL()}'>
-                                    </div>` : ``}
-                                </div>
-                                <span id='last_online' style='margin-top: 3px;'>${_('online_types.online_is_hidden')}</span>
+                    ${window.templates.gifts_block(user.info.gifts, '#gifts' + user.getId())}
+                    ${window.templates.row_block(user.info.friends, _('friends.friends'), '#friends' + user.getId())}
+                    
+                    <div class='friends_online_block'>
+                        ${window.templates.row_block(user.info.friends_online, _('friends.friends_online'), '#friends' + user.getId() + '/online')}
+                    </div>
+
+                    ${window.templates.row_list_block(user.info.subscriptions, _('friends.subscriptions'), '#subscriptions' + user.getId())}
+                    ${window.templates.albums(user.info.albums, '#albums' + user.getId())}
+                    ${window.templates.videos_block(user.info.videos, '#videos' + user.getId())}
+                </div>
+                <div class='right_block cover_upper' id='_bigger_block'>
+                    ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '1' ? `<div class='entity_page_cover'>
+                        <picture>
+                            <source srcset="${user.getCoverURL(1)}" media="(min-width: 1920px)" />
+                            <source srcset="${user.getCoverURL(2)}" media="(min-width: 700px)" />
+                            <source srcset="${user.getCoverURL(4)}" media="(min-width: 300px)" />
+                            <source srcset="${user.getCoverURL(3)}" media="(min-width: 100px)" />
+                            <img src='${user.getCoverURL(1)}'>
+                        </picture>
+                    </div>` : ''}
+                    <div class="info_block bordered_block ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
+                        ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? `
+                            <div class='cover_bg' style='background-image: url(${user.getCoverURL(1)});'></div>
+                        ` : ''}
+                        <div class='common_info'>
+                            <div class='user_name_with_status'>
+                                ${user.getHTMLName()}
+
+                                <span id='status_block'>
+                                    ${user.getTextStatus()}
+                                </span>
                             </div>
-                            <div id='status_block'>
-                                <span>${user.getTextStatus()}</span>
-                            </div>
+
+                            <span>
+                                ${user.getFullOnline()}
+                            </span>
                         </div>
 
-                        <div class='more_info_block'>
-                            <div class='mini_info_block'>
-                                <div class='tilte_cover'>
+                        <div class='additional_info'>
+                            <div class='additional_info_block'>
+                                ${user.getTextStatus() != '' ?
+                                `<div class='additional_info_block_cover'>
                                     <b class='title'>${_('user_page.personal_info')}</b>
                                     <hr class='hidden_line'>
-                                </div>
+                                </div>` : ''}
 
                                 <table>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <span>ID</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getId()}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.page_link')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getDomain()}</span>
-                                            </td>
-                                        </tr>
                                         ${user.has('sex') ? `
                                         <tr>
                                             <td>
@@ -113,14 +117,6 @@ window.templates.user_page = async (user) => {
                                             </td>
                                         </tr>
                                         ` : ''}
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.register_date')}</span>
-                                            </td>
-                                            <td>
-                                                <span id='__regdate'>--.--.----</span>
-                                            </td>
-                                        </tr>
                                         ${user.has('relation') ? `
                                             <tr>
                                                 <td>
@@ -143,6 +139,41 @@ window.templates.user_page = async (user) => {
                                             </tr>
                                         `
                                         : ``}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class='additional_info_block'>
+                                <div class='additional_info_block_cover'>
+                                    <b class='title'>${_('user_page.profile_info')}</b>
+                                    <hr class='hidden_line'>
+                                </div>
+
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span>ID</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getId()}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.page_link')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getDomain()}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.register_date')}</span>
+                                            </td>
+                                            <td>
+                                                <span id='__regdate'>--.--.----</span>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td>
                                                 <span>${_('user_page.has_verification')}</span>
@@ -186,294 +217,298 @@ window.templates.user_page = async (user) => {
                                     </tbody>
                                 </table>
                             </div>
-                            <div class='mini_info_block'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.contacts')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                <table>
-                                    <tbody>
-                                        ${user.has('country') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.country')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getCountry()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('city') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.city')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getCity()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('home_town') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.hometown')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getHometown()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('mobile_phone') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.mobile_phone')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getMobile()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('home_phone') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.additional_phone')}</span>
-                                            </td>
-                                            <td>
-                                                <span>${user.getHomephone()}</span>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('skype') ? `
-                                        <tr>
-                                            <td>
-                                                <span>Skype</span>
-                                            </td>
-                                            <td>
-                                                <a href='skype:${user.getSkype()}?call'>${user.getSkype()} </a>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                        ${user.has('site') ? `
-                                        <tr>
-                                            <td>
-                                                <span>${_('user_page.personal_site')}</span>
-                                            </td>
-                                            <td>
-                                                <a href=\'${user.getSite()}\'>${user.getSite()}</a>
-                                            </td>
-                                        </tr>
-                                        ` : ``}
-                                    </tbody>
-                                </table>
-                            </div>
-                            ${user.hasInterests() ? `<div class='mini_info_block' id='_interestsBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.interests')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                
-                                <table>
-                                    <tbody>
-                                    ${user.has('activities') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.activities')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('activities')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('interests') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.interests')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('interests')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('music') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_music')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('music')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('movies') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_films')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('movies')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('tv') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_tv')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('tv')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('books') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_books')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('books')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('games') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_games')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('games')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    ${user.has('quotes') ? `
-                                    <tr>
-                                        <td>
-                                            <span>${_('user_page.fav_quotes')}</span>
-                                        </td>
-                                        <td>
-                                            <span>${user.getInterests('quotes')}</span>
-                                        </td>
-                                    </tr>
-                                    ` : ``}
-                                    </tbody>
-                                </table>
+                            ${user.hasContacts() || user.hasInterests() || user.has('career') || user.hasEducation() || user.hasRelatives() || user.hasMilitary() || user.has('personal') ? `<div class='show_hidden_info_block' id='_show_hidden_info_us'>
+                                ${_('user_page.show_more_info')}
                             </div>` : ''}
-                            ${user.has('career') ? `<div class='mini_info_block' id='_carrerBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.career')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                <div class='insert_carerr' style='padding: 1px 3px 7px 3px;'></div>
-                            </div>` : ''}
-                            ${user.hasEducation() ? `<div class='mini_info_block' id='_carrerBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.education')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                <div id='insert_education' style='padding: 1px 3px 7px 3px;'>
-                                    <table><tbody></tbody></table>
-                                </div>
-                            </div>` : ''}
-                            ${user.hasRelatives() ? `<div class='mini_info_block' id='_carrerBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.relatives')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                <div id='insert_relatives' style='padding: 1px 3px 7px 3px;'>
-                                    <table><tbody></tbody></table>
-                                </div>
-                            </div>` : ''}
-                            ${user.hasMilitary() ? `<div class='mini_info_block' id='_carrerBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.military')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-                                <div id='insert_military' style='padding: 1px 3px 7px 3px;'>
-                                    <table><tbody></tbody></table>
-                                </div>
-                            </div>` : ''}
-                            ${user.has('personal') ? `
-                            <div class='mini_info_block' id='_lifeBlock'>
-                                <div class='tilte_cover'>
-                                    <b class='title'>${_('user_page.life_position')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
+                            <div class='additional_info_block_hidden_default'>
+                                ${user.hasContacts() ? `<div class='additional_info_block'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.contacts')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
                                     <table>
                                         <tbody>
-                                            ${user.info.personal.political ? `
+                                            ${user.has('country') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.political_views')}</span>
+                                                    <span>${_('user_page.country')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('political')}</span>
+                                                    <span>${user.getCountry()}</span>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.religion ? `
+                                            ${user.has('city') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.worldview')}</span>
+                                                    <span>${_('user_page.city')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('religion')}</span>
+                                                    <span>${user.getCity()}</span>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.life_main ? `
+                                            ${user.has('home_town') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.main_in_life')}</span>
+                                                    <span>${_('user_page.hometown')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('life_main')}</span>
+                                                    <span>${user.getHometown()}</span>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.people_main ? `
+                                            ${user.has('mobile_phone') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.main_in_people')}</span>
+                                                    <span>${_('user_page.mobile_phone')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('people_main')}</span>
+                                                    <span>${user.getMobile()}</span>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.smoking ? `
+                                            ${user.has('home_phone') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.attitude_towards_smoking')}</span>
+                                                    <span>${_('user_page.additional_phone')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('smoking')}</span>
+                                                    <span>${user.getHomephone()}</span>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.alcohol ? `
+                                            ${user.has('skype') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.attitude_towards_alcohol')}</span>
+                                                    <span>Skype</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('alcohol')}</span>
+                                                    <a href='skype:${user.getSkype()}?call'>${user.getSkype()} </a>
                                                 </td>
                                             </tr>
                                             ` : ``}
-                                            ${user.info.personal.inspired_by ? `
+                                            ${user.has('site') ? `
                                             <tr>
                                                 <td>
-                                                    <span>${_('user_page.inspired_by')}</span>
+                                                    <span>${_('user_page.personal_site')}</span>
                                                 </td>
                                                 <td>
-                                                    <span>${user.getInterests('inspired_by')}</span>
+                                                    <a href=\'${user.getSite()}\'>${user.getSite()}</a>
                                                 </td>
                                             </tr>
                                             ` : ``}
                                         </tbody>
                                     </table>
-                            </div>` : ``}
-                            <div class='mini_info_block'>
-                                <div class='tilte_cover'>
+                                </div>` : ''}
+                                ${user.hasInterests() ? `<div class='additional_info_block' id='_interestsBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.interests')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                    
+                                    <table>
+                                        <tbody>
+                                        ${user.has('activities') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.activities')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('activities')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('interests') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.interests')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('interests')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('music') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_music')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('music')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('movies') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_films')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('movies')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('tv') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_tv')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('tv')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('books') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_books')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('books')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('games') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_games')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('games')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        ${user.has('quotes') ? `
+                                        <tr>
+                                            <td>
+                                                <span>${_('user_page.fav_quotes')}</span>
+                                            </td>
+                                            <td>
+                                                <span>${user.getInterests('quotes')}</span>
+                                            </td>
+                                        </tr>
+                                        ` : ``}
+                                        </tbody>
+                                    </table>
+                                </div>` : ''}
+                                ${user.has('career') ? `<div class='additional_info_block' id='_carrerBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.career')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                    <div class='insert_carerr' style='padding: 1px 3px 7px 3px;'></div>
+                                </div>` : ''}
+                                ${user.hasEducation() ? `<div class='additional_info_block' id='_carrerBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.education')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                    <div id='insert_education' style='padding: 1px 3px 7px 3px;'>
+                                        <table><tbody></tbody></table>
+                                    </div>
+                                </div>` : ''}
+                                ${user.hasRelatives() ? `<div class='additional_info_block' id='_carrerBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.relatives')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                    <div id='insert_relatives' style='padding: 1px 3px 7px 3px;'>
+                                    </div>
+                                </div>` : ''}
+                                ${user.hasMilitary() ? `<div class='additional_info_block' id='_carrerBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.military')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                    <div id='insert_military' style='padding: 1px 3px 7px 3px;'>
+                                        <table><tbody></tbody></table>
+                                    </div>
+                                </div>` : ''}
+                                ${user.has('personal') ? `
+                                <div class='additional_info_block' id='_lifeBlock'>
+                                    <div class='additional_info_block_cover'>
+                                        <b class='title'>${_('user_page.life_position')}</b>
+                                        <hr class='hidden_line'>
+                                    </div>
+                                        <table>
+                                            <tbody>
+                                                ${user.info.personal.political ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.political_views')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('political')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.religion ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.worldview')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('religion')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.life_main ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.main_in_life')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('life_main')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.people_main ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.main_in_people')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('people_main')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.smoking ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.attitude_towards_smoking')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('smoking')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.alcohol ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.attitude_towards_alcohol')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('alcohol')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                                ${user.info.personal.inspired_by ? `
+                                                <tr>
+                                                    <td>
+                                                        <span>${_('user_page.inspired_by')}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>${user.getInterests('inspired_by')}</span>
+                                                    </td>
+                                                </tr>
+                                                ` : ``}
+                                            </tbody>
+                                        </table>
+                                </div>` : ``}
+                            </div>
+                            <div class='additional_info_block'>
+                                <div class='additional_info_block_cover'>
                                     <b class='title'>${_('user_page.counters')}</b>
                                     <hr class='hidden_line'>
                                 </div>
@@ -498,6 +533,12 @@ window.templates.user_page = async (user) => {
                             </div>
                         </div>
                     </div>
+                    
+                    ${window.templates.photo_status(user.info.main_photos)}
+                    
+                    <div class='wall_inserter'>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -505,15 +546,11 @@ window.templates.user_page = async (user) => {
 
     let user_template = document.createElement('div')
     user_template.innerHTML = template
-
-    if(user.info.last_seen) {
-        user_template.querySelector('#last_online').innerHTML = user.getFullOnline()
-    }
-
+    
     if(user.has('career')) {
-        for(const work of user.info.career) {
+        user.info.career.forEach(work => {
             user_template.querySelector('#_carrerBlock .insert_carerr').innerHTML += window.templates.work_template(work)
-        }
+        })
     }
 
     if(user.hasEducation()) {
@@ -528,7 +565,7 @@ window.templates.user_page = async (user) => {
 
     if(user.hasRelatives()) {
         user.getRelatives().forEach(rel => {
-            user_template.querySelector('#insert_relatives tbody').insertAdjacentHTML('beforeend', window.templates.relative_template(rel))
+            user_template.querySelector('#insert_relatives').insertAdjacentHTML('beforeend', window.templates.relative_template(rel))
         })
     }
 

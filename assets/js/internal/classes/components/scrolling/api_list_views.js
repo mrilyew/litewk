@@ -4,21 +4,16 @@ class UserListView extends User {
             <div class='short_list_item'>
                 <div class='short_list_item_avatar avatar'>
                     <a href='${this.getUrl()}'>
-                        <img src='${this.info.photo_100}'>
+                        <img class='outliner' src='${this.info.photo_100}'>
                     </a>
                 </div>
 
                 <div class='short_list_item_name'>
-                    <div style='display: flex;'>
-                        <a href='${this.getUrl()}' ${this.isFriend() ? `class='friended'` : ''}>
-                            <b>${this.getName()}</b>
-                        </a>
-
-                        ${this.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                        `<div class='smiley' data-id='${this.getId()}' title='${this.getImageStatus().name}'>
-                            <img src='${this.getImageStatusURL()}'>
-                        </div>` : ``}
-                    </div>
+                    <a href='#id${this.getId()}' class='${this.isFriend() ? 'friended' : ''}'>
+                        <b>
+                            ${this.getHTMLName()}
+                        </b>
+                    </a>
 
                     ${this.has('status') ? `<span>"${this.getTextStatus()}"</span>` : ''}
                     <span>${this.getFullOnline()}</span>
@@ -53,7 +48,7 @@ class ClubListView extends Club {
             <div class='short_list_item'>
                 <div class='short_list_item_avatar avatar'>
                     <a href='${this.getUrl()}'>
-                        <img src='${this.info.photo_100}'>
+                        <img class='outliner' src='${this.info.photo_100}'>
                     </a>
                 </div>
 
@@ -101,7 +96,7 @@ class LinkListView extends Link {
         <div class='list_attachment link_attachment link_attachment_vertical'>
             ${this.hasPhoto() ? `
             <div class='link_attachment_photo'>
-                <img class='photo_attachment' data-type='attached_link' data-full='${this.getPhoto().getURL()}' src='${this.getPhoto().getURL()}'>
+                <img class='photo_attachment photo_viewer_open' data-type='attached_link' data-full='${this.getPhoto().getURL()}' src='${this.getPhoto().getURL()}'>
             </div>` : ''}
 
             <div class='link_attachment_info'>
@@ -121,6 +116,14 @@ class VideoListView extends Video {
     getTemplate() {
         return `
             ${this.getTitle()}
+        `
+    }
+}
+
+class PhotoListView extends Photo {
+    getTemplate() {
+        return `
+            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-full='${this.getFullSizeURL()}' data-photoid='${this.getId()}' src='${this.getURL()}'>
         `
     }
 }

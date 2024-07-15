@@ -36,6 +36,24 @@ window.Utils = new class {
         }
     }
 
+    find_owner_in_arrays_and_return_entity(id, profiles = [], groups = []) {
+        if(id < 0) {
+            let res = groups.find(item => item.id == Math.abs(id))
+
+            let entity = new Club
+            entity.hydrate(res)
+
+            return entity
+        } else {
+            let res = profiles.find(item => item.id == Math.abs(id))
+
+            let entity = new User
+            entity.hydrate(res)
+
+            return entity
+        }
+    }
+
     random_int(min, max) {
         return Math.round(Math.random() * (max - min) + min)
     }
@@ -59,21 +77,25 @@ window.Utils = new class {
     format_links(text)
     {
         return text.replace(/(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig, 
-        `<a href='?id=$1#away' target='_blank'>$1</a>`)
+        `<a href='#away?id=$1' target='_blank'>$1</a>`)
     }
 
     format_hashtags(text) 
     {
-        return text.replace(/#(\S*)/g, `<a href='?query=$1#search/posts'>#$1</a>`)
+        return text.replace(/#(\S*)/g, `<a href='#search/posts?query=#$1'>#$1</a>`)
     }
 
     format_mentions(text)
     {
-        return text.replace(/\[([^|]+)\|([^\]]+)\]/g, `<a href="?id=$1#away">$2</a>`)
+        return text.replace(/\[([^|]+)\|([^\]]+)\]/g, `<a href="#away?id=$1">$2</a>`)
     }
 
     format_emojis(text)
     {
+        if(window.site_params.get('ux.twemojify', '1') == '0') {
+            return text
+        }
+
         return twemoji.parse(text)
     }
 
@@ -117,12 +139,13 @@ window.Utils = new class {
         return bytes.toFixed(1)+' '+units[u];
     }
 
-    append_script(link, toBody = false) {
+    append_script(link, toBody = false, script_name = '') {
         return new Promise( function (resolve, reject) {
             let script = document.createElement('script')
             script.src = link
             script.async = "true";
             script.setAttribute('id', '_main_page_script')
+            script.setAttribute('data-name', script_name)
 
             script.onerror = () => {
                 reject( Error("Network error loading " + script.src) );
@@ -130,8 +153,9 @@ window.Utils = new class {
 
             script.onload = async () => {
                 await window.page_class.render_page()
+
                 $('textarea').trigger('input')
-                resolve(true);
+                resolve(true)
             }
 
             if(!toBody) {
@@ -222,18 +246,18 @@ window.Utils = new class {
         } )
     }
 
-    push_state(url, go = true)
+    push_state(url)
     {
-        history.pushState(!go ? {'go': 1} : {'go': 0}, null, url)
+        history.pushState({'go': 1}, null, url)
         
-        window.main_url = new URL(location.href)
+        window.main_url = new BetterURL(location.href)
     }
 
-    replace_state(url, go = true)
+    replace_state(url)
     {
-        history.replaceState(!go ? {'go': 1} : {'go': 0}, null, url)
+        history.replaceState({'go': 1}, null, url)
 
-        window.main_url = new URL(location.href)
+        window.main_url = new BetterURL(location.href)
     }
 
     // клянусь джаваскрипт ненавидеть
@@ -261,7 +285,7 @@ window.Utils = new class {
 
     not_found_not_specified()
     {
-        window.location.assign('https://youtu.be/BHj7U_bQpkc')
+        window.location.assign('https://youtu.be/QR8PVIaqW_A?ref=litewk')
     }
 
     cut_string(string, length = 0) {
@@ -301,5 +325,21 @@ window.Utils = new class {
                 }
                 
         }
+    }
+
+    debounce(func, wait) {
+        let timeout
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout)
+                func(...args)
+            };
+            clearTimeout(timeout)
+            timeout = setTimeout(later, wait)
+        }
+    }
+
+    async sleep(time) {
+        return await new Promise(r => setTimeout(r, time));
     }
 }

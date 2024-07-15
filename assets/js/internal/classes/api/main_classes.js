@@ -8,8 +8,13 @@ class Faveable {
 
     has(field = '') {
         try {
+            if(Array.isArray(this.info[field])) {
+                return this.info[field].length > 0
+            }
+
             return Boolean(this.info[field])
         } catch(e) {
+            console.error(e)
             return false
         }
     }

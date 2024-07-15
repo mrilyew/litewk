@@ -11,4 +11,10 @@ class Audio extends PostLike {
     getDuration() {
         return Utils.format_seconds(this.info.duration)
     }
+
+    getTemplate() {
+        return `
+            ${this.getName()}
+        `
+    }
 }

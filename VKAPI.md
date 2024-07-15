@@ -86,6 +86,8 @@ search.getHints
 
 #### groups.getContentForTabs
 
+#### groups.getHints
+
 ### newsfeed
 
 #### newsfeed.addBan
@@ -201,6 +203,10 @@ search.getHints
 `clips_views` — судя по названию, количество просмотров в ^.
 
 `groups` — возвращается не всегда.
+
+#### users.search
+
+Интересный факт: `count` у данного метода ненастоящий.
 
 ### wall
 

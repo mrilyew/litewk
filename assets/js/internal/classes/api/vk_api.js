@@ -17,12 +17,15 @@ class VkApi {
                 result = JSON.parse(await Utils.jsonp(path))
             }
         } catch(ex) {
-            let msg = new MessageBox('Network error', Utils.cut_string(ex.message, 500), ['ok'], [() => {msg.close()}])
+            let msg = new MessageBox(_('errors.network_error'), Utils.cut_string(ex.message, 500), ['OK'], [() => {msg.close()}])
 
             console.error(ex)
             return
         }
 
+        if(window.site_params.get('ux.online_status', 'none') == 'method_call' && method != 'account.setOnline') {
+            await this.call('account.setOnline')
+        }
         
         console.log(`Called method ${method} with params ${JSON.stringify(params)} with force=${String(force)}`)
         

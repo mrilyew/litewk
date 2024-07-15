@@ -11,15 +11,15 @@ window.templates.work_template = (work) => {
     }
 
     return `
-        <div class='career_work  ${!club_object ? 'no_group' : ''}'>
+        <div class='avatar_namish_block  ${!club_object ? 'avatarless' : ''}'>
             ${club_object ? 
-            `<div class='career_work_avatar avatar'>
+            `<div class='left_avatar avatar'>
                 <a href='#club${club_object.getId()}'>
-                    <img class='avatar' src='${club_object.info.photo_100}'>
+                    <img class='avatar outliner' src='${club_object.info.photo_100}'>
                 </a>
             </div>` : ''}
 
-            <div class='career_work_info'>
+            <div class='right_info'>
                 ${club_object ? `<a href='#club${work.group_id}'><b>${club_object.getName()}</b></a>` : `<b>${Utils.escape_html(work.company)}</b>`}
                 <p>${work.position ? `${_('user_page.job_post')}: ` + Utils.escape_html(work.position) : ''}</p>
                 <p>${work.from  ? `${_('user_page.job_year_start')}: ` + work.from : ''}</p>

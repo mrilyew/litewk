@@ -31,13 +31,48 @@ class Friends extends ClassicListView {
 
         let items  = objects_data.response.items
         let count  = objects_data.response.count
+        let error_message = ''
 
         switch(this.method_name) {
             default:
                 break
+            case 'friends.get':
+                if(this.method_params.list_id) {
+                    error_message = _('errors.friends_list_error')
+                } else {
+                    error_message = _('errors.friends_get_error')
+                }
+                
+                break
             case 'friends.getOnline':
+                error_message = _('errors.friends_get_online_error')
+
                 count = objects_data.response.total_count
                 items = objects_data.response.online
+                break
+            case 'friends.search':
+                error_message = _('errors.friends_search_error')
+
+                break
+            case 'friends.getRequests':
+                if(this.method_params.out == 0) {
+                    error_message = _('errors.friends_incoming_error')
+                } else {
+                    error_message = _('errors.friends_outcoming_error')
+                }
+
+                break
+            case 'friends.getSuggestions':
+                error_message = _('errors.friends_suggestions_error')
+
+                break
+            case 'users.getFollowers':
+                error_message = _('errors.friends_followers_error')
+
+                break
+            case 'execute':
+                error_message = _('errors.friends_mutual_error')
+
                 break
         }
         this.objects.count = count
@@ -49,7 +84,7 @@ class Friends extends ClassicListView {
 
         if(this.objects.count < 1) {
             this.getInsertNode().insertAdjacentHTML('beforeend', `
-                <div class='bordered_block'>No_count)</div>
+                ${error_message}
             `)
         }
 
@@ -58,7 +93,6 @@ class Friends extends ClassicListView {
 
         if(items) {
             items.forEach(obj => {
-                console.log(obj)
                 let ob_j = new this.object_class
                 ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
 

@@ -4,14 +4,14 @@ class Link extends PostLike {
     }
 
     getPhoto() {
-        let photo = new Photo
+        let photo = new LinkPhoto
         photo.hydrate(this.info.photo)
 
         return photo
     }
 
     getURL() {
-        return '?id=' + this.info.url + '#away'
+        return '#away?id=' + this.info.url
     }
 
     getTitle() {

@@ -51,13 +51,13 @@ window.page_class = new class {
 
                 method = 'friends.search'
                 tabs_html = `
-                    <div class='friends_search_fuck_block'>
-                        <input type='text' value='${window.main_url.searchParams.get('query') ?? ''}' placeholder='${_('friends.search_friends_longer')}' id='__friendssearch'>
+                    <div class='flex_row flex_nowrap'>
+                        <input type='text' value='${window.main_url.getParam('query') ?? ''}' placeholder='${_('friends.search_friends_longer')}' id='__friendssearch'>
                         <input type='button' value='${_('friends.search_friends')}' id='__friendssearchbtn'>
                     </div>
                 `
 
-                wall_params.q = window.main_url.searchParams.get('query') ?? ''
+                wall_params.q = window.main_url.getParam('query') ?? ''
                 break
             case 'incoming':
                 document.title = _('friends.incoming_requests')
@@ -129,53 +129,52 @@ window.page_class = new class {
             case 'list':
                 document.title = _('friends.friends_list')
                 tabs_html = `
-                    <a href="#friends${id}/list" data-section='list' data-ignore='1' class="selectd">${_('friends.friends_list')}</a>
+                    <a href="#friends${id}/list" data-section='list' data-ignore='1' class="selected">${_('friends.friends_list')}</a>
                 `
 
                 method = 'friends.get'
-                wall_params.list_id = window.main_url.searchParams.get('section_id')
+                wall_params.list_id = window.main_url.getParam('section_id')
                 break
         }
 
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `
-                <div class='default_wrapper two_big_blocks_wrapper'>
+                <div class='default_wrapper layer_two_columns'>
                     <div>
-                        ${tabs_html != '' ? `<div class='typical_tabs bordered_block'>
-                            <div class='wall_wrapper_upper_panel friend_select_tab' id='insert_paginator_here_bro'>
-                                <div class='tabs' ${section == 'search' ? `style='width: 60%;'` : ''}>${tabs_html}</div>
-                            </div>
+                        ${tabs_html != '' ? `
+                        <div class='layer_two_columns_up_panel bordered_block' id='insert_paginator_here_bro'>
+                            <div class='tabs' ${section == 'search' ? `style='width: 60%;'` : ''}>${tabs_html}</div>
                         </div>` : ''}
 
                         <div class='friends_insert short_list bordered_block'></div>
                     </div>
-                    <div class='wall_wrapper_tabs bordered_block'>
+                    <div class='layer_two_columns_tabs bordered_block'>
                         <div>
-                            <a href='${us_info.getUrl()}' class='two_big_blocks_wrapper_user_info'>
+                            <a href='${us_info.getUrl()}' class='layer_two_columns_tabs_user_info'>
                                 <div>
                                     <img class='avatar' src='${us_info.getAvatar()}'>
                                 </div>
 
-                                <div class='two_big_blocks_wrapper_user_info_name'>
-                                    <b>${Utils.cut_string(us_info.getName(), 15)}</b>
+                                <div class='layer_two_columns_tabs_user_info_name'>
+                                    <b ${us_info.isFriend() ? `class='friended'` : ''}>${Utils.cut_string(us_info.getName(), 15)}</b>
                                     <span>${_('user_page.go_to_user_page')}</span>
                                 </div>
                             </a>
 
                             ${is_this ? `
-                                <a href='#friends/all' ${section == 'all' || section == 'online' ? 'class=\'selectd\'' : ''}>${_(`friends.all_friends`)}</a>
-                                <a href='#friends/search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
-                                <a href='#friends/incoming' ${section == 'incoming' || section == 'outcoming' ? 'class=\'selectd\'' : ''}>${_(`friends.friends_requests`)}</a>
-                                <a href='#friends/suggests' ${section == 'suggests' ? 'class=\'selectd\'' : ''}>${_(`friends.recomended_friends`)}</a>
-                                <a href='#friends/cleanup' ${section == 'cleanup' ? 'class=\'selectd\'' : ''}>${_(`friends.cleanup_friends`)}</a>
-                                <a href='#friends${id}/followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
+                                <a href='#friends/all' ${section == 'all' || section == 'online' ? 'class=\'selected\'' : ''}>${_(`friends.all_friends`)}</a>
+                                <a href='#search/users?from_list=friends' ${section == 'search' ? 'class=\'selected\'' : ''}>${_(`friends.search_friends`)}</a>
+                                <a href='#friends/incoming' ${section == 'incoming' || section == 'outcoming' ? 'class=\'selected\'' : ''}>${_(`friends.friends_requests`)}</a>
+                                <a href='#friends/suggests' ${section == 'suggests' ? 'class=\'selected\'' : ''}>${_(`friends.recomended_friends`)}</a>
+                                <a href='#friends/cleanup' ${section == 'cleanup' ? 'class=\'selected\'' : ''}>${_(`friends.cleanup_friends`)}</a>
+                                <a href='#search/users?from_list=subscriptions' ${section == 'followers' ? 'class=\'selected\'' : ''}>${_(`friends.followers`)}</a>
                             ` : `
-                            <a href='#friends${id}/all' ${section == 'all' || section == 'online' || section == 'mutual' ? 'class=\'selectd\'' : ''}>${_(`friends.users_friends`)}</a>
-                            <a href='#friends${id}/search' ${section == 'search' ? 'class=\'selectd\'' : ''}>${_(`friends.search_friends`)}</a>
-                            <a href='#friends${id}/followers' ${section == 'followers' ? 'class=\'selectd\'' : ''}>${_(`friends.followers`)}</a>
+                            <a href='#friends${id}/all' ${section == 'all' || section == 'online' || section == 'mutual' ? 'class=\'selected\'' : ''}>${_(`friends.users_friends`)}</a>
+                            <a href='#friends${id}/search' ${section == 'search' ? 'class=\'selected\'' : ''}>${_(`friends.search_friends`)}</a>
+                            <a href='#friends${id}/followers' ${section == 'followers' ? 'class=\'selected\'' : ''}>${_(`friends.followers`)}</a>
                             `}
                             
-                            <div class='wall_wrapper_newsfeed_params' style='display:none;'>
+                            <div class='layer_two_columns_params' style='display:none;'>
                                 <span>${_('friends.friends_lists')}</span>
                             </div>
                             <div id='__insertlists'></div>
@@ -185,16 +184,16 @@ window.page_class = new class {
             `
         )
 
-        let tab_dom = $(`.typical_tabs a[data-section='${section}']`)
+        let tab_dom = $(`.layer_two_columns_up_panel a[data-section='${section}']`)
 
-        tab_dom.addClass('selectd')
+        tab_dom.addClass('selected')
         
         window.main_classes['wall'] = new Friends(UserListView, '.friends_insert')
         window.main_classes['wall'].setParams(method, wall_params)
         window.main_classes['wall'].clear()
             
-        if(window.main_url.searchParams.has('page')) {
-            window.main_classes['wall'].objects.page = Number(window.main_url.searchParams.get('page')) - 1
+        if(window.main_url.hasParam('page')) {
+            window.main_classes['wall'].objects.page = Number(window.main_url.getParam('page')) - 1
         }
 
         let val = await window.main_classes['wall'].nextPage()
@@ -211,7 +210,7 @@ window.page_class = new class {
             main_class.add_onpage_error(_('errors.friends_not_found', id))
             return
         } else {
-            $('.friend_select_tab')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.searchParams.get('page') ?? 1))))
+            $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
         }
 
         let friends_lists = await window.vk_api.call('friends.getLists', {'user_id': id}, false)
@@ -223,7 +222,7 @@ window.page_class = new class {
             friends_lists.items.forEach(list => {
                 $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
                     `
-                    <a href='?section_id=${list.id}#friends${id}/list' ${Number(window.main_url.searchParams.get('section_id')) == list.id ? 'class=\'selectd\'' : ''}>${list.name}</a>
+                    <a href='#friends${id}/list?section_id=${list.id}' ${Number(window.main_url.getParam('section_id')) == list.id ? 'class=\'selected\'' : ''}>${list.name}</a>
                     `
                 )
             })

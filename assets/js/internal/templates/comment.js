@@ -23,7 +23,7 @@ window.templates.comment = (object) => {
                             </b>
 
                             ${owner.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                            `<div class='smiley' data-id='${owner.getId()}' title='${Utils.escape_html(owner.getImageStatus().name)}'>
+                            `<div class='image_status' data-id='${owner.getId()}' title='${Utils.escape_html(owner.getImageStatus().name)}'>
                                 <img src='${owner.getImageStatusURL()}'>
                             </div>` : ``}
 
@@ -44,10 +44,12 @@ window.templates.comment = (object) => {
                     </div>
 
                     <div class='comment_bottom'>
-                        <span><a href='#'>${object.getDate()}</a></span>
+                        <span>
+                            <a href='#'>${object.getDate()}</a>
+                        </span>
                         <div class='post_actions_no_frame'>
                             <div class='like ${object.isLiked() ? 'activated' : '' }'>
-                                <div class='like_icon ${object.info.likes.user_likes == 1 ? 'activated' : '' } icons1'></div>
+                                <svg class='like_icon_hearted' viewBox="0 0 17 16.22"><g><path id="heart" d="M12.43,1A4.67,4.67,0,0,0,9,2.48,4.67,4.67,0,0,0,5.57,1,4.44,4.44,0,0,0,1,5.29C1,7.65,9,16,9,16s8-8.35,8-10.71A4.44,4.44,0,0,0,12.43,1Z" transform="translate(-0.5 -0.5)"/></g></svg>
                                 <span>${object.getLikes()}</span>
                             </div>
                         </div>

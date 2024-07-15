@@ -2,6 +2,7 @@ window.default_left_menu = [
     {
         'name': '_navigation.my_page',
         'href': '#id0',
+        'anchor': '_this_user',
         'new_page': false,
         'disabled': false,
         'hidden': false,

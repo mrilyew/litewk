@@ -74,7 +74,7 @@ class Wall extends ClassicListView {
         }
 
         if(window.site_params.get('ux.save_scroll', '0') == '1') {
-            window.main_url.searchParams.set('page', this.objects.page)
+            window.setParam('page', this.objects.page)
             
             Utils.replace_state(window.main_url)
         }
@@ -220,10 +220,10 @@ class Wall extends ClassicListView {
 
         this.setParams('wall.search', temp_params)
 
-        let temp_url = new URL(location.href)
+        let temp_url = new BetterURL(location.href)
 
-        temp_url.searchParams.set('wall_section', 'search')
-        temp_url.searchParams.set('wall_query', query)
+        temp_url.setParam('wall_section', 'search')
+        temp_url.setParam('wall_query', query)
 
         Utils.replace_state(temp_url)
         

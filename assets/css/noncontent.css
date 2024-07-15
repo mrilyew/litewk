@@ -1,0 +1,101 @@
+/* Settings */
+
+.settings_block {
+    margin-top: 5px;
+    border-top: 1px ridge var(--text-color);
+    padding-top: 5px;
+}
+
+.settings_block .settings_sublock {
+    margin-bottom: 5px;
+}
+
+.settings_block .settings_sublock label {
+    display: block;
+}
+
+.settings_block .settings_flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings_block .settings_title {
+    margin-bottom: 6px;
+}
+
+.settings_block .lang_block .lang_info {
+    margin-left: 25px;
+}
+
+.settings_block #lang_tip {
+    margin-left: 6px;
+    margin-bottom: 1px;
+}
+
+.settings_block #_vkapiTest input[type='text'] {
+    margin-bottom: 4px;
+}
+
+.settings_block #_vkapiButtons {
+    display: flex;
+    justify-content: right;
+    gap: 5px;
+}
+
+.settings_sublock .settings_caches span {
+    margin-left: 2px;
+}
+
+.settings_sublock .settings_caches input {
+    margin-bottom: 6px;
+}
+
+.settings_sublock .settings_left_menu_customisation {
+    border: 1px dotted var(--links-color);
+}
+
+.settings_block .settings_buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.settings_block .settings_accounts {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings_block .settings_accounts .settings_account_avatar img {
+    width: 40px;
+}
+
+.settings_block .settings_accounts .settings_account {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.settings_block .settings_accounts .settings_account .settings_account_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: 8px;
+}
+
+.settings_block .settings_accounts .settings_account_actions {
+    margin-left: auto;
+    margin-right: 11px;
+    margin-top: 11px;
+}
+
+.settings_block .settings_accounts .settings_account .settings_account_info .grayer {
+    color: var(--links-color);
+}
+
+.settings_block .tweaks_insert {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings_sublock select {
+    width: min-content;
+}

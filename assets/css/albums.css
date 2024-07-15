@@ -1,0 +1,33 @@
+.album_item, .video_item {
+    width: 100%;
+    position: relative;
+}
+
+.album_item img, .video_item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.album_item .small_album_info, .video_item .small_video_info {
+    position: absolute;
+    background: rgba(0.5, 0.5, 0.5, 0.7);
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 6px;
+}
+
+.album_item .small_album_info span, .video_item .small_video_info .title  {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.album_item .small_album_info .size, .video_item .small_video_info .size {
+    min-width: 49px;
+    margin: 1px 1px;
+    text-align: right;
+}

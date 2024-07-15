@@ -7,15 +7,15 @@ window.page_class = new class {
 
         document.title = _('settings.settings_' + section)
         $('.page_content')[0].innerHTML = `
-            <div style='padding: 19px 28px 0px 26px;'>
+            <div class='default_wrapper'>
                 <div class='bordered_block'>
-                    <div class='tabs'>
-                        <a data-ignore='1' data-section='ui' ${section == 'ui' ? `class='selectd'` : ''}>${_('settings.settings_ui')}</a>
-                        <a data-ignore='1' data-section='ux' ${section == 'ux' ? `class='selectd'` : ''}>${_('settings.settings_ux')}</a>
-                        <a data-ignore='1' data-section='language' ${section == 'language' ? `class='selectd'` : ''}>${_('settings.settings_language')}</a>
-                        <a data-ignore='1' data-section='accounts' ${section == 'accounts' ? `class='selectd'` : ''}>${_('settings.settings_accounts')}</a>
-                        <a data-ignore='1' data-section='debug' ${section == 'debug' ? `class='selectd'` : ''}>${_('settings.settings_debug')}</a>
-                        <a data-ignore='1' data-section='about' ${section == 'about' ? `class='selectd'` : ''}>${_('settings.settings_about')}</a>
+                    <div class='settings_tabs tabs'>
+                        <a data-ignore='1' data-section='ui' ${section == 'ui' ? `class='selected'` : ''}>${_('settings.settings_ui')}</a>
+                        <a data-ignore='1' data-section='ux' ${section == 'ux' ? `class='selected'` : ''}>${_('settings.settings_ux')}</a>
+                        <a data-ignore='1' data-section='language' ${section == 'language' ? `class='selected'` : ''}>${_('settings.settings_language')}</a>
+                        <a data-ignore='1' data-section='accounts' ${section == 'accounts' ? `class='selected'` : ''}>${_('settings.settings_accounts')}</a>
+                        <a data-ignore='1' data-section='debug' ${section == 'debug' ? `class='selected'` : ''}>${_('settings.settings_debug')}</a>
+                        <a data-ignore='1' data-section='about' ${section == 'about' ? `class='selected'` : ''}>${_('settings.settings_about')}</a>
                     </div>
                 </div>
             </div>
@@ -82,6 +82,18 @@ window.page_class = new class {
                                             <td>${_('settings_ui.settings_ui_left_href')}</td>
                                             <td>
                                                 <input type='text' id='_leftmenu_href'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>${_('settings_ui.settings_ui_left_anchor')}</td>
+                                            <td>
+                                                <input type='text' id='_leftmenu_anchor'>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                ${_('settings_ui.settings_ui_anchor_tip')}
                                             </td>
                                         </tr>
                                         <tr>
@@ -159,21 +171,22 @@ window.page_class = new class {
                         `
                     })
 
-                    $('.menu')[0].innerHTML = menu_html
+                    $('.navigation')[0].innerHTML = menu_html
                 }
 
                 $('#_editnav').on('click', (e) => {
                     if(window.edit_mode == true) {
                         window.edit_mode = false
+
                         e.target.value = _('settings_ui.settings_ui_left_menu_start_edit')
-                        $('.menu')[0].classList.remove('editing')
+                        $('.navigation')[0].classList.remove('editing')
 
                         rebuild_menu(false)
                         $('#__menupostedit')[0].classList.add('hidden')
                     } else {
                         window.edit_mode = true
                         e.target.value = _('settings_ui.settings_ui_left_menu_stop_edit')
-                        $('.menu')[0].classList.add('editing')
+                        $('.navigation')[0].classList.add('editing')
 
                         rebuild_menu(true)
                         $('#__menupostedit')[0].classList.remove('hidden')
@@ -194,6 +207,7 @@ window.page_class = new class {
                         'new_page': false,
                         'disabled': false,
                         'hidden': true,
+                        'anchor': '',
                     })
 
                     window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu.list))
@@ -214,7 +228,7 @@ window.page_class = new class {
                     }
 
                     if(maybe_tab) {
-                        $(`.menu.editing a[data-orighref='${maybe_tab.href}']`).trigger('click')
+                        $(`.navigation.editing a[data-orighref='${maybe_tab.href}']`).trigger('click')
                     }
                 })
                                 
@@ -229,7 +243,7 @@ window.page_class = new class {
                     window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu.list))
                     rebuild_menu(true)
 
-                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
+                    $(`.navigation.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
                 })
 
                 $('#__menupostedit #_downnav').on('click', (e) => {
@@ -239,15 +253,15 @@ window.page_class = new class {
                         return
                     }
 
-                    window.left_menu.list = array_swap(window.left_menu.list, index, index + 1)
+                    window.left_menu.list = Utils.array_swap(window.left_menu.list, index, index + 1)
                     window.site_params.set('ui.left_menu', JSON.stringify(window.left_menu.list))
                     rebuild_menu(true)
 
-                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
+                    $(`.navigation.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
                 })
 
-                $(document).on('click', '.menu.editing a', (e) => {
-                    $('.menu.editing a.editing').removeClass('editing')
+                $(document).on('click', '.navigation.editing a', (e) => {
+                    $('.navigation.editing a.editing').removeClass('editing')
                     e.target.classList.toggle('editing')
 
                     let tab = window.left_menu.list.find(el => el.href == e.target.dataset.orighref)
@@ -256,6 +270,7 @@ window.page_class = new class {
                     $('#__menupostedittab')[0].classList.remove('hidden')
                     $('#__menupostedittab #_leftmenu_text')[0].value = tab.name
                     $('#__menupostedittab #_leftmenu_href')[0].value = tab.href
+                    $('#__menupostedittab #_leftmenu_anchor')[0].value = tab.anchor ?? ''
                     $('#__menupostedittab #_leftmenu_newpage')[0].checked = tab.new_page
                     $('#__menupostedittab #_leftmenu_disabled')[0].checked = tab.disabled
                     $('#__menupostedittab #_leftmenu_hidden')[0].checked = tab.hidden
@@ -265,6 +280,7 @@ window.page_class = new class {
                 $('#__menupostedittab input').on('input', (e) => {
                     selected_tab.name = $('#__menupostedittab #_leftmenu_text')[0].value
                     selected_tab.href = $('#__menupostedittab #_leftmenu_href')[0].value
+                    selected_tab.anchor = $('#__menupostedittab #_leftmenu_anchor')[0].value
                     selected_tab.new_page = $('#__menupostedittab #_leftmenu_newpage')[0].checked
                     selected_tab.disabled = $('#__menupostedittab #_leftmenu_disabled')[0].checked
                     selected_tab.hidden = $('#__menupostedittab #_leftmenu_hidden')[0].checked
@@ -274,12 +290,13 @@ window.page_class = new class {
 
                     rebuild_menu(true)
 
-                    $(`.menu.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
+                    $(`.navigation.editing a[data-orighref='${selected_tab.href}']`).addClass('editing')
                 })
 
                 break
             case 'ux':
                 let date_val = window.site_params.get('ui.date_format') ?? 'default'
+                let online_val = window.site_params.get('ux.online_status') ?? 'none'
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_sublock'>
@@ -293,6 +310,12 @@ window.page_class = new class {
                             <label><input name='_date_format' ${date_val == 'month' ? 'checked' : ''} value='month' type='radio' data-sett='ui.date_format'>${_('settings_ui.settings_date_format_day_month')}</label>
                         </div>
                         <div class='settings_sublock settings_flex'>
+                            <p class='settings_title'><b>${_('settings_ux.settings_online_status')}</b></p>
+                            <label><input name='_online_format' ${online_val == 'none' ? 'checked' : ''} value='none' type='radio' data-sett='ux.online_status'>${_('settings_ux.settings_send_online_none')}</label>
+                            <label><input name='_online_format' ${online_val == 'method_call' ? 'checked' : ''} value='method_call' type='radio' data-sett='ux.online_status'>${_('settings_ux.settings_send_online_method_call')}</label>
+                            <label><input name='_online_format' ${online_val == 'timeout' ? 'checked' : ''} value='timeout' type='radio' data-sett='ux.online_status'>${_('settings_ux.settings_send_online_timeout')}</label>
+                        </div>
+                        <div class='settings_sublock settings_flex'>
                             <p class='settings_title'><b>${_('settings_ux.settings_default_sort')}</b></p>
                             <select data-sett='ux.default_sort' style='width: min-content;'>
                                 <option value='asc' ${window.site_params.get('ux.default_sort', 'asc') == 'asc' ? 'selected' : ''}>${_('wall.sort_old_first')}</option>
@@ -301,11 +324,7 @@ window.page_class = new class {
                             </select>
                         </div>
                         <div class='settings_sublock'>
-                            <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
-                            <label>
-                                <input type='checkbox' data-sett='ui.hide_image_statuses' ${window.site_params.get('ui.hide_image_statuses') == '1' ? 'checked' : ''}>
-                                ${_('settings_ui.settings_hide_image_statuses')}
-                            </label>
+                            <p class='settings_title'><b>${_('settings_ux.settings_scrolling')}</b></p>
                             <label>
                                 <input type='checkbox' data-sett='ux.save_scroll' ${window.site_params.get('ux.save_scroll', '0') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_save_hash_progress')}
@@ -314,17 +333,54 @@ window.page_class = new class {
                                 <input type='checkbox' data-sett='ux.auto_scroll' ${window.site_params.get('ux.auto_scroll', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_auto_scroll')}
                             </label>
+                        </div>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_ux.settings_user')}</b></p>
                             <label>
-                                <input type='checkbox' data-sett='ux.send_online' ${window.site_params.get('ux.send_online', '1') == '1' ? 'checked' : ''}>
-                                ${_('settings_ux.settings_send_online')}
+                                <input type='checkbox' data-sett='ux.show_reg' ${window.site_params.get('ux.show_reg', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_show_registration_date')}
                             </label>
+                            <label>
+                                <select data-sett='ux.friends_block_sort'>
+                                    <option value='hints'  ${window.site_params.get('ux.friends_block_sort', 'hints') == 'hints' ? 'selected' : ''}>${_('settings_ux.settings_friends_block_sort_rating')}</option>
+                                    <option value='random' ${window.site_params.get('ux.friends_block_sort', 'random') == 'random' ? 'selected' : ''}>${_('settings_ux.settings_friends_block_sort_random')}</option>
+                                </select>
+                                ${_('settings_ux.settings_friends_block_sort')}
+                            </label>
+                        </div>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('user_page.cover')}</b></p>
+                            <label>
+                                <input name='_cover_upper' type='radio' value='0' data-sett='ui.cover_upper' ${window.site_params.get('ui.cover_upper', '0') == '0' ? 'checked' : ''}>
+                                ${_('settings_ui_tweaks.show_cover_on_up')}
+                            </label>
+                            <label>
+                                <input name='_cover_upper' type='radio' value='1' data-sett='ui.cover_upper' ${window.site_params.get('ui.cover_upper', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ui_tweaks.show_cover_from_name')}
+                            </label>
+                            <label>
+                                <input name='_cover_upper' type='radio' value='2' data-sett='ui.cover_upper' ${window.site_params.get('ui.cover_upper', '0') == '2' ? 'checked' : ''}>
+                                ${_('settings_ui_tweaks.show_cover_background')}
+                            </label>
+                            <label>
+                                <input name='_cover_upper' type='radio' value='3' data-sett='ui.cover_upper' ${window.site_params.get('ui.cover_upper', '0') == '3' ? 'checked' : ''}>
+                                ${_('settings_ui_tweaks.show_cover_no')}
+                            </label>
+                        </div>
+                        
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
                             <label>
                                 <input type='checkbox' data-sett='internal.use_proxy' ${window.site_params.get('internal.use_proxy', '0') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_use_proxy')}
                             </label>
                             <label>
-                                <input type='checkbox' data-sett='ux.show_reg' ${window.site_params.get('ux.show_reg', '0') == '1' ? 'checked' : ''}>
-                                ${_('settings_ux.settings_show_registration_date')}
+                                <input type='checkbox' data-sett='internal.use_execute' ${window.site_params.get('internal.use_execute', '1') == '1' ? 'checked' : ''}>
+                                ${_('settings_debug.settings_use_execute')}
+                            </label>
+                            <label>
+                                <input type='checkbox' data-sett='ux.twemojify' ${window.site_params.get('ux.twemojify', '1') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.settings_format_emojis')}
                             </label>
                         </div>
                     </div>
@@ -403,18 +459,6 @@ window.page_class = new class {
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('settings_debug.settings_cache')}</b></p>
                             <div class='settings_caches'>
-                                <label>
-                                    <input type='button' name='_clear_cache' data-tab='cities_cache' value='${_('settings_debug.settings_method_clear')}'>
-                                    <span>${_('settings_debug.settings_cache_cities')}</span>
-                                </label>
-                            </div>
-                            <div class='settings_caches'>
-                                <label>
-                                    <input type='button' name='_clear_cache' data-tab='clubs_cache' value='${_('settings_debug.settings_method_clear')}'>
-                                    <span>${_('settings_debug.settings_cache_groups')}</span>
-                                </label>
-                            </div>
-                            <div class='settings_caches'>
                                 <input type='button' name='_export_localstorage' value='${_('settings_debug.settings_localstorage_download')}'>
                                 <input type='button' name='_import_localstorage' value='${_('settings_debug.settings_localstorage_import')}'>
                             </div>
@@ -423,14 +467,6 @@ window.page_class = new class {
                             <p class='settings_title'><b>${_('settings_debug.settings_routing')}</b></p>
 
                             <input type='button' id='_restart_app' value='${_('settings_debug.settings_restart_app')}'>
-                        </div>
-                        <div class='settings_sublock'>
-                            <p class='settings_title'><b>${_('settings_ui.settings_ui_other')}</b></p>
-
-                            <label>
-                                <input type='checkbox' name='_useExecute' ${window.site_params.get('internal.use_execute', '1') == '1' ? 'checked' : ''}>
-                                ${_('settings_debug.settings_use_execute')}
-                            </label>
                         </div>
                     </div>
                 `)
@@ -487,10 +523,6 @@ window.page_class = new class {
                     })
     
                     window.router.restart()
-                })
-
-                $(document).on('change', 'input[name="_useExecute"]', () => {
-                    window.site_params.set('internal.use_execute', Number($('input[name="_useExecute"]')[0].checked))
                 })
 
                 break

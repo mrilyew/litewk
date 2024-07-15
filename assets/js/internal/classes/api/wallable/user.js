@@ -19,7 +19,7 @@ class User extends Faveable {
         }
     }
 
-    async fromId(id = 0) {
+    async fromId(id = 0, need_blocks = false) {
         let filds = 'about,activities,bdate,blacklisted,blacklisted_by_me,books,can_see_all_posts,career,city,common_count,connections,contacts,counters,country,cover,crop_photo,domain,education,exports,followers_count,friend_status,games,has_photo,has_mobile,has_mail,house,home_town,interests,is_subscribed,is_no_index,is_nft,is_favorite,is_friend,image_status,is_hidden_from_feed,is_verified,last_seen,maiden_name,movies,music,military,nickname,online,occupation,personal,photo_200,photo_50,photo_max_orig,quotes,relatives,relation,schools,sex,site,status,tv,universities,verified,wall_default'
         let info = null
         if(!window.use_execute) {
@@ -75,26 +75,84 @@ class User extends Faveable {
                 'cities': [],
             }
 
-            // я заебался
-
-            info.additional.groups = await window.vk_api.call('groups.getById', {'group_ids': groups_to_insert})
+            info.additional.groups = await window.vk_api.call('groups.getById', {'group_ids': groups_to_insert}, false)
             
-            info.additional.groups = info.additional.groups.response.groups
+            try {
+                info.additional.groups = info.additional.groups.response.groups
+            } catch(e){}
 
-            info.additional.users = await window.vk_api.call('users.get', {'user_ids': users_to_insert})
+            info.additional.users = await window.vk_api.call('users.get', {'user_ids': users_to_insert}, false)
 
-            info.additional.users = info.additional.users.response
+            try {
+                info.additional.users = info.additional.users.response
+            } catch(e){}
 
-            info.additional.cities = await window.vk_api.call('database.getCitiesById', {'city_ids': cities_to_insert})
+            info.additional.cities = await window.vk_api.call('database.getCitiesById', {'city_ids': cities_to_insert}, false)
 
-            info.additional.cities = info.additional.cities.response
+            try {
+                info.additional.cities = info.additional.cities.response
+            } catch(e){}
+
+            if(need_blocks) {
+                info.main_photos = await window.vk_api.call('photos.getAll', {"owner_id": info.id, "count": 6, "skip_hidden": 1}, false)
+                
+                info.main_photos = info.main_photos.response
+
+                info.friends = await window.vk_api.call('friends.get', {"user_id": info.id, "count": 6, "order": window.site_params.get('ux.friends_block_sort', 'hints'), 'fields': Utils.typical_fields}, false)
+                
+                info.friends = info.friends.response
+                
+                info.friends_online = await window.vk_api.call('friends.getOnline', {"user_id": info.id, "count": 6, "order": 'random', 'extended': 1, 'fields': Utils.typical_fields}, false)
+                
+                info.friends_online = info.friends_online.response
+
+                try {
+                    info.friends_online = {
+                        'count': info.friends_online.total_count,
+                        'items': info.friends_online.profiles
+                    }
+                } catch(e) {}
+
+                if(window.site_params.get('internal.use_proxy', '0') == '1') {
+                    await Utils.sleep(3000)
+                }
+
+                info.subscriptions = await window.vk_api.call('users.getSubscriptions', {"user_id": info.id, "extended": 1, 'count': 6, "fields": Utils.typical_fields + ',' + Utils.typical_group_fields}, false);
+                
+                try {
+                    info.subscriptions = info.subscriptions.response
+                } catch(e) {}
+
+                info.gifts = await window.vk_api.call('gifts.get', {"user_id": info.id, 'count': 6}, false);
+                
+                try {
+                    info.gifts = info.gifts.response
+                } catch(e) {}
+
+                info.videos = await window.vk_api.call('video.get', {"owner_id": info.id, 'count': 2}, false);
+                
+                try {
+                    info.videos = info.videos.response
+                } catch(e) {}
+
+                if(window.site_params.get('internal.use_proxy', '0') == '1') {
+                    await Utils.sleep(3000)
+                }
+
+                info.albums = await window.vk_api.call('photos.getAlbums', {"owner_id": info.id, 'count': 2, 'need_covers': '1'}, false);
+                
+                try {
+                    info.albums = info.albums.response
+                } catch(e) {}
+            }
 
             this.info = info
         } else {
             // Вк не возвращает по умолчанию в некоторых местах так нужные объекты.
             // Придётся получать их вручную(
+            
             info = await window.vk_api.call('execute', {'code': `
-                var user = API.users.get({"user_ids": ${id}, "fields": "${filds}"})[0];
+                var user = API.users.get({"user_ids": "${id}", "fields": "${filds}"})[0];
                 var additional_arrays = {"groups": [], "users": [], "cities": []};
 
                 var groups_to_insert = "";
@@ -154,6 +212,22 @@ class User extends Faveable {
                 additional_arrays.cities = API.database.getCitiesById({"city_ids": cities_to_insert});
 
                 user.additional = additional_arrays;
+
+                ${need_blocks ? `
+                    user.main_photos = API.photos.getAll({"owner_id": user.id, "count": 6, "skip_hidden": 1});
+                    user.friends = API.friends.get({"user_id": user.id, "count": 6, "order": "${window.site_params.get('ux.friends_block_sort', 'hints')}", "fields": "${Utils.typical_fields}"});
+                    user.friends_online = API.friends.getOnline({"user_id": user.id, "count": 6, "order": "random", "extended": 1, "fields": "${Utils.typical_fields}"});
+                    user.friends_online = {
+                        "count": user.friends_online.total_count,
+                        "items": user.friends_online.profiles,
+                    };
+
+                    user.subscriptions = API.users.getSubscriptions({"user_id": user.id, "count": 6, "extended": 1, "fields": "${Utils.typical_fields + ',' + Utils.typical_group_fields}"});
+                    user.gifts = API.gifts.get({"user_id": user.id, "count": 6});
+                    user.videos = API.video.get({"owner_id": user.id, "count": 2});
+                    user.albums = API.photos.getAlbums({"owner_id": user.id, "count": 2, "need_covers": 1});
+                ` : ''}
+                
                 return user;
             `})
 
@@ -297,6 +371,10 @@ class User extends Faveable {
             return base.images[1].url
         }
     }
+
+    getFirstName() {
+        return Utils.escape_html(this.info.first_name)
+    }
     
     getName() {
         return Utils.escape_html(this.info.first_name + ' ' + this.info.last_name)
@@ -304,6 +382,19 @@ class User extends Faveable {
 
     getFullName() {
         return Utils.escape_html(this.info.first_name + (this.info.nickname ? ` (${this.info.nickname}) ` : ' ') + this.info.last_name + (this.info.maiden_name ? ` (${this.info.maiden_name})` : ''))
+    }
+
+    getHTMLName() {
+        return `
+        <div class='user_info_with_name'>
+            <span class='user_name ${this.isFriend() ? ' friended' : ''}'>${this.getFullName()}</span>
+
+            ${this.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+            `<div class='image_status' data-id='${this.getId()}' title='${this.getImageStatus().name}'>
+                <img src='${this.getImageStatusURL()}'>
+            </div>` : ``}
+        </div>
+        `
     }
 
     getTextStatus() {
@@ -341,10 +432,13 @@ class User extends Faveable {
 
         if(this.info.relation_partner) {
             partner  = new User
-            partner.hydrate(this.info.relation_partner)
+            partner.hydrate(this.info.relation_partner.user_object)
 
             partner_html = `
-                <a href='#id${partner.getId()}'>${partner.getName()}</a>
+                <a class='relation_partner ${partner.isFriend() ? ' friended' : ''}' href='#id${partner.getId()}'>
+                    <img src='${partner.getAvatar(true)}'>
+                    ${partner.getName()}
+                </a>
             `
         }
 
@@ -563,6 +657,10 @@ class User extends Faveable {
 
     isOnline() {
         return this.info.online == 1
+    }
+
+    hasContacts() {
+        return this.has('country') || this.has('city') || this.has('home_town') || this.has('mobile_phone') || this.has('home_phone') || this.has('skype') || this.has('site')
     }
 
     hasCover() {

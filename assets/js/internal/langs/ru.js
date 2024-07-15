@@ -43,6 +43,8 @@ window.langs.push({
         'come_back': 'Назад',
 
         'suspicious_link': 'Ссылка, по мнению ВК, подозрительная. <br> Всё равно хочешь перейти?',
+        'not_found_shortcode': 'По данному шорткоду ничего не найдено. Хочешь перейти в ВК?',
+        'all': 'Все',
     },
 
     'pagination': {
@@ -108,11 +110,13 @@ window.langs.push({
         'settings_ui_left_click_tip': 'Нажми по элементу в меню, чтобы отредактировать его.',
         'settings_ui_left_text': 'Надпись',
         'settings_ui_left_href': 'Ссылка',
+        'settings_ui_left_anchor': 'Якорь',
         'settings_ui_left_new_page': 'Открывать в новой вкладке',
         'settings_ui_left_disabled': 'Отключён',
         'settings_ui_left_hidden': 'Скрыт',
 
         'settings_ui_i18n_tip': `Символ '_' в начале означает, что будет использоваться локализированная строка.`,
+        'settings_ui_anchor_tip': `Отвечает за счётчик у пункта меню.`,
     },
 
     'settings_ui_tweaks': {
@@ -123,16 +127,33 @@ window.langs.push({
         'hide_onliner': `Скрыть отображение статуса "онлайн" у постов и комментариев`,
 
         'hide_counters': 'Скрыть счётчики в меню навигации',
+        'hide_image_status': 'Скрывать графические статусы',
+
+        'show_cover_on_up': 'Показывать обложку над страницей',
+        'show_cover_from_name': 'Показывать обложку над именем',
+        'show_cover_background': 'Показывать обложку на фоне',
+        'show_cover_no': 'Не показывать',
     },
     
     'settings_ux': {
         'settings_save_hash_progress': 'Сохранять прогресс прокрутки страницы',
+        'settings_scrolling': 'Скроллинг',
         'settings_auto_scroll': 'Автопрокрутка',
         'settings_send_online': 'Пробуждать аккаунт в онлайн каждые 5 минут',
-
+        
         'settings_default_sort': 'Сортировка комментариев по умолчанию',
+        'settings_online_status': 'Пробуждение в онлайн',
         'settings_use_proxy': 'Использовать allorigins.win (на ваш риск)',
-        'settings_show_registration_date': 'Показывать дату регистрации пользователя',
+        'settings_show_registration_date': 'Показывать дату регистрации пользователя (используется allorigins.win)',
+        'settings_friends_block_sort': 'Сортировка в блоке друзей',
+        'settings_friends_block_sort_rating': 'По общительности',
+        'settings_friends_block_sort_random': 'Случайно',
+
+        'settings_send_online_none': 'Не пробуждать аккаунт в онлайн',
+        'settings_user': 'Страница пользователя',
+        'settings_send_online_method_call': 'После любого действия',
+        'settings_send_online_timeout': 'Каждые 5 минут',
+        'settings_format_emojis': 'Заменять текстовые эмодзи на Twemoji',
     },
 
     'settings_language': {
@@ -168,7 +189,7 @@ window.langs.push({
 
         'settings_routing': 'Роутинг',
 
-        'settings_use_execute': 'Использовать execute по возможности',
+        'settings_use_execute': 'Использовать execute по возможности (рекомендуется)',
         'settings_restart_app': 'Перезапустить приложение',
     },
 
@@ -221,7 +242,13 @@ window.langs.push({
         'hidden': 'скрыт',
         'online': 'В сети',
         'no_status': 'Нет статуса',
+
         'personal_info': 'Личная информация',
+        'profile_info': 'Информация о профиле',
+
+        'show_more_info': 'Показать всю информацию',
+        'hide_more_info': 'Скрыть всю информацию',
+        
         'came_on_site': 'заходил(а)',
         'came_on_site_male': 'заходил',
         'came_on_site_female': 'заходила',
@@ -325,10 +352,14 @@ window.langs.push({
 
         'go_to_user_page': 'перейти к странице',
         'error_getting_registration_date': 'Не удалось получить.',
+
+        'cover': 'Обложка',
     },
 
     'relation': {
         'not_picked': 'Не указано',
+        'not_picked_small': 'Неважно',
+
         'female_single': 'не замужем',
         'male_single': 'не женат',
         'meets_with': 'встречаюсь',
@@ -342,6 +373,14 @@ window.langs.push({
         'female_inlove': 'влюблена',
         'male_inlove': 'влюблён',
         'in_a_civil_marriage': 'в гражданском браке',
+
+        'single': 'Не женат/не замужем',
+        'meets': 'Есть друг/есть подруга',
+        'engaged': 'Помолвлен(а)',
+        'married': 'Женат/замужем',
+        'complicated': 'Всё сложно',
+        'active': 'В активном поиске',
+        'inlove': 'Влюблён/влюблена',
     },
 
     'political_views': {
@@ -474,14 +513,11 @@ window.langs.push({
         'followers_count_one': '$1 подписчик',
         'followers_count_few': '$1 подписчика',
         'followers_count_other': '$1 подписчиков',
-    },
 
-    'group_page': {
-        'main_info': 'Основная информация',
-        'is_closed': 'Группа закрыта?',
-        'activity': 'Тематика',
-        'description': 'Описание',
-        'city': 'Город',
+        'messages_count_zero': '0 сообщений',
+        'messages_count_one': '$1 сообщение',
+        'messages_count_few': '$1 сообщения',
+        'messages_count_other': '$1 сообщений',
     },
 
     'faves': {
@@ -519,6 +555,12 @@ window.langs.push({
     'groups': {
         'groups': 'Группы',
 
+        'main_info': 'Основная информация',
+        'is_closed': 'Группа закрыта?',
+        'activity': 'Тематика',
+        'description': 'Описание',
+        'city': 'Город',
+
         'subscribe': 'Подписаться',
         'unsubscribe': 'Отписаться',
         'send_request': 'Подать заявку',
@@ -539,6 +581,13 @@ window.langs.push({
         'recent_title': 'Недавно посещённые вами группы',
 
         'clear_recents': 'Очистить',
+        'followers': 'Подписчики',
+        'followers_friends': 'Подписчики из друзей',
+        'contacts': 'Контакты',
+        'links': 'Ссылки',
+
+        'topics': 'Обсуждения',
+        'last_from_user_time': `Последнее от <a href="$1">$2</a> $3`,
     },
 
     'wall': {
@@ -564,6 +613,8 @@ window.langs.push({
         'owner_posts': 'Свои записи',
         'others_posts': 'Чужие записи',
         'archived_posts': 'Архивированные записи',
+        'suggests_posts': 'Предложенные записи',
+        'postponed_posts': 'Отложенные записи',
         'search_posts': 'Поиск записей',
         'post_has_deleted': `Пост удалён. <a href='javascript:void(0)' id='_postRestore'>Восстановить?</a>`,
         'post_has_archived': `Пост был архивирован. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='1'>Вернуть?</a>`,
@@ -655,12 +706,16 @@ window.langs.push({
 
     'photos': {
         'photo': 'Фотография',
+        'photos': 'Фотографии',
+        'albums': 'Альбомы',
+
         'graffiti': 'Граффити',
         'attached_link': 'Превью ссылки',
     },
 
     'videos': {
         'video': 'Видеозапись',
+        'videos': 'Видео',
 
         'views_count_zero': 'Нет просмотров',
         'views_count_one': '$1 просмотр',
@@ -680,6 +735,8 @@ window.langs.push({
 
     'friends': {
         'friends': 'Друзья',
+        'friends_online': 'Друзья онлайн',
+        'subscriptions': 'Подписки',
         'came_last': 'был в сети',
 
         'all_friends': 'Все друзья',
@@ -744,6 +801,72 @@ window.langs.push({
         'search_videos_section': 'Видеозаписи',
         'search_photos_section': 'Фотографии',
         'search_games_section': 'Игры',
+
+        'params_search': 'Параметры поиска',
+        'search_params_user_city': 'Город',
+        'search_params_user_city_id': 'ID города',
+        'search_params_user_age': 'Возраст',
+        'search_params_user_from': 'От',
+        'search_params_user_to': 'До',
+        'search_params_user_birthday': 'День рождения',
+        'search_params_user_gender': 'Пол',
+        'search_params_user_gender_any': 'Неважно',
+        'search_params_user_gender_male': 'Мужской',
+        'search_params_user_gender_female': 'Женский',
+        'search_params_user_hometown': 'Родной город',
+        'search_params_user_additional': 'Дополнительно',
+        'search_params_user_has_photo': 'С фотографией',
+        'search_params_user_has_online': 'В сети',
+        'search_params_user_relation': 'Семейное положение',
+        'search_params_user_sort': 'Порядок',
+        'search_params_user_sort_popularity': 'По популярности',
+        'search_params_user_sort_regdate': 'Под дате регистрации',
+
+        'search_params_group_type': 'Тип группы',
+        'search_params_group_type_group': 'Группа',
+        'search_params_group_type_page': 'Паблик',
+        'search_params_group_type_event': 'Событие',
+        'search_params_group_additional': 'Дополнительно',
+        'search_params_group_future': 'Предстоящее событие',
+        'search_params_group_sort_relevant': 'По релевантности',
+        'search_params_group_sort_subs': 'По подписчикам',
+
+        'search_params_posts_attachments': 'Вложения',
+        'search_params_posts_type': 'Тип',
+        'search_params_posts_link': 'Содержит ссылку',
+        'search_params_posts_exclude': 'Исключить слова',
+        'search_params_posts_likes': 'Отметки "Нравятся"',
+        'search_params_posts_show_trash': 'Показывать спам',
+
+        'search_params_posts_attachments_tip': `То же, что и "has:{тип_аттачмента}".`,
+        'search_params_posts_type_tip': `То же, что и "type:[copy|reply]".`,
+        'search_params_posts_link_tip': `То же, что и "url:{ссылка}".`,
+        'search_params_posts_exclude_tip': `То же, что и "exclude:{слова}".`,
+        'search_params_posts_likes_tip': `То же, что и "likes:{число лайков}".`,
+        'search_params_posts_rated_tip': `То же, что и "rated:{0}".`,
+        'search_params_posts_likes_not_lesser': 'Не меньше $1',
+        'search_params_posts_likes_any': 'Любое количество',
+
+        'search_params_posts_attachments_not_select': 'Неважно',
+        'search_params_posts_attachments_photo': 'Фотография (photo)',
+        'search_params_posts_attachments_video': 'Видеозапись (video)',
+        'search_params_posts_attachments_audio': 'Аудиозапись (audio)',
+        'search_params_posts_attachments_graffiti': 'Граффити (graffiti)',
+        'search_params_posts_attachments_note': 'Заметка (note)',
+        'search_params_posts_attachments_poll': 'Опрос (poll)',
+        'search_params_posts_attachments_link': 'Ссылка (link)',
+        'search_params_posts_attachments_file': 'Файл (doc)',
+        'search_params_posts_attachments_album': 'Фотоальбом (album)',
+        'search_params_posts_attachments_article': 'Статья (article)',
+        'search_params_posts_attachments_wikipage': 'Вики-страница (page)',
+        'search_params_posts_attachments_none': 'Без вложений (none)',
+
+        'search_params_posts_type_none': 'Любые посты',
+        'search_params_posts_type_copies': 'Только копии',
+    },
+
+    'gifts': {
+        'gifts': 'Подарки',
     },
 
     'errors': {
@@ -768,6 +891,26 @@ window.langs.push({
         'unable_to_add_acc': 'Не удалось добавить аккаунт.',
         'groups_not_found': 'Группы не найдены',
 
-        'bookmarks_all_not_found': 'Никаких закладок не найдено.'
+        'bookmarks_all_not_found': 'Никаких закладок не найдено.',
+        'could_not_draw_page': 'Не удалось отобразить страницу. Текст ошибки:',
+        'network_error': 'Ошибка подключения',
+
+        'friends_get_error': 'Друзей не найдено.',
+        'friends_get_online_error': 'Друзей в сети не найдено.',
+        'friends_search_error': 'Друзей по данному запросу не найдено.',
+        'friends_incoming_error': 'Вам не отправляли заявок в друзья.',
+        'friends_outcoming_error': 'Вы не отправляли заявок в друзья',
+        'friends_suggestions_error': 'Нечего предложить.',
+        'friends_followers_error': 'Подписчиков не найдено.',
+        'friends_mutual_error': 'Общих друзей не найдено.',
+        'friends_list_error': 'Друзей в списке не найдено.',
+
+        'groups_get_error': 'Групп не найдено.',
+        'groups_managed_error': 'Групп с правами администратора не найдено.',
+        'groups_events_error': 'Событий не найдено.',
+        'groups_recommend_error': 'Хз.',
+        'groups_recents_error': 'Недавних групп не найдено.',
+
+        'search_not_found': 'По запросу ничего не найдено.',
     },
 })

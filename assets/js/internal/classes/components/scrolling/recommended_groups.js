@@ -28,11 +28,6 @@ class RecommendedGroups extends Newsfeed {
 
         this.method_params.start_from = recoms.response.next_from
 
-        if(window.site_params.get('ux.save_scroll', '0') == '1') {
-            window.s_url.searchParams.set('start_hash', recoms.response.next_from)
-            Utils.push_state(window.s_url)
-        }
-
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
 
         if(recoms.response.items.length > 8) {

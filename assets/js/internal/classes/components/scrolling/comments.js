@@ -13,7 +13,7 @@ class Comments extends ClassicListView {
             this.objects.pagesCount = 0
 
             this.getInsertNode().insertAdjacentHTML('beforeend', `
-                <div class='bordered_block'>${_('errors.error_getting_wall', objects_data.error.error_msg ? objects_data.error.error_msg : 'unknown error :( maybe timeout')}</div>
+                <div class='bordered_block'>${_('errors.error_getting_wall', objects_data.error.error_msg ? objects_data.error.error_msg : 'unknown error maybe timeout')}</div>
             `)
         }
 

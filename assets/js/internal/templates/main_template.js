@@ -9,12 +9,20 @@ window.templates.main = (menu_html = '') => {
     </style>
     
     <div class='dimmer'></div>
-    <div class='to_the_sky menu_up_hover_click'>
-        <span class='to_up'>${_('navigation.to_up')}</span>
-        <span class='come_back'>${_('navigation.come_back')}</span>
+    <div id='up_panel' class='menu_up_hover_click'>
+        <div id='to_up'>
+            <svg id="to_up_icon" viewBox="0 0 10 6"><polygon points="0 6 5 0 10 6 0 6"/></svg>
+            <span>${_('navigation.to_up')}</span>
+        </div>
+        
+        <div id='come_back'>
+            <svg id="come_back_icon" viewBox="0 0 10 6"><polygon points="0 0 5 6 10 0 0 0"/></svg>
+            <span>${_('navigation.come_back')}</span>
+        </div>
     </div>
-    <div class="wrapper">
-        <div class="menu">
+
+    <div class='main_wrapper'>
+        <div class="navigation">
             ${menu_html}
             <div class='menu_up_hover menu_up_hover_click'></div>
         </div>

@@ -8,8 +8,8 @@ window.page_class = new class {
         $('.page_content')[0].insertAdjacentHTML('beforeend', `
             <div class='onpage_error auth_block'>
                 <div class='tabs'>
-                    <a href='#login/oauth' data-section='ouath' ${current_tab == 'oauth' ? `class='selectd'` : ''}>OAuth</a>
-                    <a href='#login/token' data-section='token' ${current_tab == 'token' ? `class='selectd'` : ''}>${_('auth.by_token')}</a>
+                    <a href='#login/oauth' data-section='ouath' ${current_tab == 'oauth' ? `class='selected'` : ''}>OAuth</a>
+                    <a href='#login/token' data-section='token' ${current_tab == 'token' ? `class='selected'` : ''}>${_('auth.by_token')}</a>
                 </div>
 
                 <div class='auth_block_input'></div>

@@ -1,9 +1,11 @@
 class MessageBox {
     constructor(title, content, buttons, buttons_actions, additional = {}) {
         $('body').addClass('dimmed')
-        $('.wrapper')[0].insertAdjacentHTML('beforeend', 
+        
+        this.random_id = Utils.random_int(0, 100000)
+        $('.main_wrapper')[0].insertAdjacentHTML('beforeend', 
             `
-                <div class='messagebox'>
+                <div class='messagebox' id='msg${this.random_id}'>
                     <div class='messagebox_title'>
                         <span>${title}</span>
 
@@ -36,7 +38,7 @@ class MessageBox {
                 btn.setAttribute('value', b)
                 btn.onclick = buttons_actions[i]
     
-                $('.messagebox_buttons')[0].insertAdjacentElement('beforeend', btn)
+                $(`#msg${this.random_id} .messagebox_buttons`)[0].insertAdjacentElement('beforeend', btn)
                 btn = null
                 i += 1
             })
@@ -44,7 +46,7 @@ class MessageBox {
             i = null
         }
 
-        $('.messagebox_title #_close').on('click', (e) => {
+        $(`#msg${this.random_id} .messagebox_title #_close`).on('click', (e) => {
             e.preventDefault()
 
             this.close()
@@ -54,8 +56,12 @@ class MessageBox {
     close()
     {
         document.onkeyup = null
-        $('body').removeClass('dimmed')
-        $('.wrapper .messagebox').remove()
+
+        $('.main_wrapper #msg'+this.random_id).remove()
+
+        if(document.querySelectorAll('.messagebox').length < 1) {
+            $('body').removeClass('dimmed')
+        }
 
         delete this
     }
@@ -64,7 +70,7 @@ class MessageBox {
 class MessageWindow {
     constructor(title, func, additional = {}) {
         $('body').addClass('dimmed')
-        $('.wrapper')[0].insertAdjacentHTML('beforeend', 
+        $('.main_wrapper')[0].insertAdjacentHTML('beforeend', 
             `
             <div class='fullscreen_view'>
                 <div class='fullscreen_view_title'>
@@ -106,6 +112,6 @@ class MessageWindow {
     {
         document.onkeyup = null
         $('body').removeClass('dimmed')
-        $('.wrapper .fullscreen_view').remove()
+        $('.main_wrapper .fullscreen_view').remove()
     }
 }

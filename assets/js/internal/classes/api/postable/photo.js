@@ -31,7 +31,7 @@ class Photo extends PostLike {
     }
 
     hasSize(type = 'z') {
-        return this.info.sizes.find(size => size.type == type)
+        return this.info.sizes.find(size => size.type == type) != null
     }
 
     isVertical() {
@@ -40,6 +40,20 @@ class Photo extends PostLike {
             return size.height > size.width
         } catch(e) {
             return false
+        }
+    }
+}
+
+class LinkPhoto extends Photo {
+    getUrlBySize(type = 'q') {
+        try {
+            if(!this.hasSize(type)) {
+                return this.info.sizes.find(size => size.type == 'b').url
+            }
+    
+            return this.info.sizes.find(size => size.type == type).url
+        } catch(e) {
+            return ''
         }
     }
 }

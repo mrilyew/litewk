@@ -58,8 +58,8 @@ window.templates.post = (post, additional_options = {}) => {
 
     template += `
             <div class='post_ava avatar'>
-                <a ${owner.isOnline() ? `class='onliner'` : ''} href='${owner.getUrl()}'>
-                    <img src='${owner.getAvatar(true)}'>
+                <a class='${owner.isOnline() ? 'onliner' : ''}' href='${owner.getUrl()}'>
+                    <img class='outliner' src='${owner.getAvatar(true)}'>
                 </a>
             </div>
             <div class='post_name'>
@@ -72,13 +72,17 @@ window.templates.post = (post, additional_options = {}) => {
                         </b>
 
                         ${owner.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                        `<div class='smiley' data-id='${owner.getId()}' title='${owner.getImageStatus().name}'>
+                        `<div class='image_status nopadding' data-id='${owner.getId()}' title='${owner.getImageStatus().name}'>
                             <img src='${owner.getImageStatusURL()}'>
                         </div>` : ``}
+
                     ${post.hasUpperText() ? post.getUpperText() : ''}
                     </p>
                 </div>
-                <p><a href='#wall${post.getId()}'>${post.getDate()}</a><span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span></p>
+                <p class='post_date'>
+                    <a href='#wall${post.getId()}'>${post.getDate()}</a>
+                    <span class='pinned_indicator ${post.isPinned() ? '' : 'hidden'}'>${_('wall.pinned')}</span>
+                </p>
             </div>
             `
 
@@ -88,25 +92,25 @@ window.templates.post = (post, additional_options = {}) => {
                 ${post.isntRepost() ? 
                 `
                 <div class='post_toggle_wrap'>
-                    <div class='posts_menu_toggle dropdown_toggle icons1' data-onid='_actposts${post.getId()}'></div>
-                        <div class='post_upper_actions dropdown_wrapper'>
-                            <div class='dropdown_menu' id='_actposts${post.getId()}'>
-                                ${post.canEdit() ? `<p id='_postEdit'>${_('wall.edit_post')}</p>` : ''}
-                                ${post.canDelete() ? `<p id='_postDelete'>${_('wall.delete_post')}</p>` : ''}
-                                ${post.canArchive() && !post.isArchived() ? `<p id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</p>` : ''}
-                                ${post.canArchive() && post.isArchived()? `<p id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</p>` : ''}
-                                ${post.canPin() && post.isPinned() ? `<p id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</p>` : ''}
-                                ${post.canPin() && !post.isPinned() ? `<p id='_pinPost' data-act='pin'>${_('wall.pin_post')}</p>` : ''}
-                                ${post.canShut() ? `<p id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</p>` : ''}
-                                ${post.canUp() ? `<p id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</p>` : ''}
-                                ${!post.canDelete() ? `<p>${_('wall.report_post')}</p>` : ''}
-                                ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
-                                ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
-                                <a href='https://vk.com/wall${post.getId()}' target='_blank'><p>${_('wall.go_to_vk')}</p></a>
-                                ${post.info.source_id ? `<p id='_toggleInteressness' data-val='0' data-type='${post.info.type}' data-addid='${post.getId()}'>${_('wall.not_interesting')}</p>` : ''}
-                            </div>
+                    <svg class='posts_menu_toggle dropdown_toggle' data-onid='_actposts${post.getId()}' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.35 7.54"><g><polyline points="0.44 0.63 8.73 6.63 17.94 0.63"/></g></svg>
+                    <div class='dropdown_actions dropdown_wrapper'>
+                        <div class='dropdown_menu' id='_actposts${post.getId()}'>
+                            ${post.canEdit() ? `<p id='_postEdit'>${_('wall.edit_post')}</p>` : ''}
+                            ${post.canDelete() ? `<p id='_postDelete'>${_('wall.delete_post')}</p>` : ''}
+                            ${post.canArchive() && !post.isArchived() ? `<p id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</p>` : ''}
+                            ${post.canArchive() && post.isArchived()? `<p id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</p>` : ''}
+                            ${post.canPin() && post.isPinned() ? `<p id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</p>` : ''}
+                            ${post.canPin() && !post.isPinned() ? `<p id='_pinPost' data-act='pin'>${_('wall.pin_post')}</p>` : ''}
+                            ${post.canShut() ? `<p id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</p>` : ''}
+                            ${post.canUp() ? `<p id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</p>` : ''}
+                            ${!post.canDelete() ? `<p>${_('wall.report_post')}</p>` : ''}
+                            ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
+                            ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
+                            <a href='https://vk.com/wall${post.getId()}' target='_blank'><p>${_('wall.go_to_vk')}</p></a>
+                            ${post.info.source_id ? `<p id='_toggleInteressness' data-val='0' data-type='${post.info.type}' data-addid='${post.getId()}'>${_('wall.not_interesting')}</p>` : ''}
                         </div>
-                    </div>` : ''}
+                    </div>
+                </div>` : ''}
             </div>
 
             <div class='post_content contenter'>
@@ -133,24 +137,25 @@ window.templates.post = (post, additional_options = {}) => {
             </div>
 
             ${post.info.likes ?
-            `<div class='post_actions'>
-                <div class='post_actions_wr'>
+            `<div class='post_bottom'>
+                <div class='post_actions'>
                     <a class='like ${post.info.likes.user_likes == 1 ? 'activated' : '' }'>
-                        <div class='like_icon icons1'></div>
+                        <svg class='like_icon_hearted' viewBox="0 0 17 16.22"><g><path id="heart" d="M12.43,1A4.67,4.67,0,0,0,9,2.48,4.67,4.67,0,0,0,5.57,1,4.44,4.44,0,0,0,1,5.29C1,7.65,9,16,9,16s8-8.35,8-10.71A4.44,4.44,0,0,0,12.43,1Z" transform="translate(-0.5 -0.5)"/></g></svg>
                         <span>${post.getLikes()}</span>
                     </a>
                     ${!additional_options.hide_comments ? `
                     <a href='#wall${post.getId()}' class='comment'>
-                        <div class='comment_icon icons1'></div>
+                        <svg class='comment_icon' viewBox="0 0 18 17"><g><polygon id="comment" points="0 0 0 12.47 5.63 12.47 1.13 17 5.63 17 12.38 12.47 18 12.47 18 0 0 0"/><polygon points="1 1 1 11 8 11 5 14 8 14 12 11 17 11 17 1 1 1"/></g></svg>
+
                         <span>${post.getCommentsCount()}</span>
                     </a>` : ''}
                     <a class='repost'>
-                        <div class='repost_icon icons1'></div>
+                        <svg viewBox="0 0 17.24 15.71"><g><polygon id="reposter" points="9.5 15.21 0.5 15.21 0.5 5.21 10.5 5.21 10.5 1.21 16.5 7.21 10.5 12.21 10.5 8.21 3.5 8.21 3.5 13.21 9.5 13.21 9.5 15.21"/></g></svg>
                         <span>${post.getRepostsCount()}</span>
                     </a>
                 </div>
                 ${post.hasViews() ? `<div class='views_block'>
-                    <div class='eye_icon icons1'></div>
+                    <svg id="_icon_view_eye" viewBox="0 0 27 16"><ellipse id="head" cx="13.5" cy="8" rx="13.5" ry="8"/><circle id="eye" cx="13.5" cy="7.5" r="5.5"/><circle id="pupil" class="cls-2" cx="13.5" cy="7.5" r="2.5"/></svg>
                     <span>${post.getViews()}</span>
                 </div>` : ''}
             </div>` : ''}

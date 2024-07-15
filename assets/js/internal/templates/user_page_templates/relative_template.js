@@ -7,10 +7,12 @@ window.templates.relative_template = (rel) => {
 
     if(!rel.user) {
         return `
-            <tr>
-                <td>${_('user_page.relative_' + rel.type)}</td>
-                <td>${Utils.escape_html(rel.name)}</td>
-            </tr>
+        <div class='avatar_namish_block avatarless'>
+            <div class='right_info'>
+                <p>${Utils.escape_html(rel.name)}</p>
+                <p>${_('user_page.relative_' + rel.type)}</p>
+            </div>
+        </div>
         `
     } else {
         let user = new User
@@ -21,10 +23,18 @@ window.templates.relative_template = (rel) => {
         }
 
         return `
-            <tr>
-                <td>${_('user_page.relative_' + rel.type + male)}</td>
-                <td><a href='${user.getUrl()}'>${user.getName()}</a></td>
-            </tr>
+        <div class='avatar_namish_block'>
+            <div class='left_avatar avatar'>
+                <a href='#id${user.getId()}'>
+                    <img class='avatar outliner' src='${user.info.photo_100}'>
+                </a>
+            </div>
+
+            <div class='right_info'>
+                <b><a href='#user${user.getId()}'>${user.getName()}</a></b>
+                <p>${_('user_page.relative_' + rel.type + male)}</p>
+            </div>
+        </div>
         `
     }
 }

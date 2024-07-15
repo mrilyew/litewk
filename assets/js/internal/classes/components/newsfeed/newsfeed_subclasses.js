@@ -21,6 +21,8 @@ class WallPhoto extends NewsfeedClass {
             </div>
         `)
 
+        diver.querySelector('.post_date a').removeAttribute('href')
+
         this.info.photos.items.forEach(att => {
             att.photo = att
             att.type = 'photo'
@@ -42,6 +44,8 @@ class WallTag extends NewsfeedClass {
                 <div class='ordinary_attachments'></div>
             </div>
         `)
+
+        diver.querySelector('.post_date a').removeAttribute('href')
 
         this.info.photo_tags.items.forEach(att => {
             att.photo = att
@@ -65,6 +69,8 @@ class WallVideo extends NewsfeedClass {
             </div>
         `)
 
+        diver.querySelector('.post_date a').removeAttribute('href')
+
         this.info.video.items.forEach(att => {
             att.video = att
             att.type = 'video'
@@ -87,6 +93,8 @@ class WallAudio extends NewsfeedClass {
             </div>
         `)
 
+        diver.querySelector('.post_date a').removeAttribute('href')
+
         diver.querySelector('.contenter .attachments').insertAdjacentHTML('beforeend', window.templates.attachments(this.info.attachments))
 
         return diver.innerHTML
@@ -94,15 +102,15 @@ class WallAudio extends NewsfeedClass {
 }
 
 class Newsfeed extends ClassicListView {
-    constructor(insert_node) {
-        super(null, insert_node)
-        this.insert_node  = insert_node
+    constructor(insert_node, error_message = 'No_count)') {
+        super(null, insert_node, error_message)
+        this.insert_node   = insert_node
     }
 
     setParams(method_name, method_params) 
     {
-        this.method_name       = method_name
-        this.method_params     = method_params
+        this.method_name = method_name
+        this.method_params = method_params
     }
 
     async nextPage() {
@@ -119,30 +127,38 @@ class Newsfeed extends ClassicListView {
                 objects_data = await window.vk_api.call('execute', {'code': `
                     var all = []; 
                     var news = API.${this.method_name}(${JSON.stringify(this.method_params)}); 
-                    var lists = API.newsfeed.getLists({"extended": 1}); 
-                    all.news = news; 
+                    ${!this.method_params.start_from ? 
+                    `var lists = API.newsfeed.getLists();
                     all.lists = lists; 
+                    ` : ''}
+                    all.news = news; 
+                    
                     
                     return all;
                 `}, false)
             } else {
                 objects_data = {'response': {}}
                 let news = await window.vk_api.call(this.method_name, this.method_params)
-                let lists = await window.vk_api.call('newsfeed.getLists', {"extended": 1})
+
+                if(!this.method_params.start_from) {
+                    let lists = await window.vk_api.call('newsfeed.getLists')
+                    objects_data.response.lists = lists.response
+                }
 
                 objects_data.response.news = news.response
-                objects_data.response.lists = lists.response
             }
         } catch(e) {
             error()
             return
         }
 
-        /* сегодня был хороший день и я доволен */
         let templates = ''
         this.lists = objects_data.response.lists
 
         if(objects_data.response.news.items.length < 1) {
+            this.getInsertNode().insertAdjacentHTML('beforeend', `
+                <div class='bordered_block'>${_('errors.search_not_found')}</div>
+            `)
             return
         }
 
@@ -179,7 +195,7 @@ class Newsfeed extends ClassicListView {
 
                 templates += `
                     <div class='error_template bordered_block'>
-                        <span>${_('errors.template_insert_failed', escape_html(e.message))}</span>
+                        <span>${_('errors.template_insert_failed', Utils.escape_html(e.message))}</span>
                     </div>
                 `
             }
@@ -188,8 +204,8 @@ class Newsfeed extends ClassicListView {
         this.method_params.start_from = objects_data.response.news.next_from
 
         if(window.site_params.get('ux.save_scroll', '0') == '1') {
-            window.s_url.searchParams.set('start_hash', objects_data.response.news.next_from)
-            Utils.push_state(window.s_url)
+            window.main_url.setParam('start_hash', objects_data.response.news.next_from)
+            Utils.push_state(window.main_url)
         }
 
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
