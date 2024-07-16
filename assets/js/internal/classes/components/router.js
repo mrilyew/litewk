@@ -206,8 +206,20 @@ class Router {
         return null
     }
 
-    async route(input_url, history_log = true) {
+    async route(input_url, history_log = true, back_url = null) {
         let url = input_url
+
+        function back_button(url) {
+            if(window.site_params.get('ux.hide_back_button', '0') == '1') {
+                return
+            }
+
+            $('#up_panel')[0].classList.add('back')
+            $('#up_panel')[0].classList.remove('hidden')
+            $('#up_panel').removeClass('down')
+
+            window.back_button = url
+        }
 
         if(!url || url == '' || url == location.origin + location.pathname) {
             if(window.active_account) {
@@ -225,6 +237,8 @@ class Router {
 
         if(may && may.info.url.indexOf('login') == -1 && may.info.url.indexOf('settings') == -1 && may.info.url.indexOf('away') == -1) {
             may.load()
+            back_button(back_url)
+
             return
         }
 
@@ -273,6 +287,12 @@ class Router {
             $('.page_content')[0].innerHTML = '404'
         }
 
+        if(back_url) {
+            back_button(back_url)
+        } else {
+            window.back_button = undefined
+        }
+
         window.main_class.init_observers()
         $(document).trigger('scroll')
     }
@@ -309,8 +329,8 @@ class SavedPage {
         $('.page_content')[0].innerHTML = this.info.html
         window.main_class.init_observers()
 
-        $(document).trigger('scroll')
         window.scrollTo(0, this.info.scrollY)
+        $(document).trigger('scroll')
     }
 
     static get() {
@@ -397,5 +417,9 @@ class BetterURL extends URL {
 
     getParams() {
         return this.hashParams
+    }
+
+    getHash() {
+        return this.hash.replace('#', '')
     }
 }

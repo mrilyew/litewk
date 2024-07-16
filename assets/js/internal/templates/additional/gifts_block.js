@@ -2,7 +2,7 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.gifts_block = (items, link) => {
+window.templates.gifts_block = (items, link, ref = '') => {
     if(!items || !items.items || items.items.length < 1) {
         return ''
     }
@@ -11,7 +11,7 @@ window.templates.gifts_block = (items, link) => {
     <div class='entity_row bordered_block'>
     
     <div class='entity_row_title'>
-        <a href='${link}'>
+        <a href='${link}' data-back='${ref}'>
             <b>${_('gifts.gifts')}</b>
             ${items.count}
         </a>

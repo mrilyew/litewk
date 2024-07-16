@@ -58,7 +58,7 @@ window.templates.post = (post, additional_options = {}) => {
 
     template += `
             <div class='post_ava avatar'>
-                <a class='${owner.isOnline() ? 'onliner' : ''}' href='${owner.getUrl()}'>
+                <a class='${owner.isOnline() ? 'onliner' : ''}' href='${owner.getUrl()}' data-back='${main_url.getHash()}'>
                     <img class='outliner' src='${owner.getAvatar(true)}'>
                 </a>
             </div>
@@ -66,7 +66,7 @@ window.templates.post = (post, additional_options = {}) => {
                 <div class='post_name_sup'>
                     <p>
                         <b>
-                            <a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''}>
+                            <a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''} data-back='${main_url.getHash()}'>
                                 ${owner.getName()}
                             </a>
                         </b>
@@ -144,7 +144,7 @@ window.templates.post = (post, additional_options = {}) => {
                         <span>${post.getLikes()}</span>
                     </a>
                     ${!additional_options.hide_comments ? `
-                    <a href='#wall${post.getId()}' class='comment'>
+                    <a href='#wall${post.getId()}' data-back='${main_url.getHash()}' class='comment'>
                         <svg class='comment_icon' viewBox="0 0 18 17"><g><polygon id="comment" points="0 0 0 12.47 5.63 12.47 1.13 17 5.63 17 12.38 12.47 18 12.47 18 0 0 0"/><polygon points="1 1 1 11 8 11 5 14 8 14 12 11 17 11 17 1 1 1"/></g></svg>
 
                         <span>${post.getCommentsCount()}</span>

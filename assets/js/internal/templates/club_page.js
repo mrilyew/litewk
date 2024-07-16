@@ -130,14 +130,14 @@ window.templates.club_page = (club) => {
                                 </div>
 
                                 <div id='_counters'>
-                                    ${club.has('counters') && club.info.counters.albums ? `<a href='#'>${_('counters.albums_count', club.info.counters.albums)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.articles ? `<a href='#'>${_('counters.articles_count', club.info.counters.articles)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.clips ? `<a href='#'>${_('counters.clips_count', club.info.counters.clips)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.photos ? `<a href='#'>${_('counters.photos_count', club.info.counters.photos)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.topics ? `<a href='#'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
-                                    ${club.has('members_count') && club.info.members_count ? `<a href='#search/users?group_id=${club.getId()}'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.albums ? `<a href='#' data-back='club${club.getId()}'>${_('counters.albums_count', club.info.counters.albums)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.articles ? `<a href='#' data-back='club${club.getId()}'>${_('counters.articles_count', club.info.counters.articles)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.clips ? `<a href='#' data-back='club${club.getId()}'>${_('counters.clips_count', club.info.counters.clips)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.photos ? `<a href='#' data-back='club${club.getId()}'>${_('counters.photos_count', club.info.counters.photos)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.topics ? `<a href='#' data-back='club${club.getId()}'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#' data-back='club${club.getId()}'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.videos ? `<a href='#' data-back='club${club.getId()}'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
+                                    ${club.has('members_count') && club.info.members_count ? `<a href='#search/users?group_id=${club.getId()}' data-back='club${club.getId()}'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
                                 </div>
                             </div>
                         </div>

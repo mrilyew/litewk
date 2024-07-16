@@ -22,7 +22,7 @@ $(document).on('click', 'a', async (e) => {
         if(target.href && target.href.indexOf(location.origin) != -1) {
             e.preventDefault()
     
-            await window.router.route(target.href)
+            await window.router.route(target.href, true, target.dataset.back)
         }
     }
 })
@@ -63,13 +63,22 @@ window.addEventListener('popstate', async (e) => {
 $(document).on('click', '.menu_up_hover_click', (e) => {
     if(scrollY > 1000) {
         window.temp_scroll = scrollY
+
+        // smooth effect like как в вк
         window.scrollTo(0, 10)
-        
         window.scrollTo({
             top: 0,
             behavior: "smooth"
-        });
+        })
     } else {
+        if(window.back_button) {
+            window.router.route('#' + window.back_button)
+    
+            window.back_button = null
+            $(document).trigger('scroll')
+            return
+        }
+
         if(window.temp_scroll) {
             window.scrollTo(0, window.temp_scroll - 10)
 
@@ -85,13 +94,19 @@ $(document).on('click', '.menu_up_hover_click', (e) => {
 
 $(document).on('scroll', () => {
     if(scrollY < 1000) {
-        if(!window.temp_scroll) {
-            $('#up_panel').addClass('hidden')
+        if(window.back_button) {
+            $('#up_panel').addClass('back') 
+            $('#up_panel').removeClass('hidden')
         } else {
-            $('#up_panel').addClass('down')
+            if(!window.temp_scroll) {
+                $('#up_panel').addClass('hidden')
+            } else {
+                $('#up_panel').addClass('down')
+            }
         }
     } else {
         $('#up_panel').removeClass('hidden').removeClass('down')
+        $('#up_panel').removeClass('back').addClass('to_up')
     }
 })
 

@@ -11,7 +11,7 @@ window.templates.group_board_block = (items, title, link, group_id = 0) => {
     <div class='entity_row bordered_block'>
     
     <div class='entity_row_title'>
-        <a href='${link}'>
+        <a href='${link}' data-back='club${group_id}'>
             <b>${title}</b>
             ${items.count}
         </a>

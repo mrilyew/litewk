@@ -382,12 +382,24 @@ window.page_class = new class {
                                 <input type='checkbox' data-sett='ux.twemojify' ${window.site_params.get('ux.twemojify', '1') == '1' ? 'checked' : ''}>
                                 ${_('settings_ux.settings_format_emojis')}
                             </label>
+                            <label>
+                                <input type='checkbox' data-sett='ux.better_my_page' data-reload='1' ${window.site_params.get('ux.better_my_page', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.better_my_page')}
+                            </label>
+                            <label>
+                                <input type='checkbox' data-sett='ux.hide_back_button' ${window.site_params.get('ux.hide_back_button', '0') == '1' ? 'checked' : ''}>
+                                ${_('settings_ux.hide_back_button')}
+                            </label>
                         </div>
                     </div>
                 `)
 
                 $(`.settings_block input[type='checkbox']`).on('change', (e) => {
                     window.site_params.set(e.target.dataset.sett, Number(e.target.checked))
+                    
+                    if(e.target.dataset.reload == '1') {
+                        setTimeout(() => {window.router.restart('ux', 'ignore_menu')}, 50)
+                    }
                 })
                 
                 $(`.settings_block select`).on('change', (e) => {

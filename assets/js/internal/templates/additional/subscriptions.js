@@ -2,7 +2,7 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.row_list_block = (items, title, link) => {
+window.templates.row_list_block = (items, title, link, ref = '') => {
     if(!items || !items.items || items.items.length < 1) {
         return ''
     }
@@ -11,7 +11,7 @@ window.templates.row_list_block = (items, title, link) => {
     <div class='entity_row bordered_block'>
     
     <div class='entity_row_title'>
-        <a href='${link}'>
+        <a href='${link}' data-back='${ref}'>
             <b>${title}</b>
             ${items.count}
         </a>

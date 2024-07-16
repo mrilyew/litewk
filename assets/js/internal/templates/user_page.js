@@ -514,21 +514,21 @@ window.templates.user_page = (user) => {
                                 </div>
 
                                 <div id='_counters'>
-                                    ${user.has('counters') && user.info.counters.albums ? `<a href='#'>${_('counters.albums_count', user.info.counters.albums)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.audios ? `<a href='#'>${_('counters.audios_count', user.info.counters.audios)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.badges ? `<a href='#'>${_('counters.badges_count', user.info.counters.badges)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.friends ? `<a href='#friends${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='#friends${user.getId()}/online'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
-                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='#friends${user.getId()}/mutual'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.gifts ? `<a href='#'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
-                                    <a href='#groups${user.getId()}'>${_('counters.groups_count', user.info.counters && user.info.counters.groups ? user.info.counters.groups : 0)}</a>
-                                    ${user.has('counters') && user.info.counters.pages ? `<a href='#'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.photos ? `<a href='#'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.posts ? `<a href='#wall${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.videos ? `<a href='#'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
-                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='#friends${user.getId()}/followers'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.albums ? `<a href='#' data-back='id${user.getId()}'>${_('counters.albums_count', user.info.counters.albums)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.audios ? `<a href='#' data-back='id${user.getId()}'>${_('counters.audios_count', user.info.counters.audios)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.badges ? `<a href='#' data-back='id${user.getId()}'>${_('counters.badges_count', user.info.counters.badges)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.friends ? `<a href='#friends${user.getId()}' data-back='id${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='#friends${user.getId()}/online' data-back='id${user.getId()}'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
+                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='#friends${user.getId()}/mutual' data-back='id${user.getId()}'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.gifts ? `<a href='#' data-back='id${user.getId()}'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
+                                    <a href='#groups${user.getId()}' data-back='id${user.getId()}'>${_('counters.groups_count', user.info.counters && user.info.counters.groups ? user.info.counters.groups : 0)}</a>
+                                    ${user.has('counters') && user.info.counters.pages ? `<a href='#' data-back='id${user.getId()}'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.photos ? `<a href='#' data-back='id${user.getId()}'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.posts ? `<a href='#wall${user.getId()}' data-back='id${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#' data-back='id${user.getId()}'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#' data-back='id${user.getId()}'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
+                                    ${user.has('counters') && user.info.counters.videos ? `<a href='#' data-back='id${user.getId()}'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
+                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='#friends${user.getId()}/followers' data-back='id${user.getId()}'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
                                 </div>
                             </div>
                         </div>

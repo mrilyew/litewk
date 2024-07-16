@@ -140,6 +140,29 @@ class LeftMenu {
             `
         })
 
-        return menu_html
+        let temp_div = document.createElement('div')
+        temp_div.innerHTML = menu_html
+
+        if(window.active_account && window.site_params.get('ux.better_my_page', '0') == '1') {
+            let account_info = window.active_account.getVkAccount()
+
+            temp_div.querySelector('#_this_user').outerHTML = `
+                <a href='#id0' id='_this_user' class='better'>
+                    <div id='_this_user_wrapper'>
+                        <object type='image/jpeg' data='${account_info.getAvatar()}'>
+                            <div class='placeholder'></div>
+                        </object>
+                        
+                        <span>${account_info.getName()}</span>
+                    </div>
+                </a>
+                
+                <a href='#edit' id='_this_user_edit'>${_('navigation.edit_short')}</a>
+            `
+
+            // поняли типо отсылка на вк до 2016 с этим ред
+        }
+
+        return temp_div.innerHTML
     }
 }

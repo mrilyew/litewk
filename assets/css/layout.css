@@ -337,12 +337,28 @@ body.dimmed > .dimmer {
     gap: 3px;
 }
 
-#up_panel #come_back, #up_panel.down #to_up {
+#up_panel #come_back, #up_panel #to_back {
     display: none;
 }
 
-#up_panel.down #come_back, #up_panel #to_up {
+#up_panel.down #to_back, #up_panel.down #to_up {
+    display: none;
+}
+
+#up_panel.back #to_up, #up_panel.back.down {
+    display: none;
+}
+
+#up_panel.to_up #to_back {
+    display: none;
+}
+
+#up_panel.down #come_back, #up_panel #to_up, #up_panel.back #to_back {
     display: flex;
+}
+
+#up_panel.back #to_back_icon {
+    transform: rotate(-90deg);
 }
 
 #up_panel.hidden {
@@ -640,6 +656,38 @@ body.dimmed > .dimmer {
     color: var(--elements-background-color);
     background: var(--links-color);
     border-bottom: 1px ridge var(--elements-background-color);
+}
+
+.navigation #_this_user.better object {
+    width: 18px;
+}
+
+.navigation #_this_user.better object.onlined {
+    border: 1px solid var(--friendly-color);
+}
+
+.navigation #_this_user.better #_this_user_wrapper {
+    display: flex;
+    gap: 3px;
+    overflow: hidden;
+}
+
+.navigation #_this_user.better #_this_user_wrapper span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navigation #_this_user_edit {
+    position: absolute;
+    right: 0;
+    max-width: 27px;
+    overflow: hidden;
+    height: 18px;
+}
+
+.navigation #_this_user.better {
+    width: 79%;
 }
 
 #_actions .action {

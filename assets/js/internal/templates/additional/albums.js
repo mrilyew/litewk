@@ -2,7 +2,7 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.albums = (items, link) => {
+window.templates.albums = (items, link, ref = '') => {
     if(!items || !items.items || items.items.length < 1) {
         return ''
     }
@@ -11,7 +11,7 @@ window.templates.albums = (items, link) => {
     <div class='entity_row bordered_block'>
     
     <div class='entity_row_title'>
-        <a href='${link}'>
+        <a href='${link}' data-back='${ref}'>
             <b>${_('photos.albums')}</b>
             ${items.count}
         </a>
@@ -24,7 +24,7 @@ window.templates.albums = (items, link) => {
         album.hydrate(item)
 
         status += `
-            <a class='album_item' href='#album${album.getId()}'>
+            <a class='album_item' href='#album${album.getId()}' data-back='${ref}'>
                 <img src='${album.getThumbnail()}' class='outliner'>
 
                 <div class='small_album_info'>

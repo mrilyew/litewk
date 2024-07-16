@@ -3,6 +3,7 @@ window.main_class = new class {
         console.clear()
         console.log('Доброго времени суток.')
 
+        let show_authuser_error = false
         // Main classes
         window.saved_pages = []
         window.main_classes = {}
@@ -10,22 +11,29 @@ window.main_class = new class {
         window.left_menu = new LeftMenu
         window.router = new Router
         window.accounts = new Accounts
-        window.active_account = window.accounts.getActiveAccount()
         window.main_url = new BetterURL(location.href)
+
+        if(window.main_url.hasParam('authuser')) {
+            let accs = window.accounts.getAccounts()
+            let maybe_found_account = accs[Number(window.main_url.getParam('authuser'))]
+
+            if(maybe_found_account) {
+                let maybe_account = Account.findViaToken(maybe_found_account.token)
+            
+                if(maybe_account) {
+                    maybe_account.makeActive()
+                }
+            } else {
+                show_authuser_error = true
+            }
+        }
+
+        window.active_account = window.accounts.getActiveAccount()
+
         window.use_execute = window.site_params.get('internal.use_execute', '1') == '1'
         window.lang = !window.site_params.get('lang') ? window.langs.find(item => item.lang_info.short_name == 'ru') : window.langs.find(item => item.lang_info.short_name == window.site_params.get('lang'))
 
         document.querySelector('body').insertAdjacentHTML('afterbegin', window.templates.main(window.left_menu.getHTML()))
-        
-        let custom_js = window.site_params.get('ui.custom_js')
-        if(custom_js) {
-            let tmp_script = document.createElement('script')
-            tmp_script.setAttribute('id', '_customjs')
-            tmp_script.innerHTML = custom_js
-    
-            document.body.appendChild(tmp_script)
-        }
-
         if(!window.active_account) {
             $('.main_wrapper .navigation')[0].innerHTML = `
                 <a href='#login'>${_('navigation.authorize')}</a>
@@ -35,11 +43,24 @@ window.main_class = new class {
             window.vk_api = new VkApi(window.active_account.path, window.active_account.token)
         }
 
+        let custom_js = window.site_params.get('ui.custom_js')
+        if(custom_js) {
+            let tmp_script = document.createElement('script')
+            tmp_script.setAttribute('id', '_customjs')
+            tmp_script.innerHTML = custom_js
+    
+            document.body.appendChild(tmp_script)
+        }
+
         try {
             window.router.route(location.href)
         } catch(e) {
             Utils.add_onpage_error(`${_('errors.could_not_draw_page')}:<br>
             ${e.message}`)
+        }
+
+        if(show_authuser_error) {
+            let msg = new MessageBox(_('errors.error'), _('errors.no_account_with_id'), ['OK'], [() => {msg.close()}])
         }
 
         setInterval(async () => {

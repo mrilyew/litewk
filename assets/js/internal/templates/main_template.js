@@ -19,6 +19,11 @@ window.templates.main = (menu_html = '') => {
             <svg id="come_back_icon" viewBox="0 0 10 6"><polygon points="0 0 5 6 10 0 0 0"/></svg>
             <span>${_('navigation.come_back')}</span>
         </div>
+
+        <div id='to_back'>
+            <svg id="to_back_icon" viewBox="0 0 10 6"><polygon points="0 6 5 0 10 6 0 6"/></svg>
+            <span>${_('navigation.to_back')}</span>
+        </div>
     </div>
 
     <div class='main_wrapper'>

@@ -38,9 +38,11 @@ window.langs.push({
         'my_settings': 'Настройки',
         'logout': 'Выйти',
         'authorize': 'Авторизация',
+        'edit_short': 'ред.',
 
         'to_up': 'Наверх',
         'come_back': 'Назад',
+        'to_back': 'Вернуться',
 
         'suspicious_link': 'Ссылка, по мнению ВК, подозрительная. <br> Всё равно хочешь перейти?',
         'not_found_shortcode': 'По данному шорткоду ничего не найдено. Хочешь перейти в ВК?',
@@ -154,6 +156,8 @@ window.langs.push({
         'settings_send_online_method_call': 'После любого действия',
         'settings_send_online_timeout': 'Каждые 5 минут',
         'settings_format_emojis': 'Заменять текстовые эмодзи на Twemoji',
+        'better_my_page': `Вместо "Моя Страница" показывать информацию об аккаунте`,
+        'hide_back_button': `Скрыть кнопку "Вернуться"`,
     },
 
     'settings_language': {
@@ -878,6 +882,7 @@ window.langs.push({
     },
 
     'errors': {
+        'error': 'Ошибка',
         'not_all_fields_filled': 'Не все поля заполнены',
         'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',
         'vk_api_error': 'VK API says: $1',
@@ -920,5 +925,6 @@ window.langs.push({
         'groups_recents_error': 'Недавних групп не найдено.',
 
         'search_not_found': 'По запросу ничего не найдено.',
+        'no_account_with_id': 'Аккаунта с таким индексом не найдено.',
     },
 })

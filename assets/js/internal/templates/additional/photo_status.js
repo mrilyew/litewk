@@ -2,7 +2,7 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.photo_status = (photos) => {
+window.templates.photo_status = (photos, ref = '') => {
     if(!photos || !photos.items || photos.items.length < 1) {
         return ''
     }
@@ -11,7 +11,7 @@ window.templates.photo_status = (photos) => {
     <div class='entity_photoblock entity_row bordered_block'>
     
     <div class='entity_row_title'>
-        <a>
+        <a data-back='${ref}'>
             <b>${_('photos.photos')}</b>
             ${photos.count}
         </a>

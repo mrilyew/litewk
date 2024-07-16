@@ -36,7 +36,7 @@ class Topic {
         return `
             <div class='group_topic'>
                 <div>
-                    <a href='#topic${this.getId()}'><b>${this.getTitle()}</b></a>
+                    <a href='#topic${this.getId()}' data-back='club${this.group_id}'><b>${this.getTitle()}</b></a>
                 </div>
 
                 <div>
