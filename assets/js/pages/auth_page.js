@@ -67,6 +67,7 @@ window.page_class = new class {
 
                 $('.auth_block_input #_aut').on('click', async () => {
                     if(await window.accounts.addAccount($('#__apiUrl')[0].value, $('#__ouathToken')[0].value)) {
+                        window.router.restart('', 'ignore_menu')
                         window.router.route(document.querySelector('base').href + `#id0`)
                     }
                 })

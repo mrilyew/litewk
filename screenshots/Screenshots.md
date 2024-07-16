@@ -6,7 +6,6 @@
 
 #### Старые
 
-![user](old/user_page_18_june_2024.png "Профиль пользователя, 17.06.24, без cleartype")
 ![club](old/club_page_18_june_2024.png "Группа, 17.06.24, без cleartype")
 ![post](old/post_page_18_june_2024.png "Пост, 17.06.24, без cleartype")
 ![settings](old/settings_18_june_2024.jpg "Пост, 17.06.24, без cleartype")

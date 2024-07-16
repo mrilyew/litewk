@@ -530,7 +530,7 @@ window.page_class = new class {
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_buttons'>
-                            <span><b>${_('settings_accounts.accounts_count', window.accounts.getAccountsCount())}</b></span>
+                            <span><b id='_accs_count'>${_('settings_accounts.accounts_count', window.accounts.getAccountsCount())}</b></span>
     
                             <div class='additional_buttons'>
                                 ${!window.site_params.has('active_account') ? '' : `<input type='button' id='_logoutacc' value='${_('settings_accounts.accounts_logout')}'>`}
@@ -544,17 +544,19 @@ window.page_class = new class {
                 window.accounts.getAccounts().forEach(acc => {
                     $('.settings_accounts')[0].insertAdjacentHTML('beforeend',
                     `
-                        <div class='settings_account'>
+                        <div class='settings_account' data-number='${Utils.cut_string(acc.token, 10)}'>
                             <div class='settings_account_avatar'>
                                 <a href='#id${acc.info.id}'>
-                                    <img src='${acc.info.photo_200}'>
+                                    <object class='outliner' type="image/jpeg" data='${acc.info.photo_200}'>
+                                        <div class='placeholder'></div>
+                                    </object>
                                 </a>
                             </div>
                             <div class='settings_account_info'>
-                                <a href='#id${acc.info.id}'>${Utils.escape_html(acc.info.first_name + ' ' + acc.info.last_name)}</a>
+                                <a data-ignore='1' href='#id${acc.info.id}'>${Utils.escape_html(acc.info.first_name + ' ' + acc.info.last_name)}</a>
 
                                 <div>
-                                    <span class='grayer'>${acc.path} |</span>
+                                    <span class='grayer'>${Utils.escape_html(acc.path)} |</span>
                                     <span class='grayer'>${Utils.escape_html(acc.info.phone)}</span>
                                 </div>
                             </div>
@@ -564,6 +566,62 @@ window.page_class = new class {
                         </div>
                     `
                     )
+
+                    $(`.settings_accounts .settings_account[data-number='${Utils.cut_string(acc.token, 10)}'] .settings_account_info a`).on('click', (e) => {
+                        e.preventDefault()
+
+                        let msg = new MessageBox(_('settings_accounts.edit'), `
+                            <div class='flex_row settings_edit'>
+                                <div class='settings_edit_avatar'>
+                                    <object class='outliner' type="image/jpeg" data='${acc.info.photo_200}'>
+                                        <div class='placeholder'></div>
+                                    </object>
+                                </div>
+
+                                <div class='flex_column settings_params'>
+                                    <div class='flex_column'>    
+                                        <input type='text' placeholder='${_('user_page.first_name')}' id='_set_first' value='${Utils.escape_html(acc.info.first_name)}'>
+                                        <input type='text' placeholder='${_('user_page.last_name')}' id='_set_last' value='${Utils.escape_html(acc.info.last_name)}'>
+                                    </div>
+
+                                    <div class='flex_column'>
+                                        <input type='text' placeholder='${_('auth.path_to_api')}' id='_set_path' value='${Utils.escape_html(acc.path)}'>
+                                        <input type='text' id='_token_hider' disabled placeholder='${_('auth.vk_api_token')}' value='${acc.token}'>
+                                    </div>
+                                </div>
+                            </div>
+                        `, [_('messagebox.cancel'), _('settings_accounts.delete'), _('messagebox.save')], [() => {msg.close()}, () => {
+                            if(window.active_account && window.active_account.token == acc.token) {
+                                return
+                            }
+
+                            let msg2 = new MessageBox('?', `
+                                ${_('settings_accounts.sure_deleting')}
+                            `, [_('messagebox.no'), _('messagebox.yes')], [() => {
+                                msg2.close()
+                            }, () => {
+                                acc.remove()
+                                
+                                $(`.settings_accounts .settings_account[data-number='${Utils.cut_string(acc.token, 10)}']`).remove()
+                                $('#_accs_count')[0].innerHTML = _('settings_accounts.accounts_count', window.accounts.getAccountsCount())
+
+                                msg.close()
+                                msg2.close()
+                            }])
+                        }, () => {
+                            acc.edit($('#_set_first')[0].value, $('#_set_last')[0].value, $('#_set_path')[0].value)
+                            
+                            let mainer = document.querySelector(`.settings_accounts .settings_account[data-number='${Utils.cut_string(acc.token, 10)}']`)
+                            mainer.querySelector(`.settings_account_info a`).innerHTML = Utils.escape_html($('#_set_first')[0].value + ' ' + $('#_set_last')[0].value)
+                            mainer.querySelector(`.settings_account_info span`).innerHTML = $('#_set_path')[0].value + ' | '
+
+                            msg.close()
+                        }])
+
+                        if(window.active_account && window.active_account.token == acc.token) {
+                            msg.getNode().querySelectorAll('.messagebox_buttons input')[1].classList.add('stopped')
+                        }
+                    })
                 })
 
                 $('.settings_accounts').on('click', '#_enteracc', (e) => {
@@ -573,12 +631,11 @@ window.page_class = new class {
 
                     window.accounts.setActiveAccount(e.currentTarget.dataset.token)
                     window.router.restart('accounts', 'ignore_menu')
-
-                    window.main_class.refresh_counters()
                 })
 
                 $('#_logoutacc').on('click', (e) => {
                     window.site_params.delete('active_account')
+                    window.vk_api = null
                     window.router.restart('accounts', 'ignore_menu')
                 })
 

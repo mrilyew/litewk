@@ -1,6 +1,7 @@
-/* VK Colors */
+/* Colors */
 
 :root {
+    --black: #000000;
     --background-color: #000000;
     --elements-background-color: #060709;
     --elements-border-color: #b1b1b1;
@@ -354,6 +355,12 @@ body.dimmed > .dimmer {
 }
 
 /* Layer */
+
+.placeholder {
+    background: #7D7D7D;
+    width: 40px;
+    height: 100%;
+}
 
 .tip {
     font-size: 12px;

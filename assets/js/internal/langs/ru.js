@@ -169,6 +169,10 @@ window.langs.push({
         'accounts_logout': 'Выйти',
         'accounts_add': 'Добавить',
         'accounts_set_default': 'Войти',
+
+        'edit': 'Редактирование аккаунта',
+        'delete': 'Удалить',
+        'sure_deleting': 'Действительно хочешь удалить аккаунт отсюда?',
     },
 
     'settings_debug': {
@@ -205,6 +209,7 @@ window.langs.push({
         'cancel': 'Отмена',
         'enter': 'Ввести',
         'hide': 'Скрыть',
+        'save': 'Сохранить',
 
         'yes': 'Да',
         'no': 'Нет',
@@ -236,6 +241,9 @@ window.langs.push({
         'has_verification_phone': 'Подтвердил номер телефона?',
         'has_indexing': 'Индексируется в поисковиках',
         'is_closed': 'Закрыт ли профиль',
+        
+        'first_name': 'Имя',
+        'last_name': 'Фамилия',
 
         'user_no': 'Нет',
         'user_yes': `Да`,

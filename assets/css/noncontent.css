@@ -65,7 +65,7 @@
     flex-direction: column;
 }
 
-.settings_block .settings_accounts .settings_account_avatar img {
+.settings_block .settings_accounts .settings_account_avatar object {
     width: 40px;
 }
 
@@ -98,4 +98,31 @@
 
 .settings_sublock select {
     width: min-content;
+}
+
+.settings_edit .settings_edit_avatar object {
+    width: 60px;
+}
+
+.settings_edit {
+    gap: 10px;
+    padding: 0px 6px 0px 0px;
+}
+
+.settings_edit .settings_params {
+    gap: 12px;
+    width: 200px;
+}
+
+.settings_edit .settings_params .flex_column {
+    gap: 3px;
+}
+
+.settings_edit #_token_hider {
+    color: var(--black);
+    transition: 250ms all;
+}
+
+.settings_edit #_token_hider:hover {
+    color: var(--error-color);
 }

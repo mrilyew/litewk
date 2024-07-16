@@ -53,6 +53,10 @@ class MessageBox {
         })
     }
 
+    getNode() {
+        return $(`#msg${this.random_id}`)[0]
+    }
+
     close()
     {
         document.onkeyup = null
