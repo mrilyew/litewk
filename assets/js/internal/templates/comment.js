@@ -11,7 +11,7 @@ window.templates.comment = (object) => {
                 <div class='comment_author'>
                     <div class='comment_avaname avatar'>
                         <a ${owner.isOnline() ? `class='onliner'` : ''} href='${owner ? owner.getUrl() : ''}'>
-                            <img src='${owner ? owner.getAvatar(true) : ''}'>
+                            <img loading='lazy' src='${owner ? owner.getAvatar(true) : ''}'>
                         </a>
                     </div>
                 </div>

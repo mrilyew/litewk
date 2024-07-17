@@ -33,8 +33,8 @@ window.templates.user_page = (user) => {
                                 ${user.getFriendStatus() == 3 ? `<a class='action' id='_toggleFriend' data-val='3' data-addid='${user.getId()}'> ${_('users_relations.destroy_friendship')}</a>` : ''}
                                 ${!user.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='user' data-addid='${user.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
                                 ${user.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='user' data-addid='${user.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
-                                ${!user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='0'> ${_('blacklist.add_to_blacklist')}</a>` : ''}
-                                ${user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-val='1'> ${_('blacklist.remove_from_blacklist')}</a>` : ''}
+                                ${!user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-addid='${user.getId()}' data-val='0'> ${_('blacklist.add_to_blacklist')}</a>` : ''}
+                                ${user.isBlacklistedByMe() ? `<a class='action' id='_toggleBlacklist' data-addid='${user.getId()}' data-val='1'> ${_('blacklist.remove_from_blacklist')}</a>` : ''}
                                 
                                 ${user.isFriend() ? `
                                     ${!user.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='0'> ${_('user_page.hide_from_feed')}</a>` : ''}

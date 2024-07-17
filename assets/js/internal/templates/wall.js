@@ -20,8 +20,8 @@ window.templates.wall = (owner_id, tabs, default_tab = 'all', has_invert = false
                         <input type='checkbox' id='_invert_wall' ${has_invert ? 'checked' : ''}>
                     </label>
 
-                    <svg class='searchIcon_clicked hidden search_icon' viewBox="0 0 11.71 11.71"><path class="cls-1" d="M2.54,2.81" transform="translate(-2.15 -2.15)"/><line class="cls-1" x1="11.35" y1="11.35" x2="0.35" y2="0.35"/><line class="cls-1" x1="11.35" y1="0.35" x2="0.35" y2="11.35"/></svg>
-                    <svg class='searchIcon search_icon' viewBox="0 0 12.85 12.85"><line class="cls-1" x1="12.5" y1="12.5" x2="7.5" y2="7.5"/><circle class="cls-1" cx="4.5" cy="4.5" r="4"/></svg>
+                    <svg class='searchIcon_clicked hidden search_icon' viewBox="0 0 11.71 11.71"><path d="M2.54,2.81" transform="translate(-2.15 -2.15)"/><line x1="11.35" y1="11.35" x2="0.35" y2="0.35"/><line x1="11.35" y1="0.35" x2="0.35" y2="11.35"/></svg>
+                    <svg class='searchIcon search_icon' viewBox="0 0 12.85 12.85"><line x1="12.5" y1="12.5" x2="7.5" y2="7.5"/><circle cx="4.5" cy="4.5" r="4"/></svg>
                 </div>
             </div>
             <div class='wall_block_insert'></div>

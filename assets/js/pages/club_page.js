@@ -37,7 +37,7 @@ window.page_class = new class {
 
             if(club.info.deactivated != 'banned' && club.hasAccess()) {
                 // Get wall template
-                let wall_template_ = await window.templates.wall(club.getRealId(), wall_sections, wall_section)
+                let wall_template_ = await window.templates.wall(club.getRealId(), wall_sections, wall_section, main_url.getParam('wall_invert') == 'yes')
                             
                 // Inserting wall
                 $('.wall_inserter')[0].insertAdjacentHTML('beforeend', wall_template_)

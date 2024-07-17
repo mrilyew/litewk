@@ -25,7 +25,7 @@ window.templates.albums = (items, link, ref = '') => {
 
         status += `
             <a class='album_item' href='#album${album.getId()}' data-back='${ref}'>
-                <img src='${album.getThumbnail()}' class='outliner'>
+                <img loading='lazy' src='${album.getThumbnail()}' class='outliner'>
 
                 <div class='small_album_info'>
                     <span class='title'>${album.getTitle()}</span>

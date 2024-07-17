@@ -145,7 +145,7 @@ $(document).on('click', '.wall_select_block a', (e) => {
     temp_url = null
 })
 
-$(document).on('change', `input[type='query']`, (e) => {
+$(document).on('change', `.wall_select_block input[type='query']`, (e) => {
     e.preventDefault()
 
     window.main_classes['wall'].objects.page = -1

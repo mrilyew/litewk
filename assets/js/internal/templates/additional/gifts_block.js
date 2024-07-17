@@ -25,7 +25,7 @@ window.templates.gifts_block = (items, link, ref = '') => {
         status += `
             <div class='entity_row_insert_item'>
                 <a title='${gift.getMessage()}' href='#${gift.info.from_id}'>
-                    <img src='${gift.getURL()}'>
+                    <img loading='lazy' src='${gift.getURL()}'>
                 </a>
             </div>
         `

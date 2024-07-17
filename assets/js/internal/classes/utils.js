@@ -1,5 +1,6 @@
 window.Utils = new class {
     typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_100,photo_200,photo_orig,status,sex'
+    typical_fields_min = 'sex,image_status,photo_50,photo_100,photo_200,last_seen,online,blacklisted_by_me'
     typical_group_fields = 'activity,photo_100,description,members_count'
     
     compute_age(date) {
@@ -337,6 +338,33 @@ window.Utils = new class {
             clearTimeout(timeout)
             timeout = setTimeout(later, wait)
         }
+    }
+
+    cut_vk(text) {
+        const special_addresses = [
+            'https://vk.com/', 
+            'https://vkontakte.ru/', 
+            'http://vk.com/', 
+            'http://vkontakte.ru/', 
+            'https://m.vk.com/', 
+            'http://m.vk.com/',
+            'https://new.vk.com/',
+            'http://new.vk.com/',
+            'https://wap.vk.com/',
+            'http://wap.vk.com/',
+            'https://0.vk.com/',
+            'http://0.vk.com/',
+            location.origin,
+            location.pathname,
+            location.pathname + '#',
+            '#'
+        ]
+        
+        special_addresses.forEach(address => {
+            text = text.replace(address, '')
+        })
+
+        return text
     }
 
     async sleep(time) {

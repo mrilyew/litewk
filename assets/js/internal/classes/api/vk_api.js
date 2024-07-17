@@ -17,7 +17,9 @@ class VkApi {
                 result = JSON.parse(await Utils.jsonp(path))
             }
         } catch(ex) {
-            let msg = new MessageBox(_('errors.network_error'), Utils.cut_string(ex.message, 500), ['OK'], [() => {msg.close()}])
+            if(!force) {
+                let msg = new MessageBox(_('errors.network_error'), Utils.cut_string(ex.message, 500), ['OK'], [() => {msg.close()}])
+            }
 
             console.error(ex)
             return
@@ -81,5 +83,12 @@ class VkApi {
             document.cookie = ''
             return result
         }
+    }
+
+    async resolveScreenName(link) {
+        let res = await this.call('utils.resolveScreenName', {'screen_name': link}, false)
+        res = res.response
+
+        return res
     }
 }

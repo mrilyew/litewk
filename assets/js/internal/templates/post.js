@@ -59,7 +59,7 @@ window.templates.post = (post, additional_options = {}) => {
     template += `
             <div class='post_ava avatar'>
                 <a class='${owner.isOnline() ? 'onliner' : ''}' href='${owner.getUrl()}' data-back='${main_url.getHash()}'>
-                    <img class='outliner' src='${owner.getAvatar(true)}'>
+                    <img class='outliner' loading='lazy' src='${owner.getAvatar(true)}'>
                 </a>
             </div>
             <div class='post_name'>

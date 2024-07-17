@@ -91,7 +91,7 @@ $(document).on('click', '#_toggleBlacklist', async (e) => {
     switch(fave_status) {
         default:
         case 0:
-            let eetog_ = await window.vk_api.call('account.ban', {'owner_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let eetog_ = await window.vk_api.call('account.ban', {'owner_id': e.target.dataset.addid})
 
             if(!eetog_.error) {
                 e.target.setAttribute('data-val', 1)
@@ -102,7 +102,7 @@ $(document).on('click', '#_toggleBlacklist', async (e) => {
 
             break
         case 1:
-            let eetog = await window.vk_api.call('account.unban', {'owner_id': e.target.closest('.page_content').querySelector('#usr_id').value})
+            let eetog = await window.vk_api.call('account.unban', {'owner_id': e.target.dataset.addid})
 
             if(!eetog.error) {
                 e.target.setAttribute('data-val', 0)
@@ -270,4 +270,107 @@ $(document).on('click', '.image_status', async (e) => {
             </div>
         </div>
     `)
+})
+
+$(document).on('click', '#_bl_add_user', (e) => {
+    let msg = new MessageBox(_('user_page_edit.add_to_bl'), `
+        <div id='_bladd_first_frame'>
+            <p>${_('user_page_edit.add_to_bl_desc')}</p>
+
+            <input type='query' placeholder='${_('user_page_edit.bl_enter_search')}' style='width: 98%;' id='__bles'>
+        </div>
+    `, [_('messagebox.cancel'), _('user_page_edit.add')], [() => {
+        msg.close()
+    }, async () => {
+        let last_btn = msg.getNode().querySelectorAll('.messagebox_buttons input')[1]
+        let screen_name = Utils.cut_vk($('#__bles')[0].value)
+
+        if(!screen_name || screen_name == '0' || screen_name == '') {
+            return
+        }
+
+        last_btn.classList.add('stopped')
+
+        let res = await window.vk_api.resolveScreenName(screen_name)
+        
+        if(res.type != 'user') {
+            let msg_a = new MessageBox(_('errors.error'), _('errors.this_is_not_user'), [_('messagebox.close')], [() => {
+                last_btn.classList.remove('stopped')
+                msg_a.close()
+            }])
+        } else {
+            if(!res.object_id) {
+                let msg_c = new MessageBox(_('errors.error'), _('errors.not_found_user'), [_('messagebox.close')], [() => {
+                    last_btn.classList.remove('stopped')
+                    msg_c.close()
+                }])
+
+                return
+            }
+
+            if(Number(res.object_id) == window.active_account.info.id) {
+                let msg_d = new MessageBox(_('errors.error'), _('errors.cannot_block_yourself'), [_('messagebox.close')], [() => {
+                    last_btn.classList.remove('stopped')
+                    msg_d.close()
+                }])
+                return
+            }
+
+            let user = await window.vk_api.call('users.get', {'user_ids': res.object_id, 'fields': window.Utils.typical_fields_min}, false)
+            user = user.response
+
+            msg.close()
+
+            let api_user = new User
+            api_user.hydrate(user[0])
+
+            if(api_user.info.blacklisted_by_me == 1) {
+                let msg_e = new MessageBox(_('errors.error'), _('errors.blacklisted_by_me'), [_('messagebox.close')], [() => {
+                    last_btn.classList.remove('stopped')
+
+                    $('#_bl_add_user')[0].click()
+                    msg_e.close()
+                }])
+                return
+            }
+
+            let msg_b = new MessageBox(_('user_page_edit.add_to_bl'), `
+                ${_('user_page_edit.want_to_block')}
+
+                <div class='content_blacklist_item' style='margin-top: 5px;'>
+                    <div class='content_blacklist_item_info'>
+                        <div class='content_blacklist_item_avatar'>
+                            <a href='${api_user.getUrl()}' target='_blank'>
+                                <img class='outliner' src='${api_user.getAvatar(true)}'>
+                            </a>
+                        </div>
+
+                        <div class='content_blacklist_item_name'>
+                            <div class='user_info_with_name'>
+                                <a href='${api_user.getUrl()}' target='_blank' class='user_name ${api_user.isFriend() ? ' friended' : ''}'><b>${api_user.getFullName()}</b></a>
+                    
+                                ${api_user.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+                                `<div class='image_status' data-id='${api_user.getId()}' title='${api_user.getImageStatus().name}'>
+                                    <img src='${api_user.getImageStatusURL()}'>
+                                </div>` : ``}
+                            </div>
+                            <div>
+                                ${api_user.has('last_seen') ? `<span>${api_user.getFullOnline()}</span> ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `, [_('messagebox.no'), _('messagebox.yes')], [
+            () => {
+                msg_b.close()
+                $('#_bl_add_user')[0].click()
+            }, async () => {
+                let res_ = await window.vk_api.call('account.ban', {'owner_id': api_user.getId()})
+                window.black_list = null
+                msg_b.close()
+
+                window.router.restart(null, 'ignore_menu')
+            }])
+        }
+    }])
 })

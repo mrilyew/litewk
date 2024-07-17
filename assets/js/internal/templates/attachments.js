@@ -15,7 +15,7 @@ window.templates.attachments = (attachments) => {
         
         attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
             `
-            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-full='${photo.getFullSizeURL()}' loading='lazy' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
             `
         )
     } else if(attachments.length == 1 && attachments[0].type == 'video') {
@@ -30,7 +30,7 @@ window.templates.attachments = (attachments) => {
                     <div class='time_block'>
                         <span>${video.getDuration()}</span>
                     </div>
-                    ${video.hasPreview() ? `<img class='video_preview' src='${video.getPreview(3)}'>` : ''}
+                    ${video.hasPreview() ? `<img loading='lazy' class='video_preview' src='${video.getPreview(3)}'>` : ''}
                 </div>
                 <div class='video_attachment_info'>
                     <b><a href='#video${video.getId()}'>${video.getTitle()}</a></b>
@@ -47,7 +47,7 @@ window.templates.attachments = (attachments) => {
 
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+                            <img class='ordinary_attachment photo_attachment photo_viewer_open' loading='lazy' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
                         `
                     )
                     break
@@ -62,7 +62,7 @@ window.templates.attachments = (attachments) => {
                                 <div class='time_block'>
                                     <span>${video.getDuration()}</span>
                                 </div>
-                                ${video.info.image ? `<img src='${video.getPreview()}'>` : ''}
+                                ${video.info.image ? `<img loading='lazy' src='${video.getPreview()}'>` : ''}
                             </div>
                         `
                     )
@@ -78,7 +78,7 @@ window.templates.attachments = (attachments) => {
                                 <div class='ext_block'>
                                     <span>${Utils.escape_html(doc.getExtension().toUpperCase())} | ${doc.getFileSize()}</span>
                                 </div>
-                                <img src='${doc.getPreview()}'>
+                                <img loading='lazy' src='${doc.getPreview()}'>
                             </div>
                         `)
                     } else {
@@ -141,7 +141,7 @@ window.templates.attachments = (attachments) => {
                             <div class='list_attachment link_attachment'>
                                 ${op_link.hasPhoto() ? `
                                 <div class='link_attachment_photo'>
-                                    <img class='photo_attachment photo_viewer_open' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
+                                    <img class='photo_attachment photo_viewer_open' loading='lazy' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
                                 </div>` : ''}
     
                                 <div class='link_attachment_info'>
@@ -156,7 +156,7 @@ window.templates.attachments = (attachments) => {
                             <div class='list_attachment link_attachment link_attachment_vertical'>
                                 ${op_link.hasPhoto() ? `
                                 <div class='link_attachment_photo'>
-                                    <img class='photo_attachment photo_viewer_open' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
+                                    <img class='photo_attachment photo_viewer_open' loading='lazy' data-type='attached_link' data-full='${att_photo.getURL()}' src='${att_photo.getURL()}'>
                                 </div>` : ''}
     
                                 <div class='link_attachment_info'>
@@ -180,7 +180,7 @@ window.templates.attachments = (attachments) => {
                     
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-type='graffiti' data-full='${url}' src='${url}'>
+                            <img class='ordinary_attachment photo_attachment photo_viewer_open' loading='lazy' data-type='graffiti' data-full='${url}' src='${url}'>
                         `
                     )
                     break

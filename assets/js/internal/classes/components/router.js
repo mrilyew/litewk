@@ -73,11 +73,13 @@ window.routes = [
     },
     {
         'url': 'settings/{string|section}',
-        'script_name': 'settings_page'
+        'script_name': 'settings_page',
+        'ignore_save': true,
     },
     {
         'url': 'settings',
-        'script_name': 'settings_page'
+        'script_name': 'settings_page',
+        'ignore_save': true,
     },
     {
         'url': 'friends{int|id}/{string|section}',
@@ -117,15 +119,26 @@ window.routes = [
     },
     {
         'url': 'away',
-        'script_name': 'resolve_link'
+        'script_name': 'resolve_link',
+        'ignore_save': true,
     },
     {
         'url': 'search',
         'script_name': 'search_page'
     },
     {
+        'url': 'edit/{string|section}',
+        'script_name': 'edit_page',
+        'ignore_save': true
+    },
+    {
+        'url': 'edit',
+        'script_name': 'edit_page'
+    },
+    {
         'url': '{string|id}',
-        'script_name': 'resolve_link'
+        'script_name': 'resolve_link',
+        'ignore_save': true,
     },
 ]
 
@@ -234,12 +247,19 @@ class Router {
         }
 
         let may = SavedPage.find(url)
+        if(may) {
+            let url = may.info.url.split('#')
+            let parsed_route = this.parse_route(url[1])
 
-        if(may && may.info.url.indexOf('login') == -1 && may.info.url.indexOf('settings') == -1 && may.info.url.indexOf('away') == -1) {
-            may.load()
-            back_button(back_url)
+            if(!parsed_route || !parsed_route.route.ignore_save) {
+                may.load()
 
-            return
+                if(back_url) {
+                    back_button(back_url)
+                }
+
+                return
+            }
         }
 
         this.reset_page()

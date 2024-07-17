@@ -8,24 +8,7 @@ window.page_class = new class {
             Utils.not_found_not_specified()
         }
 
-        const special_addresses = [
-            'https://vk.com/', 
-            'https://vkontakte.ru/', 
-            'http://vk.com/', 
-            'http://vkontakte.ru/', 
-            'https://m.vk.com/', 
-            'http://m.vk.com/',
-            'https://new.vk.com/',
-            'http://new.vk.com/',
-            'https://wap.vk.com/',
-            'http://wap.vk.com/',
-            'https://0.vk.com/',
-            'http://0.vk.com/',
-        ]
-        
-        special_addresses.forEach(address => {
-            text = text.replace(address, '')
-        })
+        text = Utils.cut_vk(text)
 
         if(text.indexOf('https://') != -1 || text.indexOf('http://') != -1) {
             let res = await window.vk_api.call('utils.checkLink', {'url': text})

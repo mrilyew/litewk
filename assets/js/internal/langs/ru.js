@@ -881,6 +881,34 @@ window.langs.push({
         'gifts': 'Подарки',
     },
 
+    'user_page_edit': {
+        'edit_page': 'Редактирование страницы',
+        'edit_page_main': 'Редактирование страницы: основная информация',
+        'edit_page_blacklist': 'Редактирование страницы: ЧС',
+        'edit_page_privacy': 'Редактирование страницы: Приватность',
+        'edit_page_notifications': 'Редактирование страницы: Уведомления',
+        
+        'main_info': 'Основное',
+        'blacklist': 'Чёрный список',
+        'privacy': 'Приватность',
+        'notifications': 'Уведомления',
+
+        'accounts_in_bl_zero': '$1 аккаунтов в чёрном списке',
+        'accounts_in_bl_one': '$1 аккаунт в чёрном списке',
+        'accounts_in_bl_few': '$1 аккаунта в чёрном списке',
+        'accounts_in_bl_other': '$1 аккаунтов в чёрном списке',
+
+        'remove_from_blacklist': 'Убрать из списка',
+        'search_by_blacklist': 'Поиск по чёрному списку',
+        'add': 'Добавить',
+        'add_to_bl': 'Добавление в чёрный список',
+        'add_to_bl_desc': 'Напиши ссылку на страницу, которую хочешь заблокировать.',
+        
+        'search_bl': 'Поиск',
+        'bl_enter_search': 'Введи ссылку',
+        'want_to_block': 'Хочешь заблокировать этого пользователя?',
+    },
+
     'errors': {
         'error': 'Ошибка',
         'not_all_fields_filled': 'Не все поля заполнены',
@@ -926,5 +954,9 @@ window.langs.push({
 
         'search_not_found': 'По запросу ничего не найдено.',
         'no_account_with_id': 'Аккаунта с таким индексом не найдено.',
+        'this_is_not_user': 'Это не пользователь.',
+        'not_found_user': 'Пользователя по ссылке не найдено.',
+        'cannot_block_yourself': 'Нельзя заблокировать себя.',
+        'blacklisted_by_me': 'Пользователь уже заблокирован.',
     },
 })
