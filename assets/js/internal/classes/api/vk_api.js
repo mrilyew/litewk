@@ -47,6 +47,18 @@ class VkApi {
                     window.main_class.add_error(_('errors.vk_api_error', result.error.error_msg), 'vkapierr')
                     document.cookie = ''
                     return result
+                case 5:
+                    if(!result.error.ban_info) {
+                        break
+                    }
+
+                    let ban_info = result.error.ban_info
+                    let msg = new MessageBox(_('errors.page_has_blocked'), _('errors.page_has_blocked_desc', ban_info.restore_url), ['OK'], [
+                        () => {
+                            msg.close()
+                        },
+                    ])
+                    break
                 case 14:
                     console.log(`${method} caused captcha`)
                     return new Promise((resolve, reject) => {

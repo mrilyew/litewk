@@ -286,7 +286,7 @@ body.dimmed > .dimmer {
     margin-bottom: 4px;
 }
 
-.auth_block input[type='text'], .auth_block #__appChoose {
+.auth_block input[type='text'], .auth_block input[type='password'], .auth_block #__appChoose {
     margin-bottom: 8px;
 }
 
@@ -525,6 +525,10 @@ body.dimmed > .dimmer {
     background: var(--elements-background-color);
     border: 1px solid var(--elements-border-color);
     padding: 8px;
+}
+
+.bordered_block.errored_block {
+    border: 1px solid var(--error-color);
 }
 
 .bordered_block.error_template span {

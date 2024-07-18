@@ -155,6 +155,7 @@ class Router {
         $('style').remove()
         $('div').remove()
         
+        window.black_list = null
         window.main_class.load_layout(add)
         $(document).trigger('scroll')
 

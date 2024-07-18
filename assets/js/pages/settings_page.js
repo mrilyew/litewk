@@ -485,11 +485,12 @@ window.page_class = new class {
                 
                 $('.settings_block #_send').on('click', async (e) => {
                     if(!window.vk_api) {
-                        add_error(_('not_authorized'), 'no_token', 5000, 'error')
+                        Utils.add_error(_('not_authorized'), 'no_token', 5000, 'error')
                         return
                     }
     
-                    let res = await window.vk_api.call($('#_methodName')[0].value, JSON.parse($('#_methodParams')[0].value))
+                    let res = await window.vk_api.call($('#_methodName')[0].value, JSON.parse($('#_methodParams')[0].value), false)
+                    
                     $('#_result')[0].value = JSON.stringify(res, null, 4)
                 })
     

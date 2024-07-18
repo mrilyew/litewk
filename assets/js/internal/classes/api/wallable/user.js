@@ -603,6 +603,22 @@ class User extends Faveable {
         return '#id' + this.getId()
     }
 
+    getTemplate() {
+        return window.templates.user_page(this)
+    }
+
+    isDeactivatedPeacefully() {
+        return this.info.deactivated == 'banned' && this.info.first_name != 'Заблокированный пользователь'
+    }
+    
+    isDeactivatedByRkn() {
+        return this.info.deactivated == 'banned' && this.info.first_name == 'Заблокированный пользователь'
+    }
+        
+    isDeleted() {
+        return this.info.deactivated == 'deleted'
+    }
+
     isFriend() {
         if(this.getId() == window.active_account.info.id) {
             return true
@@ -687,7 +703,15 @@ class User extends Faveable {
         return this.has('military') && this.info.military.length > 0
     }
 
-    getTemplate() {
-        return window.templates.user_page(this)
+    hasPersonal() {
+        if(!this.has('personal')) {
+            return false
+        }
+
+        if(this.info.personal.alcohol == 0 && this.info.personal.inspired_by == '' && this.info.personal.life_main == 0 && this.info.personal.people_main == 0 && this.info.personal.smoking == 0) {
+            return false
+        }
+
+        return true
     }
 }

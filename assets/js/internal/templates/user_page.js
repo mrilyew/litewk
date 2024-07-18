@@ -26,7 +26,7 @@ window.templates.user_page = (user) => {
                                 ${`<a class='action' href='#edit'> ${_('user_page.edit_page')}</a>`}
                                 ` :
                                 `
-                                ${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0' data-addid='${user.getId()}'> ${_('users_relations.start_friendship')}</a>` : ''}
+                                ${!user.isDeleted() ? `${user.isNotFriend() ? `<a class='action' id='_toggleFriend' data-val='0' data-addid='${user.getId()}'> ${_('users_relations.start_friendship')}</a>` : ''}
                                 ${user.getFriendStatus() == 1 ? `<a class='action' id='_toggleFriend' data-val='1' data-addid='${user.getId()}'> ${_('users_relations.cancel_friendship')}</a>` : ''}
                                 ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='4' data-addid='${user.getId()}'> ${_('users_relations.accept_friendship')}</a>` : ''}
                                 ${user.getFriendStatus() == 2 ? `<a class='action' id='_toggleFriend' data-val='2' data-addid='${user.getId()}'> ${_('users_relations.decline_friendship')}</a>` : ''}
@@ -42,7 +42,8 @@ window.templates.user_page = (user) => {
                                 ` : ''}
 
                                 ${!user.isClosed() && !user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
-                                ${!user.isClosed() && user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
+                                ${!user.isClosed() && user.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}` : ''}
+                                <a class='action' href='https://vk.com/id${user.getId()}' target='_blank'> ${_('wall.go_to_vk')}</a>
                                 `
                             }
                         </div>
@@ -217,7 +218,7 @@ window.templates.user_page = (user) => {
                                     </tbody>
                                 </table>
                             </div>
-                            ${user.hasContacts() || user.hasInterests() || user.has('career') || user.hasEducation() || user.hasRelatives() || user.hasMilitary() || user.has('personal') ? `<div class='show_hidden_info_block' id='_show_hidden_info_us'>
+                            ${user.hasContacts() || user.hasInterests() || user.has('career') || user.hasEducation() || user.hasRelatives() || user.hasMilitary() || user.hasPersonal() ? `<div class='show_hidden_info_block' id='_show_hidden_info_us'>
                                 ${_('user_page.show_more_info')}
                             </div>` : ''}
                             <div class='additional_info_block_hidden_default'>
@@ -425,7 +426,7 @@ window.templates.user_page = (user) => {
                                         <table><tbody></tbody></table>
                                     </div>
                                 </div>` : ''}
-                                ${user.has('personal') ? `
+                                ${user.hasPersonal() ? `
                                 <div class='additional_info_block' id='_lifeBlock'>
                                     <div class='additional_info_block_cover'>
                                         <b class='title'>${_('user_page.life_position')}</b>
@@ -537,7 +538,21 @@ window.templates.user_page = (user) => {
                     ${window.templates.photo_status(user.info.main_photos)}
                     
                     <div class='wall_inserter'>
-
+                        ${user.isDeactivatedPeacefully() ? `
+                            <div class='bordered_block errored_block'>
+                                ${_('errors.user_has_been_banned')}
+                            </div>
+                        ` : ''}
+                        ${user.isDeactivatedByRkn() ? `
+                            <div class='bordered_block errored_block'>
+                                ${_('errors.caused_by_rkn')}
+                            </div>
+                        ` : ''}
+                        ${user.isDeleted() ? `
+                            <div class='bordered_block errored_block'>
+                                ${_('errors.user_has_been_deleted')}
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             </div>
