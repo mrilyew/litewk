@@ -317,7 +317,11 @@ window.page_class = new class {
                 }
                 
                 if(window.main_url.hasParam('sp_exclude')) {
-                    method_params.q += ' exclude:' + window.main_url.getParam('sp_exclude')
+                    let words = window.main_url.getParam('sp_exclude').split(' ')
+
+                    words.forEach(word => {
+                        method_params.q += ' -' + word
+                    })
                 }
                                 
                 if(window.main_url.hasParam('sp_likes')) {
@@ -398,12 +402,65 @@ window.page_class = new class {
                 method = 'photos.search'
                 method_params.q = window.main_url.getParam('query') ?? ''
                 break
+            case 'docs':
+                SearchClass = Doc
+                method = 'docs.search'
+                method_params.return_tags = 1
+                method_params.q = window.main_url.getParam('query') ?? ''
+
+                if(window.main_url.hasParam('sp_my')) {
+                    method_params.search_own = '1'
+                }
+                
+                if(window.main_url.hasParam('sp_type')) {
+                    let type = Number(window.main_url.getParam('sp_type'))
+
+                    if(type > 0 && type < 9) {
+                        method_params.type = type
+                    }
+                }
+                                
+                if(window.main_url.hasParam('sp_search_type')) {    
+                    method_params.search_type = Number(window.main_url.getParam('sp_search_type'))
+                }
+
+                if(window.main_url.hasParam('sp_tags')) {    
+                    method_params.tags = window.main_url.getParam('sp_tags')
+                }
+
+                params_html = `
+                    <div class='search_param'>
+                        <label>
+                            <input type='checkbox' value='1' ${window.main_url.getParam('sp_search_type') == 1 ? 'checked' : ''} data-setname='search_type'>
+                            ${_('search.search_params_docs_mine')}
+                        </label>
+                    </div>
+                    <div class='search_param'>
+                        <b class='nobold'>${_('search.search_params_docs_type')}</b>
+                        <select data-setname='type'>
+                            <option value='0' ${window.main_url.getParam('sp_type', '0') == '0' ? 'selected' : ''}>${_('search.search_params_docs_type_none')}</option>
+                            <option value='1' ${window.main_url.getParam('sp_type', '0') == '1' ? 'selected' : ''}>${_('docs.doc_type_text')}</option>
+                            <option value='2' ${window.main_url.getParam('sp_type', '0') == '2' ? 'selected' : ''}>${_('docs.doc_type_archive')}</option>
+                            <option value='3' ${window.main_url.getParam('sp_type', '0') == '3' ? 'selected' : ''}>${_('docs.doc_type_gif')}</option>
+                            <option value='4' ${window.main_url.getParam('sp_type', '0') == '4' ? 'selected' : ''}>${_('docs.doc_type_image')}</option>
+                            <option value='5' ${window.main_url.getParam('sp_type', '0') == '5' ? 'selected' : ''}>${_('docs.doc_type_audio')}</option>
+                            <option value='6' ${window.main_url.getParam('sp_type', '0') == '6' ? 'selected' : ''}>${_('docs.doc_type_video')}</option>
+                            <option value='7' ${window.main_url.getParam('sp_type', '0') == '7' ? 'selected' : ''}>${_('docs.doc_type_book')}</option>
+                            <option value='8' ${window.main_url.getParam('sp_type', '0') == '8' ? 'selected' : ''}>${_('docs.doc_type_any')}</option>
+                        </select>
+                    </div>
+                    <div class='search_param'>
+                        <b class='nobold'>${_('search.search_params_docs_tags')}</b>
+                        <input type='text' data-setname='tags' value='${window.main_url.getParam('sp_tags', '')}' placeholder='${_('search.search_params_docs_tags_csv')}'>
+                    </div>
+                `
+                break
         }
 
         document.title = _(`search.search_${section}_section`) + ' | ' + _('search.search')
 
         let sections_list = ``
-        let sections = ['all', 'users', 'groups', 'posts', 'audios', 'videos', 'photos'/*, 'games'*/]
+        let sections = ['all', 'users', 'groups', 'posts', 'photos', 'videos', 'audios', 'docs', /*'games'*/]
         sections.forEach(el => {
             if(el == 'divider') {
                 sections_list += `

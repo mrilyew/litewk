@@ -36,6 +36,7 @@ window.langs.push({
         'my_notes': 'Заметки',
         'my_wikipages': 'Вики-страницы',
         'my_settings': 'Настройки',
+        'my_debug': 'Отладка',
         'logout': 'Выйти',
         'authorize': 'Авторизация',
         'edit_short': 'ред.',
@@ -158,6 +159,7 @@ window.langs.push({
         'settings_format_emojis': 'Заменять текстовые эмодзи на Twemoji',
         'better_my_page': `Вместо "Моя Страница" показывать информацию об аккаунте`,
         'hide_back_button': `Скрыть кнопку "Вернуться"`,
+        'settings_use_execute': 'Использовать execute по возможности (рекомендуется)',
     },
 
     'settings_language': {
@@ -179,7 +181,15 @@ window.langs.push({
         'sure_deleting': 'Действительно хочешь удалить аккаунт отсюда?',
     },
 
-    'settings_debug': {
+    'settings_about': {
+        'settings_about_authors': 'Разработчики',
+        'settings_about_main_code': 'Основной код',
+        'settings_about_cover': 'Обложка',
+        'settings_api_vk': 'VK API',
+    },
+
+    'debug': {
+        'debug': 'Отладка',
         'settings_cache': 'Кэш и LocalStorage',
         'settings_cache_cities': 'Кэш городов',
         'settings_cache_groups': 'Кэш групп',
@@ -196,16 +206,12 @@ window.langs.push({
         'settings_method_unspacify': 'Убрать пробелы',
 
         'settings_routing': 'Роутинг',
-
-        'settings_use_execute': 'Использовать execute по возможности (рекомендуется)',
         'settings_restart_app': 'Перезапустить приложение',
-    },
 
-    'settings_about': {
-        'settings_about_authors': 'Разработчики',
-        'settings_about_main_code': 'Основной код',
-        'settings_about_cover': 'Обложка',
-        'settings_api_vk': 'VK API',
+        'debug_title_api': 'Тест API',
+        'api': 'VK API',
+        'debug_title_cache': 'Кэш',
+        'debug_title_router': 'Роутинг',
     },
 
     'messagebox': {
@@ -214,6 +220,7 @@ window.langs.push({
         'enter': 'Ввести',
         'hide': 'Скрыть',
         'save': 'Сохранить',
+        'restore': 'Восстановить',
 
         'yes': 'Да',
         'no': 'Нет',
@@ -551,6 +558,11 @@ window.langs.push({
         'messages_count_one': '$1 сообщение',
         'messages_count_few': '$1 сообщения',
         'messages_count_other': '$1 сообщений',
+
+        'docs_count_zero': '0 документов',
+        'docs_count_one': '$1 документ',
+        'docs_count_few': '$1 документа',
+        'docs_count_other': '$1 документов',
     },
 
     'faves': {
@@ -621,6 +633,17 @@ window.langs.push({
 
         'topics': 'Обсуждения',
         'last_from_user_time': `Последнее от <a href="$1">$2</a> $3`,
+
+        'show_history_block': 'Показать историю группы',
+        'hide_history_block': 'Скрыть историю группы',
+    },
+
+    'groups_history': {
+        'groups_history_create': 'Группа создана',
+        'groups_history_name_change': `Название изменено на "$1"`,
+        'groups_history_namechange_one': 'Название изменено $1 раз',
+        'groups_history_namechange_few': 'Название изменено $1 раза',
+        'groups_history_namechange_other': 'Название изменено $1 раз',
     },
 
     'wall': {
@@ -833,6 +856,7 @@ window.langs.push({
         'search_audios_section': 'Аудиозаписи',
         'search_videos_section': 'Видеозаписи',
         'search_photos_section': 'Фотографии',
+        'search_docs_section': 'Документы',
         'search_games_section': 'Игры',
 
         'params_search': 'Параметры поиска',
@@ -896,6 +920,12 @@ window.langs.push({
 
         'search_params_posts_type_none': 'Любые посты',
         'search_params_posts_type_copies': 'Только копии',
+
+        'search_params_docs_mine': 'Искать в своих',
+        'search_params_docs_type': 'Тип документов',
+        'search_params_docs_type_none': 'Неважно',
+        'search_params_docs_tags': `Теги`,
+        'search_params_docs_tags_csv': `Теги, разделённые через запятую`,
     },
 
     'gifts': {
@@ -930,6 +960,52 @@ window.langs.push({
         'want_to_block': 'Хочешь заблокировать этого пользователя?',
     },
 
+    'docs': {
+        'docs': 'Документы',
+        'doc': 'Документ',
+        'gif': 'Гифка',
+
+        'all_docs': 'Все документы',
+        'download_file': 'Скачать файл',
+        'save_to_self': 'Сохранить к себе',
+        'title': 'Название',
+        'size': 'Размер',
+        'ext': 'Расширение',
+        'date': 'Дата загрузки',
+        'type': 'Тип',
+        'tags': 'Теги',
+        'uploader': 'Загрузивший',
+        'added': 'Добавлено.',
+
+        'doc_type_text': 'Текстовый документ',
+        'doc_type_archive': 'Архив',
+        'doc_type_gif': 'GIF',
+        'doc_type_image': 'Изображение',
+        'doc_type_audio': 'Аудио',
+        'doc_type_video': 'Видео',
+        'doc_type_book': 'Книга',
+        'doc_type_unknown': 'Неизвестный',
+        'doc_type_any': 'Другой',
+        'edit': 'Редактирование',
+
+        'private_file': 'Личный файл',
+        'study_file': 'Учебный файл',
+        'book_file': 'Книга',
+        'another_file': 'Другой файл',
+
+        'search_by_document': 'Поиск по документам',
+    },
+
+    'size': {
+        'kb': 'КБ', // сосать вроде там было
+        'mb': 'МБ',
+        'gb': 'ГБ',
+        'pb': 'ПБ',
+        'eb': 'ЕБ',
+        'zb': 'ЗБ',
+        'yb': 'ЙБ',
+    },
+
     'errors': {
         'error': 'Ошибка',
         'not_all_fields_filled': 'Не все поля заполнены',
@@ -938,8 +1014,8 @@ window.langs.push({
         'post_not_found': 'Пост не найден.',
         'post_access_denied': 'Нет доступа к записи.',
         'not_all_fields': 'Не все поля введены',
-        'profile_not_found': `Запрашиваемый профиль не найден. <br> Может, ты имел ввиду <a href='site_pages/club_page.html?id=$1'>группу?</a>`,
-        'group_not_found': `Запрашиваемая группа не найдена. <br> Может, ты имел ввиду <a href='site_pages/user_page.html?id=$1'>профиль?</a>`,
+        'profile_not_found': `Запрашиваемый профиль не найден. <br> Может, ты имел ввиду <a href='#club$1'>группу?</a>`,
+        'group_not_found': `Запрашиваемая группа не найдена. <br> Может, ты имел ввиду <a href='#id$1'>профиль?</a>`,
         'wall_not_found': 'Стена не найдена,',
         'post_not_found': `Пост не найден.`,
         'not_authorized': 'Ты не авторизовался.',
@@ -986,5 +1062,11 @@ window.langs.push({
 
         'page_has_blocked': 'Страница была заморожена',
         'page_has_blocked_desc': `VK заморозил вашу страницу. Для восстановления перейдите по <a target='_blank' href='$1'>этой ссылке</a>.`,
+        
+        'docs_cant_user': 'Нельзя посмотреть документы другого пользователя.',
+        'docs_not_found': 'Документы не найдены.',
+        'error_downloading_file': 'Скачать файл не получится из-за ограничений браузера. Использовать allorigins?',
+        'docs_load_error': `Не получится отобразить данный документ. <a target='_blank' href='$1'>Посмотреть в VK</a>`,
+        'doc_not_found': 'Документ не найден.',
     },
 })

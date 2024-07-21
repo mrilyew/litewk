@@ -82,6 +82,16 @@ window.routes = [
         'ignore_save': true,
     },
     {
+        'url': 'debug/{string|section}',
+        'script_name': 'debug_page',
+        'ignore_save': true,
+    },
+    {
+        'url': 'debug',
+        'script_name': 'debug_page',
+        'ignore_save': true,
+    },
+    {
         'url': 'friends{int|id}/{string|section}',
         'script_name': 'friends_page'
     },
@@ -121,6 +131,7 @@ window.routes = [
         'url': 'away',
         'script_name': 'resolve_link',
         'ignore_save': true,
+        'dont_pushstate': true,
     },
     {
         'url': 'search',
@@ -136,9 +147,23 @@ window.routes = [
         'script_name': 'edit_page'
     },
     {
+        'url': 'doc{int|owner}_{int|id}',
+        'script_name': 'doc_page',
+        'hide_menu': true,
+    },
+    {
+        'url': 'docs{int|owner}',
+        'script_name': 'docs_page',
+    },
+    {
+        'url': 'docs',
+        'script_name': 'docs_page',
+    },
+    {
         'url': '{string|id}',
         'script_name': 'resolve_link',
         'ignore_save': true,
+        'dont_pushstate': true,
     },
 ]
 
@@ -164,7 +189,7 @@ class Router {
         }
     }
 
-    parse_route(input_url) {
+    parse_route(input_url = '#settings') {
         const temp_url = input_url.split('?')
         let url = temp_url[0]
 
@@ -222,6 +247,8 @@ class Router {
 
     async route(input_url, history_log = true, back_url = null) {
         let url = input_url
+        let splitted_url = url.split('#')
+        let found_route = this.parse_route(splitted_url[1])
 
         function back_button(url) {
             if(window.site_params.get('ux.hide_back_button', '0') == '1') {
@@ -254,6 +281,14 @@ class Router {
 
             if(!parsed_route || !parsed_route.route.ignore_save) {
                 may.load()
+                
+                if(parsed_route.route.hide_menu) {
+                    $('.navigation')[0].style.display = 'none'
+                    $('body').addClass('simple')
+                } else {
+                    $('.navigation')[0].style.display = 'flex'
+                    $('body').removeClass('simple')
+                }
 
                 if(back_url) {
                     back_button(back_url)
@@ -265,11 +300,8 @@ class Router {
 
         this.reset_page()
 
-        let splitted_url = url.split('#')
-        let found_route  = this.parse_route(splitted_url[1])
-
         if(found_route) {
-            if(history_log && location.hash != url) {
+            if(history_log && location.hash != url && !found_route.route.dont_pushstate) {
                 Utils.push_state(url)
             }
 
@@ -292,7 +324,14 @@ class Router {
                 await Utils.append_script(`assets/js/pages/${name}.js`, true, name)
             }
 
-            //debugger
+            if(found_route.route.hide_menu) {
+                $('.navigation')[0].style.display = 'none'
+                $('body').addClass('simple')
+            } else {
+                $('.navigation')[0].style.display = 'flex'
+                $('body').removeClass('simple')
+            }
+            
             if(!$('#_main_page_script')[0]) {
                 await insertScript(found_route['route'].script_name)
             } else {
@@ -301,6 +340,10 @@ class Router {
                 } else {
                     await window.page_class.render_page()
                 }
+            }
+
+            if(typeof window.page_class.execute_buttons == 'function') {
+                window.page_class.execute_buttons()
             }
 
             SavedPage.save(url)
@@ -352,6 +395,10 @@ class SavedPage {
 
         window.scrollTo(0, this.info.scrollY)
         $(document).trigger('scroll')
+
+        if(typeof window.page_class.execute_buttons == 'function') {
+            window.page_class.execute_buttons()
+        }
     }
 
     static get() {

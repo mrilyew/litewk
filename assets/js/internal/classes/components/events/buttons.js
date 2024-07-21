@@ -43,6 +43,8 @@ window.addEventListener('hashchange', async (e) => {
         return
     }
 
+    console.log('Hashchange event go.')
+
     Utils.push_state(location.href)
     await window.router.route(location.href)
 })
@@ -385,20 +387,6 @@ $(document).on('click', '.video_attachment_viewer_open', (e) => {
         /*$('.fullscreen_buttons #_hider').on('click', (e) => {
             this.close()
         })*/
-    })
-})
-
-$(document).on('click', '.doc_attachment', (e) => {
-    e.preventDefault()
-
-    new MessageWindow(_('docs.doc'), async (insert, additional) => {
-        let doc = e.target.closest('.doc_attachment')
-
-        insert.insertAdjacentHTML('beforeend', `
-            <div class='doc_viewer'>
-                <img src='${doc.dataset.url}'>
-            </div>
-        `)
     })
 })
 

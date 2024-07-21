@@ -15,7 +15,7 @@ window.templates.attachments = (attachments) => {
         
         attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
             `
-            <img class='ordinary_attachment photo_attachment photo_viewer_open' data-full='${photo.getFullSizeURL()}' loading='lazy' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+            <img class='ordinary_attachment photo_attachment photo_viewer_open outliner' data-full='${photo.getFullSizeURL()}' loading='lazy' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
             `
         )
     } else if(attachments.length == 1 && attachments[0].type == 'video') {
@@ -47,7 +47,7 @@ window.templates.attachments = (attachments) => {
 
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <img class='ordinary_attachment photo_attachment photo_viewer_open' loading='lazy' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+                            <img class='ordinary_attachment photo_attachment photo_viewer_open outliner' loading='lazy' data-full='${photo.getFullSizeURL()}' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
                         `
                     )
                     break
@@ -68,33 +68,10 @@ window.templates.attachments = (attachments) => {
                     )
                     break
                 case 'doc':
-                    let doc = new Doc()
+                    let doc = new Doc
                     doc.hydrate(attachment.doc)
-                    
-                    if(doc.getExtension() == 'gif' || doc.getExtension() == 'jpg' || doc.getExtension() == 'png') {
-                        attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
-                        `
-                            <div class='ordinary_attachment doc_attachment' data-url='${doc.getURL()}' data-docid='${doc.getId()}' title='${doc.getTitle()}'>
-                                <div class='ext_block'>
-                                    <span>${Utils.escape_html(doc.getExtension().toUpperCase())} | ${doc.getFileSize()}</span>
-                                </div>
-                                <img loading='lazy' src='${doc.getPreview()}'>
-                            </div>
-                        `)
-                    } else {
-                        attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend',
-                        `
-                            <a href='${doc.getURL()}'>
-                                <div class='list_attachment doc_list_attachment' data-docid='${doc.getId()}'>
-                                    <div class='list_attachment_format'>${doc.getExtension()}</div>
-                                    <div class='list_attachment_info'>
-                                        <p><b>${doc.getTitle()}</b></p>
-                                        <p>${doc.getFileSize()}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        `)
-                    }
+                
+                    attachms.querySelector('.other_attachments').insertAdjacentHTML('beforeend', doc.getRealTemplate())
                     break
                 case 'poll':
                     let op_poll = new Poll(attachment.poll)
@@ -180,7 +157,7 @@ window.templates.attachments = (attachments) => {
                     
                     attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
                         `
-                            <img class='ordinary_attachment photo_attachment photo_viewer_open' loading='lazy' data-type='graffiti' data-full='${url}' src='${url}'>
+                            <img class='ordinary_attachment photo_attachment photo_viewer_open outliner' loading='lazy' data-type='graffiti' data-full='${url}' src='${url}'>
                         `
                     )
                     break

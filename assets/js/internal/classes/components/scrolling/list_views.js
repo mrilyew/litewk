@@ -145,13 +145,7 @@ class ClassicListView {
 
         this.objects.page = Number(number) + 1
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
-
-        if($('.paginator')[0]) {
-            let parent = $('.paginator')[0].parentNode
-            $('.paginator').remove()
-
-            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
-        }
+        this.updatePaginator()
     }
 
     clear()
@@ -161,6 +155,15 @@ class ClassicListView {
         this.objects.pagesCount = 10000
 
         this.getInsertNode().innerHTML = ''
+    }
+    
+    updatePaginator() {
+        /*if($('.paginator')[0]) {
+            let parent = $('.paginator')[0].parentNode
+            $('.paginator').remove()
+
+            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
+        }*/
     }
 }
 
@@ -223,7 +226,7 @@ class Search extends ClassicListView {
                 ob_j.hydrate(obj, objects_data.response.profiles, objects_data.response.groups)
 
                 try {
-                    templates += ob_j.getTemplate()
+                    templates += ob_j.getTemplate({'tags_to': 1})
                 } catch(e) {
                     console.error(e)
     
@@ -238,12 +241,6 @@ class Search extends ClassicListView {
 
         this.objects.page = Number(number) + 1
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
-
-        if($('.paginator')[0]) {
-            let parent = $('.paginator')[0].parentNode
-            $('.paginator').remove()
-
-            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
-        }
+        this.updatePaginator()
     }
 }

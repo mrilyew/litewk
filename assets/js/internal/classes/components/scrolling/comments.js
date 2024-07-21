@@ -70,13 +70,7 @@ class Comments extends ClassicListView {
 
         this.objects.page = Number(number) + 1
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
-
-        if($('.paginator')[0]) {
-            let parent = $('.paginator')[0].parentNode
-            $('.paginator').remove()
-
-            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
-        }
+        this.updatePaginator()
     }
 
     changeSort(sort) {

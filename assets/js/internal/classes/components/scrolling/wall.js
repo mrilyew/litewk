@@ -173,13 +173,7 @@ class Wall extends ClassicListView {
         }
         
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
-
-        if($('.paginator')[0]) {
-            let parent = $('.paginator')[0].parentNode
-            $('.paginator').remove()
-
-            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
-        }
+        this.updatePaginator()
     }
 
     setSection(section, query = null) 
@@ -214,6 +208,7 @@ class Wall extends ClassicListView {
         }
 
         temp_params.query = query
+        temp_params.owners_only = Number(window.main_url.getParam('wall_owners_only')) == 1 ? 1 : 0
 
         // Баг это или фича, но при вызове wall.search 'count' недействительный. Так что вот так вот.
         temp_params.count  = 100
@@ -230,6 +225,8 @@ class Wall extends ClassicListView {
         temp_url = null
 
         this.clear()
-        this.nextPage()
+        await this.nextPage()
+
+        SavedPage.save(temp_url.href)
     }
 }

@@ -232,3 +232,33 @@ $(document).on('change', '#__friendssearch', (e) => {
     
     window.router.restart()
 })
+
+$(document).on('click', '#not_gif_attachment', (e) => {
+    e.preventDefault()
+
+    new MessageWindow(_('docs.doc'), async (insert, additional) => {
+        let doc = e.target.closest('#not_gif_attachment')
+
+        insert.insertAdjacentHTML('beforeend', `
+            <div class='doc_viewer'>
+                <img src='${doc.dataset.url}'>
+            </div>
+        `)
+    })
+})
+
+$(document).on('click', '.gif_attachment', (e) => {
+    e.preventDefault()
+    
+    let target = e.target
+
+    if(!target.classList.contains('gif_attachment')) {
+        target = target.closest('.gif_attachment')
+    }
+    
+    let vid = target.querySelector('video')
+
+    vid.setAttribute('src', vid.dataset.src)
+    target.classList.toggle('shown')
+    target.querySelector('video').play()
+})

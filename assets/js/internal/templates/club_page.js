@@ -3,6 +3,14 @@ if(!window.templates) {
 }
 
 window.templates.club_page = (club) => {
+    let history_html = ''
+
+    club.info.history.items.forEach(item => {
+        let hist_item = new GroupHistoryItem(item)
+
+        history_html += hist_item.getHTML()
+    })
+
     let template = `
         <input id='clb_id' type='hidden' value='${club.getId()}'>
         <div class='club_page_wrapper entity_page_wrapper default_wrapper'>
@@ -123,6 +131,16 @@ window.templates.club_page = (club) => {
                                 </table>
                             </div>
 
+                            ${club.hasHistory() ? `<div class='show_hidden_info_block' id='_show_hidden_history'>
+                                ${_('groups.show_history_block')}
+                            </div>
+
+                            <div class='additional_info_block_hidden_default'>
+                                <div class='club_history'>
+                                    ${history_html}
+                                </div>
+                            </div>` : ''}
+
                             <div class='additional_info_block'>
                                 <div class='additional_info_block_cover'>
                                     <b class='title'>${_('user_page.counters')}</b>
@@ -133,6 +151,7 @@ window.templates.club_page = (club) => {
                                     ${club.has('counters') && club.info.counters.albums ? `<a href='#' data-back='club${club.getId()}'>${_('counters.albums_count', club.info.counters.albums)}</a>` : ''}
                                     ${club.has('counters') && club.info.counters.articles ? `<a href='#' data-back='club${club.getId()}'>${_('counters.articles_count', club.info.counters.articles)}</a>` : ''}
                                     ${club.has('counters') && club.info.counters.clips ? `<a href='#' data-back='club${club.getId()}'>${_('counters.clips_count', club.info.counters.clips)}</a>` : ''}
+                                    ${club.has('counters') && club.info.counters.docs ? `<a href='#docs-${club.getId()}' data-back='club${club.getId()}'>${_('counters.docs_count', club.info.counters.docs)}</a>` : ''}
                                     ${club.has('counters') && club.info.counters.photos ? `<a href='#' data-back='club${club.getId()}'>${_('counters.photos_count', club.info.counters.photos)}</a>` : ''}
                                     ${club.has('counters') && club.info.counters.topics ? `<a href='#' data-back='club${club.getId()}'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
                                     ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#' data-back='club${club.getId()}'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
@@ -177,6 +196,7 @@ window.templates.club_page = (club) => {
                     ${window.templates.group_links(club.info.links, _('groups.links'), '#club' + club.getId() + '/links')}
                     ${window.templates.albums(club.info.albums, '#albums' + club.getId())}
                     ${window.templates.videos_block(club.info.videos, '#videos' + club.getId())}
+                    ${window.templates.docs_block(club.info.docs, '#docs-' + club.getId(), 'club' + club.getId())}
 
                     ${window.templates.contacts_block(club.info.contacts, '#club' + club.getId() + '/contacts')}
                 </div>

@@ -22,6 +22,10 @@ class Faveable {
     hydrate(data) {
         this.info = data
     }
+    
+    getStringInfo() {
+        return JSON.stringify(this.info)
+    }
 }
 
 class PostLike extends Faveable {

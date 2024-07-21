@@ -5,6 +5,7 @@
     --background-color: #000000;
     --elements-background-color: #060709;
     --elements-border-color: #b1b1b1;
+    --elements-contrast-color: #262626;
     --text-color: #cfcfcf;
     --links-color: #b1b1b1;
     --accent-color: #3F8AE0;
@@ -135,6 +136,10 @@ table td:nth-child(odd) {
     width: 30%;
 }
 
+.straight_table td:nth-child(odd) {
+    width: 50%;
+}
+
 table td {
     vertical-align: top;
 }
@@ -214,6 +219,10 @@ body.dimmed > .dimmer {
 .fullscreen_view .fullscreen_view_title {
     margin-bottom: 13px;
     border-bottom: unset;
+}
+
+.fullscreen_buttons {
+    margin-top: -1px;
 }
 
 .messagebox .messagebox_body {
@@ -646,13 +655,14 @@ body.dimmed > .dimmer {
     justify-content: space-between;
 }
 
-.navigation a .counter {
+.navigation a .counter, .counter_additional {
     background: var(--links-color);
     color: var(--elements-background-color);
     padding: 2px 5px;
     height: 22px;
     margin-top: -2px;
     margin-bottom: -4px;
+    border-left: 1px solid var(--elements-background-color);
 }
 
 .navigation a:hover, #_actions .action:hover, .layer_two_columns_tabs a:hover, .layer_two_columns_tabs a.selected {
@@ -835,6 +845,12 @@ body.dimmed > .dimmer {
 .layer_two_columns .layer_two_columns_params label {
     margin: 4px 0px;
     display: block;
+}
+
+.layer_two_columns .layer_two_columns_local_search_block {
+    margin-bottom: 4px;
+    padding: 5px 4px 5px 4px;
+    gap: 5px;
 }
 
 /* Lists */

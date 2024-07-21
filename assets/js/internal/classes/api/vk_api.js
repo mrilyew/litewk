@@ -5,7 +5,7 @@ class VkApi {
     }
 
     async call(method, params = [], force = true) {
-        let path = this.url + method + `?v=5.199&access_token=` + this.token + '&' + $.param(params)
+        let path = this.url + method + `?v=5.221&access_token=` + this.token + '&lang=' + window.lang.lang_info.short_name + ' &' + $.param(params)
         let result = null
 
         try {

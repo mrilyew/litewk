@@ -2,7 +2,7 @@ class Club extends Faveable {
     async fromId(id = 0, need_blocks = false) {
         let info = null
         if(!window.use_execute) {
-            info = await window.vk_api.call('groups.getById', {'group_id': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
+            info = await window.vk_api.call('groups.getById', {'group_ids': id, 'fields': 'activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page'}, false)
 
             if(info.error || !info.response.groups) {
                 return
@@ -37,13 +37,17 @@ class Club extends Faveable {
                 info.members_friends = await window.vk_api.call('groups.getMembers', {"group_id": info.id, "sort": "id_desc", "fields": window.Utils.typical_fields, "count": "6", 'filter': 'friends'}, false);
                 
                 info.members_friends = info.members_friends.response
+                                
+                info.history = await window.vk_api.call('groups.getNameHistory', {"group_id": info.id, 'count': 20}, false);
+                
+                info.history = info.history.response
             }
 
             info.contacts_users = await window.vk_api.call('users.get', {'user_ids': user_ids, 'fields': window.Utils.typical_fields})
             info.contacts_users = info.contacts_users.response
         } else {
             info = await window.vk_api.call('execute', {'code': `
-                var club = API.groups.getById({"group_id": "${id}", "fields": "activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page"});
+                var club = API.groups.getById({"group_ids": "${id}", "fields": "activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page"});
                 club = club.groups[0];
                 var users_to_insert = "";
                 
@@ -65,6 +69,8 @@ class Club extends Faveable {
                     club.members = API.groups.getMembers({"group_id": club.id, "sort": "id_desc", "fields": "${window.Utils.typical_fields}", "count": "6"});
                     club.members_friends = API.groups.getMembers({"group_id": club.id, "sort": "id_desc", "fields": "${window.Utils.typical_fields}", "count": "6", "filter": "friends"});
                     club.board = API.board.getTopics({"group_id": club.id, "order": 1, "preview": 2, "extended": 1, "count": 3});
+                    club.docs = API.docs.get({"owner_id": club.id * -1, "count": 3});
+                    club.history = API.groups.getNameHistory({"group_id": club.id, "count": 20});
                 ` : ''}
                 return club;
             `}, false)
@@ -176,6 +182,12 @@ class Club extends Faveable {
         }
     }
 
+    getHistory() {
+        const hist = new GroupHistory(this.info.history)
+
+        return hist
+    }
+
     hasAccess() {
         return true
     }
@@ -192,6 +204,10 @@ class Club extends Faveable {
         }
     }
     
+    hasHistory() {
+        return this.info.history && this.info.history.count > 0
+    }
+
     isHiddenFromFeed() {
         return this.info.is_hidden_from_feed == 1
     }

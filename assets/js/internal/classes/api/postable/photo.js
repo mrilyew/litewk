@@ -24,10 +24,22 @@ class Photo extends PostLike {
 
     getUrlBySize(type = 'q') {
         if(!this.hasSize(type)) {
-            return this.info.sizes.find(size => size.type == 'x').url
+            let found = this.info.sizes.find(size => size.type == 'x')
+
+            if(found.url) {
+                return found.url
+            } else {
+                return found.src
+            }
         }
 
-        return this.info.sizes.find(size => size.type == type).url
+        let found = this.info.sizes.find(size => size.type == type)
+
+        if(found.url) {
+            return found.url
+        } else {
+            return found.src
+        }
     }
 
     hasSize(type = 'z') {

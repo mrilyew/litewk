@@ -8,6 +8,17 @@ $(document).on('click', '#_show_hidden_info_us', (e) => {
     $('.additional_info_block_hidden_default').toggleClass('shown')
 })
 
+$(document).on('click', '#_show_hidden_history', (e) => {
+    if(!$('.additional_info_block_hidden_default').hasClass('shown')) {
+        e.target.innerHTML = _('groups.hide_history_block')
+    } else {
+        e.target.innerHTML = _('groups.show_history_block')
+    }
+
+    $('.additional_info_block_hidden_default').toggleClass('shown')
+})
+
+
 $(document).on('click', '#_toggleFriend', async (e) => {
     e.preventDefault()
 
@@ -373,4 +384,17 @@ $(document).on('click', '#_bl_add_user', (e) => {
             }])
         }
     }])
+})
+
+$(document).on('click', '#_groups_history_full', async (e) => {
+    let next_from = e.target.dataset.next_from
+    let result    = await window.vk_api.call('groups.getNameHistory', {"group_id": $('#clb_id')[0].value, 'start_from': next_from}, false);
+    let full_html = ''
+    result.response.items.forEach(item => {
+        let hist_item = new GroupHistoryItem(item)
+
+        full_html += hist_item.getHTML()
+    })
+
+    $(`.club_history`)[0].innerHTML = full_html
 })

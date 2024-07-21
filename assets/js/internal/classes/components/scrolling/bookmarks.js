@@ -74,13 +74,7 @@ class Bookmarks extends ClassicListView {
         this.objects_list = this.objects_list.concat(items)
 
         this.getInsertNode().insertAdjacentHTML('beforeend', templates)
-
-        if($('.paginator')[0]) {
-            let parent = $('.paginator')[0].parentNode
-            $('.paginator').remove()
-
-            parent.insertAdjacentHTML('beforeend', window.templates.paginator(this.objects.pagesCount, number + 1))
-        }
+        this.updatePaginator()
     }
 
     insertItem(obj) {

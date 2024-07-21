@@ -90,7 +90,7 @@ window.default_left_menu = [
         'name': '_navigation.my_documents',
         'href': '#docs',
         'new_page': false,
-        'disabled': true,
+        'disabled': false,
         'hidden': false,
     },
     {
@@ -99,6 +99,14 @@ window.default_left_menu = [
         'new_page': false,
         'disabled': true,
         'hidden': false,
+    },
+    {
+        'name': '_navigation.my_debug',
+        'anchor': '_debugger',
+        'href': '#debug',
+        'new_page': false,
+        'disabled': false,
+        'hidden': true,
     },
     {
         'name': '_navigation.my_settings',

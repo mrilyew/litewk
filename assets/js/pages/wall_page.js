@@ -46,7 +46,7 @@ window.page_class = new class {
             `
                 <div class='default_wrapper layer_two_columns'>
                     <div>
-                        <div class='bordered_block layer_two_columns_up_panel' id='insert_paginator_here_bro'>
+                        <div class='bordered_block layer_two_columns_up_panel wall_select_block' id='insert_paginator_here_bro'>
                             ${section != 'search' ? `<span>${_('counters.posts_on_wall_count', 0)}</span>` : `
                                 <input type="query" placeholder="${_('wall.search')}">
                             `}
@@ -89,7 +89,7 @@ window.page_class = new class {
             window.main_classes['wall'].clear()
             await window.main_classes['wall'].nextPage()
         } else {
-            if(window.main_url.getParam('wall_query')) {
+            if(window.main_url.hasParam('wall_query')) {
                 $(`input[type='query']`)[0].value = window.main_url.getParam('wall_query')
                 await window.main_classes['wall'].search(window.main_url.getParam('wall_query'))
             }

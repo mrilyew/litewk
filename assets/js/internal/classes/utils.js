@@ -3,6 +3,9 @@ window.Utils = new class {
     typical_fields_min = 'sex,image_status,photo_50,photo_100,photo_200,last_seen,online,blacklisted_by_me'
     typical_group_fields = 'activity,photo_100,description,members_count'
     
+    default_count = 10
+    default_count_more = 20
+
     compute_age(date) {
         let age = moment().diff(moment(date, "DD-MM-YYYY"), 'years')
 
@@ -123,14 +126,14 @@ window.Utils = new class {
         return `${hours && hours > 0 ? hours + ':' : ''}${minutes}:${seconds}`
     }
 
-    format_file_size(bytes, si = null) 
+    format_file_size(bytes, si = true) 
     {
         let thresh = si ? 1000 : 1024;
         if(Math.abs(bytes) < thresh) {
             return bytes + ' B';
         }
         let units = si
-            ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+            ? [_('size.kb'),_('size.mb'),_('size.gb'),_('size.tb'),_('size.pb'),_('size.eb'),_('size.zb'),_('size.yb')]
             : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
         let u = -1;
         do {
@@ -369,5 +372,15 @@ window.Utils = new class {
 
     async sleep(time) {
         return await new Promise(r => setTimeout(r, time));
+    }
+
+    download_file_by_link(url, filename) {
+        let link = document.createElement('a')
+        link.setAttribute('href', url)
+        link.setAttribute('download', filename || '')
+
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
 }

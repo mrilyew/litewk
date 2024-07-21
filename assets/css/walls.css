@@ -513,6 +513,7 @@ img.avatar, .avatar img {
     width: 15vw;
     /*max-width: 220px;*/
     background: #070707;
+    display: block;
 }
 
 .photo_attachment {
@@ -523,8 +524,20 @@ img.avatar, .avatar img {
     cursor: pointer;
 }
 
-.ordinary_attachment:hover {
-    outline: 1px ridge var(--elements-border-color);
+.gif_attachment {
+    width: 25vw;
+}
+
+.gif_attachment #_vid, .gif_attachment.shown #_photo {
+    display: none;
+}
+
+.gif_attachment.shown #_vid {
+    display: block;
+}
+
+.gif_attachment video, .gif_attachment img {
+    width: 25vw;
 }
 
 .ordinary_attachment > img, .ordinary_attachments .ordinary_attachment .video_preview {
@@ -581,12 +594,12 @@ img.avatar, .avatar img {
     padding: 2px 4px;
 }
 
-.page_content .attachments .ordinary_attachments .ordinary_attachment .ext_block {
+.page_content .attachments .ordinary_attachment .ext_block {
     background: rgba(0, 0, 0, 0.8);
     position: absolute;
     right: 0;
     bottom: 0;
-    margin-right: 6px;
+    margin-right: 1px;
     margin-bottom: 6px;
     padding: 2px 4px;
 }
@@ -603,10 +616,6 @@ img.avatar, .avatar img {
 
 .page_content .attachments .other_attachments {
     margin-top: 6px; 
-}
-
-.page_content .attachments .other_attachments .doc_list_attachment:hover {
-    outline: 1px ridge var(--text-color);
 }
 
 .page_content .attachments .other_attachments .doc_list_attachment .list_attachment_format {
@@ -642,10 +651,6 @@ img.avatar, .avatar img {
     display: flex;
     flex-direction: row;
     max-height: 115px;
-}
-
-.page_content .link_attachment:hover {
-    outline: 1px solid var(--elements-border-color);
 }
 
 .page_content .link_attachment .link_attachment_photo {
@@ -778,4 +783,178 @@ img.avatar, .avatar img {
     padding: 0;
     border-bottom: 1px dotted var(--elements-border-color);
     padding-bottom: 7px;
+}
+
+#_tabsinsert a {
+    display: flex;
+    justify-content: space-between;
+}
+
+.document_block {
+    text-decoration: none;
+    position: relative;
+    padding: 4px;
+}
+
+.document_block:hover {
+    outline: 1px solid var(--elements-border-color);
+}
+
+.document_block .document_block_preview {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    background: var(--text-color);
+}
+
+.document_block .document_block_preview.only_ext {
+    color: var(--background-color);
+    text-align: center;
+    padding-top: 28%;
+}
+
+.document_block .document_block_preview.with_image {
+    background-position: 50%;
+}
+
+.document_block .document_block_full_info {
+    display: grid;
+    grid-template-columns: 0fr 1fr;
+    gap: 6px;
+    width: 100%;
+}
+
+.document_block .document_block_info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 1px;
+    max-width: 90%;
+}
+
+.document_block .document_block_actions {
+    display: none;
+    position: absolute;
+    height: 41px;
+    align-items: center;
+    right: 3px;
+}
+
+.document_block:hover  .document_block_actions {
+    display: flex;
+}
+
+.document_block .document_block_actions svg {
+    width: 19px;
+    fill: var(--elements-border-color);
+    stroke: var(--elements-border-color);
+    stroke-width: 1.2px;
+}
+
+.document_block_actions .edit_doc_button svg {
+    fill: none;
+    stroke: var(--elements-border-color);
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.document_block .document_block_actions .checkmark_icon {
+    fill: unset;
+    stroke: var(--elements-border-color);
+    stroke-width: 4.5px;
+}
+
+.document_block .document_block_actions .delete_doc_button svg {
+    stroke-width: 4px;
+}
+
+.document_block .document_block_actions object {
+    padding: 4px 5px 1px 5px;
+}
+
+.document_block .document_block_actions object.outline_object:hover {
+    outline: var(--elements-border-color) 1px solid;
+}
+
+#doc_edit_box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 312px;
+}
+
+#doc_edit_box input[type='text'] {
+    width: 97%;
+}
+
+#doc_edit_box label {
+    display: block;
+}
+
+/* Doc otd page */
+
+body.simple {
+    padding: 0px;
+    overflow-y: hidden;
+}
+
+body.simple .main_wrapper {
+    padding: 0px;
+}
+
+body.simple .main_wrapper .page_content {
+    padding: 0px;
+}
+
+.document_single_view .document_body_panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.document_single_view .document_body_panel img {
+    max-height: 50vh;
+}
+
+.document_single_view .document_upper_panel {
+    background: var(--elements-background-color);
+    width: 100vw;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px ridge var(--elements-border-color);
+    position: relative;
+    z-index: 3;
+}
+
+.document_single_view #_titler {
+    margin-top: 2px;
+}
+
+.document_single_view iframe {
+    width: 100%;
+    height: 91vh;
+    border: 1px solid var(--elements-border-color);
+}
+
+/* Group history */
+
+.club_history {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.club_history .club_history_item {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+}
+
+.club_history .club_history_item .club_history_item_info {
+    display: flex;
+    flex-direction: column;
 }

@@ -46,10 +46,6 @@
     margin-left: 2px;
 }
 
-.settings_sublock .settings_caches input {
-    margin-bottom: 6px;
-}
-
 .settings_sublock .settings_left_menu_customisation {
     border: 1px dotted var(--links-color);
 }

@@ -150,7 +150,7 @@
     position: relative;
 }
 
-.user_page_wrapper .show_hidden_info_block {
+.show_hidden_info_block {
     cursor: pointer;
     text-align: center;
     padding: 5px 0px;
