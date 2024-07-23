@@ -15,6 +15,7 @@
     <script src='https://code.jquery.com/jquery-3.6.3.js' integrity='sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=' crossorigin='anonymous'></script>
     <script src='https://momentjs.com/downloads/moment.js'></script>
     <script src='https://unpkg.com/twemoji@latest/dist/twemoji.min.js' crossorigin='anonymous'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
 </head>
 <body>
     <script src='assets/js/internal/classes/components/site_params.js'></script>
@@ -23,8 +24,11 @@
     <script src='assets/js/internal/classes/components/router.js'></script>
     <script src='assets/js/internal/classes/components/tweaks.js'></script>
     <script src='assets/js/internal/classes/components/message_box.js'></script>
+    <script src='assets/js/internal/classes/components/consts.js'></script>
+    <script src='assets/js/internal/classes/utils.js'></script>
 
-    <script src='assets/js/internal/classes/api/vk_api.js'></script>
+    <script src='assets/js/internal/classes/components/vk_api.js'></script>
+    <script src='assets/js/internal/classes/api/errors/ApiError.js'></script>
     <script src='assets/js/internal/classes/api/main_classes.js'></script>
 
     <script src='assets/js/internal/classes/api/wallable/user.js'></script>
@@ -42,6 +46,8 @@
     <script src='assets/js/internal/classes/api/uncategorized/album.js'></script>
     <script src='assets/js/internal/classes/api/uncategorized/group_link.js'></script>
     <script src='assets/js/internal/classes/api/uncategorized/board.js'></script>
+    <script src='assets/js/internal/classes/api/uncategorized/sticker.js'></script>
+    <script src='assets/js/internal/classes/api/uncategorized/notification.js'></script>
 
     <script src='assets/js/internal/classes/components/scrolling/api_list_views.js'></script>
     <script src='assets/js/internal/classes/components/scrolling/list_views.js'></script>
@@ -53,11 +59,11 @@
     <script src='assets/js/internal/classes/components/scrolling/recommended_groups.js'></script>
     <script src='assets/js/internal/classes/components/scrolling/docs.js'></script>
     <script src='assets/js/internal/classes/components/scrolling/history.js'></script>
+    <script src='assets/js/internal/classes/components/scrolling/notifications.js'></script>
 
     <script src='assets/js/internal/langs/ru.js'></script>
     <script src='assets/js/internal/langs/qqx.js'></script>
     <script src='assets/js/internal/langs/i18n.js'></script>
-    <script src='assets/js/internal/classes/utils.js'></script>
 
     <script src='assets/js/internal/templates/main_template.js'></script>
 
@@ -75,6 +81,7 @@
     <script src='assets/js/internal/templates/additional/group_links.js'></script>
     <script src='assets/js/internal/templates/additional/group_board_block.js'></script>
     <script src='assets/js/internal/templates/additional/docs.js'></script>
+    <script src='assets/js/internal/templates/notification.js'></script>
 
     <script src='assets/js/internal/templates/user_page.js'></script>
     <script src='assets/js/internal/templates/club_page.js'></script>

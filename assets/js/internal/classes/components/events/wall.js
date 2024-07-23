@@ -262,3 +262,24 @@ $(document).on('click', '.gif_attachment', (e) => {
     target.classList.toggle('shown')
     target.querySelector('video').play()
 })
+
+$(document).on('click', '.notification.ungroup', async (e) => {
+    e.preventDefault()
+    let target = e.target
+
+    if(!target.classList.contains('notification')) {
+        target = target.closest('.notification')
+    }
+    
+    let notif  = window.main_classes['wall'].notifications.find(notif => notif.info.id == target.getAttribute('id'))
+    let notifs = await window.vk_api.call('notifications.getGrouped', {'query': notif.info.action.context.query})
+    let big_html = ``
+
+    notifs.response.items.forEach(notif => {
+        const notifobj = new ApiNotification(notif)
+        big_html += notifobj.getTemplate()
+    })
+
+    target.outerHTML = big_html
+    SavedPage.save()
+})

@@ -94,12 +94,15 @@ class Post extends PostLike {
                 }
 
                 return `${zab} <a href='${source.link.url}' target='_blank'>${Utils.escape_html(source.link.title)}</a>`
+            // todo добавить пол к этим строкам
             case 'added_photos':
                 return _('newsfeed.added_photos')
             case 'added_videos':
                 return _('newsfeed.added_videos')
             case 'tagged_on_photos':
                 return _('newsfeed.tagged_on_photos')
+            case 'added_audios':
+                return _('newsfeed.added_audios')
             default:
                 return source.data
         }

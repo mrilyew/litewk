@@ -325,3 +325,61 @@
     border: unset;
     padding: 0px;
 }
+
+/* Notifs */
+
+.notifications_list {
+    gap: 5px;
+}
+
+.notifications_list .notification {
+    padding: 5px 4px;
+    display: grid;
+    grid-template-columns: 0fr 1fr;
+    gap: 10px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+.notifications_list .notification object {
+    display: block;
+}
+
+.notifications_list .notification:hover {
+    box-sizing: border-box;
+    outline: 1px solid var(--elements-border-color);
+}
+
+.notifications_list .notification.ungroup {
+    border-bottom: 1px dotted var(--elements-border-color);
+    padding-bottom: 10px;
+}
+
+.notifications_list .notification .notification_attachments {
+    margin-top: 3px;
+}
+
+.notifications_list .notification.ungroup:hover {
+    border-bottom: 1px solid var(--elements-background-color);
+}
+
+.notifications_list .notification:last-of-type {
+    border-bottom: none;
+}
+
+.notifications_list .notification .notification_icon {
+    position: relative;
+    height: 40px;
+}
+
+.notifications_list .notification .notification_icon img {
+    width: 40px;
+}
+
+.notifications_list .notification .notification_icon .notification_icon_smaller {
+    position: absolute;
+    width: 20px;
+    bottom: -4px;
+    right: -6px;
+}
+

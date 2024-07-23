@@ -12,6 +12,7 @@ window.page_class = new class {
                     <div>
                         <a href='#feed/def' ${tab == 'def' ? 'class=\'selected\'' : ''}>${_(`newsfeed.section_default`)}</a>
                         <a href='#feed/smart' ${tab == 'smart' ? 'class=\'selected\'' : ''}>${_(`newsfeed.section_smart_feed`)}</a>
+                        <a href='#feed/follow' ${tab == 'follow' ? 'class=\'selected\'' : ''}>${_(`newsfeed.section_friends`)}</a>
                         <a href='#feed/recommend' ${tab == 'recommend' ? 'class=\'selected\'' : ''}>${_(`newsfeed.section_recommend`)}</a>
                     </div>
                     <div class='layer_two_columns_params'>
@@ -27,7 +28,7 @@ window.page_class = new class {
                                 ${_('newsfeed.newsfeed_return_banned')}
                             </label>
 
-                            ${tab == 'def' || tab == 'custom' ?
+                            ${tab == 'def' || tab == 'custom' || tab == 'frien' ?
                             `<label>
                                 <select id='__newsfeedreturntype'>
                                     <option value='all' ${window.main_url.getParam('news_type', 'all') == 'all' ? 'selected' : ''}>${_('newsfeed.newsfeed_type_all')}</option>
@@ -74,6 +75,16 @@ window.page_class = new class {
                 break
             case 'recommend':
                 method = 'newsfeed.getRecommended'
+                break
+            case 'follow':
+                method = 'newsfeed.get'
+
+                method_params.source_ids = 'friends,following'
+                break
+            case 'frien':
+                method = 'newsfeed.get'
+
+                method_params.source_ids = 'friends'
                 break
             case 'custom':
                 method = 'newsfeed.get'

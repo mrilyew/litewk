@@ -1,9 +1,14 @@
 window.page_class = new class {
     async render_page() {
         let text = window.main_url.getParam('id') ?? window.main_class['hash_params'].id
+
+        if(text == '#') {
+            text = '#id0'
+        }
+        
         let link_start = window.main_url.origin + window.main_url.pathname
         let link = null
-
+        
         if(!text) {
             Utils.not_found_not_specified()
         }

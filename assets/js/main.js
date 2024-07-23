@@ -171,12 +171,12 @@ window.main_class = new class {
             `
         }
                 
-        if(counters.notifications && $('.navigation #_notifications')[0]) {
+        if(counters.notifications_with_pushes && $('.navigation #_notifications')[0]) {
             $('.navigation #_notifications')[0].innerHTML += `
-                <span class='counter'>${counters.notifications}</span>
+                <span class='counter'>${counters.notifications_with_pushes}</span>
             `
 
-            document.title = `(${counters.notifications}) ` + document.title
+            document.title = `(${counters.notifications_with_pushes}) ` + document.title
         }
                     
         if(counters.videos && $('.navigation #_videos')[0]) {

@@ -73,10 +73,10 @@ window.default_left_menu = [
     },
     {
         'name': '_navigation.my_notifications',
-        'href': '#notifs',
+        'href': '#feed/notifications',
         'anchor': '_notifications',
         'new_page': false,
-        'disabled': true,
+        'disabled': false,
         'hidden': false,
     },
     {

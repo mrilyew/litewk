@@ -85,7 +85,8 @@ class WallVideo extends NewsfeedClass {
 class WallAudio extends NewsfeedClass {
     getTemplate() {
         let diver = document.createElement('div')
-        diver.innerHTML = window.templates.post(this, {'uploaded_videos': 1})
+        let attachments = []
+        diver.innerHTML = window.templates.post(this, {'uploaded_audios': 1})
 
         diver.querySelector('.contenter').insertAdjacentHTML('beforeend', `
             <div class='attachments'>
@@ -94,8 +95,14 @@ class WallAudio extends NewsfeedClass {
         `)
 
         diver.querySelector('.post_date a').removeAttribute('href')
+        this.info.audio.items.forEach(audi => {
+            attachments.push({
+                'type': 'audio',
+                'audio': audi
+            })
+        })
 
-        diver.querySelector('.contenter .attachments').insertAdjacentHTML('beforeend', window.templates.attachments(this.info.attachments))
+        diver.querySelector('.contenter .attachments').insertAdjacentHTML('beforeend', window.templates.attachments(attachments))
 
         return diver.innerHTML
     }

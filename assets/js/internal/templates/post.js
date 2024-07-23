@@ -29,6 +29,14 @@ window.templates.post = (post, additional_options = {}) => {
 
         post.info.post_source.data = 'tagged_on_photos'
     }
+
+    if(additional_options.uploaded_audios == 1) {
+        if(!post.info.post_source) {
+            post.info.post_source = {}
+        }
+
+        post.info.post_source.data = 'added_audios'
+    }
     
     let template = ``
     template += 

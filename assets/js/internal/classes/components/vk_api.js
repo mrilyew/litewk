@@ -5,9 +5,23 @@ class VkApi {
     }
 
     async call(method, params = [], force = true) {
-        let path = this.url + method + `?v=5.221&access_token=` + this.token + '&lang=' + window.lang.lang_info.short_name + ' &' + $.param(params)
-        let result = null
+        let url = new URL(this.url + method)
+        url.searchParams.set('v', window.consts.VK_API_VERSION)
+        url.searchParams.set('access_token', this.token)
+        url.searchParams.set('lang', window.lang.lang_info.short_name)
 
+        if(window.main_url.hasParam('lang_override')) {
+            url.searchParams.set('lang', window.main_url.getParam('lang_override'))
+        }
+
+        url.searchParams.set('https', 1)
+
+        if(window.site_params.get('internal.enable_tracking', '0') == '1') {
+            url.searchParams.set('track_events', 1)
+        }
+
+        let path = url.href + '&' + $.param(params)
+        let result = null
         try {
             if(window.site_params.get('internal.use_proxy', '0') == '1') {
                 path = `https://api.allorigins.win/get?url=${encodeURIComponent(path)}`
@@ -61,6 +75,7 @@ class VkApi {
                     break
                 case 14:
                     console.log(`${method} caused captcha`)
+
                     return new Promise((resolve, reject) => {
                         let sid = result.error.captcha_sid
 
@@ -91,6 +106,8 @@ class VkApi {
                         ])
                     })
             }
+
+            throw new ApiError(result.error.error_msg, result.error.error_code)
         } else {
             document.cookie = ''
             return result

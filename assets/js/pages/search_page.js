@@ -7,6 +7,27 @@ window.page_class = new class {
         let params_html = null
         let method_params = {'count': 10, 'extended': 1, 'fields': window.Utils.typical_group_fields + ',' + window.Utils.typical_fields}
         let SearchClass = null
+        let sections_list = ``
+        let tabs_html = ` 
+        <div class='bordered_block layer_two_columns_up_panel' id='insert_paginator_here_bro'>
+            <div class='tabs'>
+                <a href='#search/${section}' class='selected' data-section='${section}'>${_('search.search')}</a>
+            </div>
+        </div>`
+        let sections = ['all', 'users', 'groups', 'posts', 'photos', 'videos', 'audios', 'docs', /*'games'*/]
+        sections.forEach(el => {
+            if(el == 'divider') {
+                sections_list += `
+                    <hr>
+                `
+                
+                return
+            }
+
+            sections_list += `
+                <a href='#search/${el}?query=${window.main_url.getParam('query') ?? ''}' ${section == el ? 'class=\'selected\'' : ''}>${_(`search.search_${el}_section`)}</a>
+            `
+        })
 
         switch(section) {
             default:
@@ -22,18 +43,11 @@ window.page_class = new class {
                 method_params.code = `
                     var user_results = API.users.search({"q": "${window.main_url.getParam('query') ?? ''}", "count": 5, "fields": "${window.Utils.typical_fields}"});
                     var clubs_results = API.groups.search({"q": "${window.main_url.getParam('query') ?? ''}", "count": 5, "fields": "${window.Utils.typical_group_fields}"});
-                    var posts_results = API.newsfeed.search({"q": "${window.main_url.getParam('query') ?? 'has:photo'}", "count": 5, "extended": 1});
                     var videos_results = API.video.search({"q": "${window.main_url.getParam('query') ?? 'видео'}", "count": 5});
-                    var photos_results = API.photos.search({"q": "${window.main_url.getParam('query') ?? ''}", "count": 20});
-                    var audios_results = API.audio.search({"q": "${window.main_url.getParam('query') ?? 'песня'}", "count": 5});
-
                     return {
                         "users": user_results,
                         "clubs": clubs_results,
-                        "posts": posts_results,
                         "videos": videos_results,
-                        "photos": photos_results,
-                        "audios": audios_results,
                     };
                 `
                 break
@@ -107,6 +121,39 @@ window.page_class = new class {
                 }
 
                 if(window.main_url.hasParam('from_list')) {
+                    let us_info = new User
+                    us_info.hydrate(window.active_account.info)
+
+                    sections_list = `
+                        <a href='${us_info.getUrl()}' class='layer_two_columns_tabs_user_info'>
+                            <div>
+                                <img class='avatar' src='${us_info.getAvatar()}'>
+                            </div>
+
+                            <div class='layer_two_columns_tabs_user_info_name'>
+                                <b ${us_info.isFriend() ? `class='friended'` : ''}>${Utils.cut_string(us_info.getName(), 15)}</b>
+                                <span>${_('user_page.go_to_user_page')}</span>
+                            </div>
+                        </a>
+                        <a href='#friends/all'>${_(`friends.all_friends`)}</a>
+                        <a href='#search/users?from_list=friends' ${window.main_url.getParam('from_list') == 'friends' ? 'class=\'selected\'' : ''}>${_(`friends.search_friends`)}</a>
+                        <a href='#friends/incoming' ${window.main_url.getParam('from_list') == 'subscriptions' ? 'class=\'selected\'' : ''}>${_(`friends.friends_requests`)}</a>
+                        <a href='#friends/suggests'>${_(`friends.recomended_friends`)}</a>
+                        <a href='#friends/cleanup'>${_(`friends.cleanup_friends`)}</a>
+                        <a href='#friends/followers'>${_(`friends.followers`)}</a>
+                    `
+
+                    if(window.main_url.getParam('from_list') == 'subscriptions') {
+                        tabs_html = `
+                        <div class='bordered_block layer_two_columns_up_panel' id='insert_paginator_here_bro'>
+                            <div class='tabs'>
+                                <a href='#friends/incoming'>${_('friends.incoming')}</a>
+                                <a href='#search/users?from_list=subscriptions' data-section='${section}' class='selected'>${_('friends.outcoming')}</a>
+                            </div>
+                        </div>
+                        `
+                    }
+
                     method_params.from_list = window.main_url.getParam('from_list')
                 }
 
@@ -257,6 +304,7 @@ window.page_class = new class {
             case 'posts':
                 SearchClass = Post
                 method = 'newsfeed.search'
+                tabs_html = ''
                 method_params.q = window.main_url.getParam('query') ?? ''
                             
                 if(window.main_url.hasParam('sp_attachment')) {
@@ -459,32 +507,11 @@ window.page_class = new class {
 
         document.title = _(`search.search_${section}_section`) + ' | ' + _('search.search')
 
-        let sections_list = ``
-        let sections = ['all', 'users', 'groups', 'posts', 'photos', 'videos', 'audios', 'docs', /*'games'*/]
-        sections.forEach(el => {
-            if(el == 'divider') {
-                sections_list += `
-                    <hr>
-                `
-                
-                return
-            }
-
-            sections_list += `
-                <a href='#search/${el}?query=${method_params.q ?? ''}' ${section == el ? 'class=\'selected\'' : ''}>${_(`search.search_${el}_section`)}</a>
-            `
-        })
-
         $('.page_content')[0].insertAdjacentHTML('beforeend', 
             `
                 <div class='default_wrapper layer_two_columns'>
                     <div>
-                        ${method != 'execute' ? ` 
-                        <div class='bordered_block layer_two_columns_up_panel' id='insert_paginator_here_bro'>
-                            <div class='tabs'>
-                                <a href='#search/${section}' class='selected' data-section='${section}'>${_('search.search')}</a>
-                            </div>
-                        </div>` : ''}
+                        ${tabs_html}
 
                         <div class='flex_row flex_row_sticky flex_nowrap' id='_global_search' style='margin-bottom: 10px;'>
                             <input type='text' placeholder='${_('search.search')}' value='${window.main_url.getParam('query') ?? ''}'>
@@ -502,20 +529,8 @@ window.page_class = new class {
                                     <h4>${_('search.search_groups_section')}</h4>
                                     <div class='_global_search_insert'></div>
                                 </div>
-                                <div id='_global_posts'>
-                                    <h4>${_('search.search_posts_section')}</h4>
-                                    <div class='_global_search_insert'></div>
-                                </div>
-                                <div id='_global_photos'>
-                                    <h4>${_('search.search_photos_section')}</h4>
-                                    <div class='_global_search_insert'></div>
-                                </div>
                                 <div id='_global_videos'>
                                     <h4>${_('search.search_videos_section')}</h4>
-                                    <div class='_global_search_insert'></div>
-                                </div>
-                                <div id='_global_audios'>
-                                    <h4>${_('search.search_audios_section')}</h4>
                                     <div class='_global_search_insert'></div>
                                 </div>
                             ` : ''}
@@ -573,29 +588,11 @@ window.page_class = new class {
             } else {
                 $('#_global_groups').remove()
             }
-            
-            if(results.posts.count > 0) {
-                $('#_global_posts h4')[0].innerHTML += ` (${results.posts.count})`
-            } else {
-                $('#_global_posts').remove()
-            }
-            
-            if(results.photos.count > 0) {
-                $('#_global_photos h4')[0].innerHTML += ` (${results.photos.count})`
-            } else {
-                $('#_global_photos').remove()
-            }
-            
+
             if(results.videos.count > 0) {
                 $('#_global_videos h4')[0].innerHTML += ` (${results.videos.count})`
             } else {
                 $('#_global_videos').remove()
-            }
-            
-            if(results.audios.count > 0) {
-                $('#_global_audios h4')[0].innerHTML += ` (${results.audios.count})`
-            } else {
-                $('#_global_audios').remove()
             }
 
             results.users.items.forEach(user => {
@@ -612,32 +609,11 @@ window.page_class = new class {
                 $('#_global_groups ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
             })
 
-            results.posts.items.forEach(post => {
-                let ob_j = new Post
-                ob_j.hydrate(post, results.posts.profiles, results.posts.groups)
-
-                $('#_global_posts ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
-            })
-            
             results.videos.items.forEach(vid => {
                 let ob_j = new VideoListView
                 ob_j.hydrate(vid)
 
                 $('#_global_videos ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
-            })
-                        
-            results.audios.items.forEach(vid => {
-                let ob_j = new Audio
-                ob_j.hydrate(vid)
-
-                $('#_global_audios ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
-            })
-
-            results.photos.items.forEach(ph => {
-                let ob_j = new PhotoListView
-                ob_j.hydrate(ph)
-
-                $('#_global_photos ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
             })
         }
     }

@@ -5,11 +5,13 @@ if(!window.templates) {
 window.templates.club_page = (club) => {
     let history_html = ''
 
-    club.info.history.items.forEach(item => {
-        let hist_item = new GroupHistoryItem(item)
-
-        history_html += hist_item.getHTML()
-    })
+    if(club.info.history) {
+        club.info.history.items.forEach(item => {
+            let hist_item = new GroupHistoryItem(item)
+    
+            history_html += hist_item.getHTML()
+        })
+    }
 
     let template = `
         <input id='clb_id' type='hidden' value='${club.getId()}'>

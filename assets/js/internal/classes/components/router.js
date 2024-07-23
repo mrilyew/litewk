@@ -108,6 +108,10 @@ window.routes = [
         'script_name': 'friends_page'
     },
     {
+        'url': 'feed/notifications',
+        'script_name': 'notifications_page'
+    },
+    {
         'url': 'feed/{string|section}',
         'script_name': 'news_page'
     },
@@ -165,6 +169,10 @@ window.routes = [
         'ignore_save': true,
         'dont_pushstate': true,
     },
+    {
+        'url': '',
+        'script_name': 'user_page',
+    },
 ]
 
 class Router {
@@ -189,7 +197,7 @@ class Router {
         }
     }
 
-    parse_route(input_url = '#settings') {
+    parse_route(input_url = '#') {
         const temp_url = input_url.split('?')
         let url = temp_url[0]
 
@@ -301,8 +309,12 @@ class Router {
         this.reset_page()
 
         if(found_route) {
-            if(history_log && location.hash != url && !found_route.route.dont_pushstate) {
-                Utils.push_state(url)
+            if(history_log && location.hash != url) {
+                if(!found_route.route.dont_pushstate) {
+                    Utils.push_state(url)
+                } else {
+                    Utils.replace_state(url)
+                }
             }
 
             let matches = found_route['match']
@@ -421,7 +433,12 @@ class SavedPage {
         return new this(found_page)
     }
 
-    static save(url) {
+    static save(input_url) {
+        let url = input_url
+        if(!url) {
+            url = location.href
+        }
+
         let found_page = SavedPage.find(url)
         let copied_classes = Object.assign({}, window.main_classes)
 

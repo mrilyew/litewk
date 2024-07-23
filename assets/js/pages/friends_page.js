@@ -67,7 +67,7 @@ window.page_class = new class {
 
                 tabs_html = `
                     <a href='#friends${id}/incoming' data-section='incoming'>${_('friends.incoming')}</a>
-                    <a href='#friends${id}/outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
+                    <a href='#search/users?from_list=subscriptions' data-section='outcoming'>${_('friends.outcoming')}</a>
                 `
                 break
             case 'outcoming':
@@ -78,7 +78,7 @@ window.page_class = new class {
                 
                 tabs_html = `
                     <a href='#friends${id}/incoming' data-section='incoming'>${_('friends.incoming')}</a>
-                    <a href='#friends${id}/outcoming' data-section='outcoming'>${_('friends.outcoming')}</a>
+                    <a href='#search/users?from_list=subscriptions' data-section='outcoming'>${_('friends.outcoming')}</a>
                 `
                 break
             case 'suggests':
@@ -119,7 +119,7 @@ window.page_class = new class {
                         iter = iter + 1;
                     }
 
-                    var normal_friends = API.users.get({"user_ids": ids, "fields": "${typical_fields}"});
+                    var normal_friends = API.users.get({"user_ids": ids, "fields": "${window.Utils.typical_fields}"});
 
                     return {"items": normal_friends, "count": friends.length};
                 `
@@ -167,7 +167,7 @@ window.page_class = new class {
                                 <a href='#friends/incoming' ${section == 'incoming' || section == 'outcoming' ? 'class=\'selected\'' : ''}>${_(`friends.friends_requests`)}</a>
                                 <a href='#friends/suggests' ${section == 'suggests' ? 'class=\'selected\'' : ''}>${_(`friends.recomended_friends`)}</a>
                                 <a href='#friends/cleanup' ${section == 'cleanup' ? 'class=\'selected\'' : ''}>${_(`friends.cleanup_friends`)}</a>
-                                <a href='#search/users?from_list=subscriptions' ${section == 'followers' ? 'class=\'selected\'' : ''}>${_(`friends.followers`)}</a>
+                                <a href='#friends/followers' ${section == 'followers' ? 'class=\'selected\'' : ''}>${_(`friends.followers`)}</a>
                             ` : `
                             <a href='#friends${id}/all' ${section == 'all' || section == 'online' || section == 'mutual' ? 'class=\'selected\'' : ''}>${_(`friends.users_friends`)}</a>
                             <a href='#friends${id}/search' ${section == 'search' ? 'class=\'selected\'' : ''}>${_(`friends.search_friends`)}</a>

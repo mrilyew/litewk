@@ -1,11 +1,4 @@
-class Faveable {
-    FAVED_STATUS_NOT = 0
-    FAVED_STATUS_YES = 1
-    
-    isFaved() {
-        return this.info.is_favorite == 1
-    }
-
+class Hasable {
     has(field = '') {
         try {
             if(Array.isArray(this.info[field])) {
@@ -22,9 +15,18 @@ class Faveable {
     hydrate(data) {
         this.info = data
     }
-    
+        
     getStringInfo() {
         return JSON.stringify(this.info)
+    }
+}
+
+class Faveable extends Hasable {
+    FAVED_STATUS_NOT = 0
+    FAVED_STATUS_YES = 1
+    
+    isFaved() {
+        return this.info.is_favorite == 1
     }
 }
 

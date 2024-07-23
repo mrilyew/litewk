@@ -1,10 +1,10 @@
 window.Utils = new class {
-    typical_fields = 'common_count,country,city,id,is_favorite,is_hidden_from_feed,image_status,last_seen,online,lists,friend_status,photo_50,photo_100,photo_200,photo_orig,status,sex'
-    typical_fields_min = 'sex,image_status,photo_50,photo_100,photo_200,last_seen,online,blacklisted_by_me'
-    typical_group_fields = 'activity,photo_100,description,members_count'
+    typical_fields = window.consts.TYPICAL_FIELDS
+    typical_fields_min = window.consts.TYPICAL_FIELDS_MINIMUM
+    typical_group_fields = window.consts.TYPICAL_GROUPS_FIELDS
     
-    default_count = 10
-    default_count_more = 20
+    default_count = window.consts.DEFAULT_COUNT
+    default_count_more = window.consts.DEFAULT_COUNT_MORE
 
     compute_age(date) {
         let age = moment().diff(moment(date, "DD-MM-YYYY"), 'years')
@@ -382,5 +382,9 @@ window.Utils = new class {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+    }
+
+    singleQuotesToBold(text) {
+        return text.replace(/&#039;&#039;&#039;(.*?)&#039;&#039;&#039;/g, '<b>$1</b>')
     }
 }

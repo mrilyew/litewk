@@ -97,6 +97,11 @@ a {
     color: var(--links-color);
 }
 
+a.nodecoration {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
 a:hover {
     color: var(--text-color);
 }

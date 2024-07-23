@@ -208,10 +208,11 @@ window.langs.push({
         'settings_routing': 'Роутинг',
         'settings_restart_app': 'Перезапустить приложение',
 
-        'debug_title_api': 'Тест API',
+        'debug_title_api': 'API',
         'api': 'VK API',
         'debug_title_cache': 'Кэш',
         'debug_title_router': 'Роутинг',
+        'goto_route': 'Перейти по пути',
     },
 
     'messagebox': {
@@ -733,7 +734,7 @@ window.langs.push({
         'section_default': 'Новое',
         'section_smart_feed': 'Интересное',
         'section_recommend': 'Рекомендации',
-        'section_friends': 'Новости друзей',
+        'section_friends': 'Друзья',
 
         'newsfeed_refresh': 'Обновить новости',
         'newsfeed_params': 'Параметры новостей',
@@ -755,6 +756,7 @@ window.langs.push({
         'added_photos': 'добавлены фото',
         'added_videos': 'добавлены видео',
         'tagged_on_photos': 'отмечен на фото',
+        'added_audios': 'добавил аудиозаписи',
 
         'hide_source_from_feed': 'Скрыть из ленты',
         'hide_source_from_feed_on_week': 'Скрыть из ленты на неделю',
@@ -1004,6 +1006,10 @@ window.langs.push({
         'eb': 'ЕБ',
         'zb': 'ЗБ',
         'yb': 'ЙБ',
+    },
+
+    'notifications': {
+        'notifications': 'Уведомления',
     },
 
     'errors': {

@@ -117,6 +117,11 @@ window.page_class = new class {
                 $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
                     <div class='settings_block'>
                         <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('debug.goto_route')}</b></p>
+
+                            <input type='text' id='_gotoroute' placeholder='...'>
+                        </div>
+                        <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('debug.settings_routing')}</b></p>
 
                             <input type='button' id='_restart_app' value='${_('debug.settings_restart_app')}'>
@@ -126,6 +131,10 @@ window.page_class = new class {
 
                 $('.settings_block #_restart_app').on('click', async (e) => {
                     window.router.restart()
+                })
+
+                $('.settings_block #_gotoroute').on('change', (e) => {
+                    window.router.route('#' + e.target.value)
                 })
                 
                 break
