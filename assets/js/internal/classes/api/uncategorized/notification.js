@@ -58,6 +58,10 @@ class ApiNotification extends Hasable {
     {
         return this.formatCurlyBraces(this.info.footer ?? '')
     }
+    
+    getText() {
+        return this.formatCurlyBraces(this.info.text)
+    }
 
     getURL(rooter) 
     {
@@ -128,7 +132,6 @@ class ApiNotification extends Hasable {
             }
         })
 
-        console.log(compatible_attachments)
         return window.templates.attachments(compatible_attachments)
     }
 }

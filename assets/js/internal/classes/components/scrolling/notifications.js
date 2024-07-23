@@ -15,7 +15,7 @@ class Notifications extends ClassicListView {
         let templates = ''
         let error = (text) => {
             text = text ? text : api_result.error.error_msg
-            this.getInsertNode().insertAdjacentHTML('beforeend', _('errors.error_getting_news', text))
+            this.getInsertNode().insertAdjacentHTML('beforeend', _('errors.error_getting_notifs', text))
 
         }
 
@@ -24,6 +24,12 @@ class Notifications extends ClassicListView {
 
             if(api_result.response.items.length < 1) {
                 error(this.error.error_message)
+
+                return
+            }
+
+            if(!api_result.response.photos) {
+                error(_('errors.notifications_old_error'))
 
                 return
             }

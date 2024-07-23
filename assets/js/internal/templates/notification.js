@@ -19,6 +19,9 @@ window.templates.notification = (notification) => {
                 ${notification.has('attachments') ? `<div class='notification_attachments'>
                     ${notification.getAttachmentsHTML()}
                 </div>` : ''}
+                ${notification.has('text') ? `<div class='notification_attachments'>
+                    ${notification.getText()}
+                </div>` : ''}
                 ${notification.info.footer ? `<object class='notification_down'>
                     ${notification.getSubtext()}
                 </object>` : ''}
