@@ -526,8 +526,16 @@ img.avatar, .avatar img {
     display: block;
 }
 
+.ordinary_attachments.padded {
+    padding: 0% 50% 0% 0%;
+}
+
 .photo_attachment {
     object-fit: contain;
+}
+
+.photo_attachment_big {
+    width: 100%;
 }
 
 .photo_attachment {
@@ -562,7 +570,7 @@ img.avatar, .avatar img {
 
 .page_content .attachments .ordinary_attachments .ordinary_attachment.video_attachment_big {
     padding: 4px;
-    width: 60%;
+    width: 100%;
 }
 
 .page_content .attachments .ordinary_attachments .ordinary_attachment.video_attachment, .video_attachment_big .video_preview_block {

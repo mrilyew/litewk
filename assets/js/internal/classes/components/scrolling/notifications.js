@@ -12,7 +12,16 @@ class Notifications extends ClassicListView {
 
     async nextPage() {
         let api_result = null
-        let templates = ''
+        let templates = document.createElement('div') 
+        templates.innerHTML = `
+            <div id='not_viewed'>
+            
+            </div>
+            <div id='viewed_mark' style='display:none;'>
+                <b>${_('notifications.viewed')}</b>
+            </div>
+        `
+
         let error = (text) => {
             text = text ? text : api_result.error.error_msg
             this.getInsertNode().insertAdjacentHTML('beforeend', _('errors.error_getting_notifs', text))
@@ -42,11 +51,16 @@ class Notifications extends ClassicListView {
 
             api_result.response.items.forEach(item => {
                 const notif = new ApiNotification(item)
-
+                const is_not_viewed = api_result.response.last_viewed < item.date
                 this.notifications.push(notif)
 
                 try {
-                    templates += notif.getTemplate()
+                    if(!is_not_viewed) {
+                        templates.insertAdjacentHTML('beforeend', notif.getTemplate())
+                    } else {
+                        templates.querySelector('#not_viewed').insertAdjacentHTML('beforeend', notif.getTemplate())
+                        templates.querySelector('#viewed_mark').style.display = 'block'
+                    }
                 } catch(e) {
                     console.error(e)
                     templates += _('errors.error_getting_news', e)
@@ -66,7 +80,7 @@ class Notifications extends ClassicListView {
             Utils.push_state(window.main_url)
         }
 
-        this.getInsertNode().insertAdjacentHTML('beforeend', templates)
+        this.getInsertNode().insertAdjacentHTML('beforeend', templates.innerHTML)
         if(api_result.response.next_from) {
             this.createNextPage()
         } else {

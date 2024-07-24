@@ -151,6 +151,18 @@ window.routes = [
         'script_name': 'edit_page'
     },
     {
+        'url': 'note{int|owner}_{int|id}',
+        'script_name': 'note_page',
+    },
+    {
+        'url': 'notes{int|owner}',
+        'script_name': 'notes_page',
+    },
+    {
+        'url': 'notes',
+        'script_name': 'notes_page',
+    },
+    {
         'url': 'doc{int|owner}_{int|id}',
         'script_name': 'doc_page',
         'hide_menu': true,

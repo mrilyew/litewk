@@ -9,16 +9,28 @@ class Photo extends PostLike {
     }
 
     getFullSizeURL() {
-        if(this.hasSize('w')) {
-            return this.getUrlBySize('w')
-        } else if(this.hasSize('z')) {
-            return this.getUrlBySize('z')
-        } else if(this.hasSize('y')) {
-            return this.getUrlBySize('y')
-        } else if(this.hasSize('r')) {
-            return this.getUrlBySize('r')
-        } else {
-            return this.getUrlBySize('q')
+        let sorted = this.info.sizes.sort(function (a, b) {
+            if(a.height > b.height) {
+                return -1;
+            }
+
+            if(a.height < b.height) {
+                return 1;
+            }
+
+            return 0
+        })
+
+        if(!sorted[0]) {
+            return '' // todo palceholder
+        }
+
+        return sorted[0].url
+    }
+
+    getOriginalURL() {
+        if(!this.info.orig_photo) {
+            return this.info.orig_photo.url
         }
     }
 

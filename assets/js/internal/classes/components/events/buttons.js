@@ -199,14 +199,17 @@ $(document).on('click', '.dropdown_toggle', (e) => {
     }
 
     let dropdown = $('#' + target.dataset.onid)[0]
+    let root = dropdown.closest('.dropdown_root')
 
     $('.dropdown_menu.visible').removeClass('visible')
-
+    $('.__dropdown_toggled').removeClass('__dropdown_toggled')
+    
     if(!dropdown) {
         return
     }
 
     dropdown.classList.add('visible')
+    root.classList.toggle('__dropdown_toggled')
 })
 
 $(document).on('click', 'body > *, .dropdown_menu p', (e) => {
@@ -219,6 +222,7 @@ $(document).on('click', 'body > *, .dropdown_menu p', (e) => {
     }
 
     $('.dropdown_menu.visible').removeClass('visible')
+    $('.__dropdown_toggled').removeClass('__dropdown_toggled')
 })
 
 $(document).on('click', '.post_upper_actions .dropdown_menu #_postDelete', async (e) => {

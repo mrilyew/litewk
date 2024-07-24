@@ -2,27 +2,28 @@ if(!window.templates) {
     window.templates = {}
 }
 
-window.templates.attachments = (attachments) => {
+window.templates.attachments = (attachments, additional = {}) => {
     if(!attachments) {
         return ''
     }
 
     let attachms = document.createElement('div')
+    let is_ordinary = attachments.length == 1
     attachms.innerHTML = `
-    <div class='attachments' ${attachments.length == 1 ? `style='text-align: center;'` : ''}>
-        <div class='ordinary_attachments'></div>
+    <div class='attachments' ${is_ordinary ? `style='text-align: center;'` : ''}>
+        <div class='ordinary_attachments ${is_ordinary ? 'padded' : ''}'></div>
         <div class='other_attachments'></div>
     </div>`
 
-    if(attachments.length == 1 && attachments[0].type == 'photo') {
+    if(is_ordinary && attachments[0].type == 'photo') {
         let photo = new Photo(attachments[0].photo)
         
         attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',
             `
-            <img class='ordinary_attachment photo_attachment photo_viewer_open outliner' data-full='${photo.getFullSizeURL()}' loading='lazy' data-photoid='${photo.getId()}' src='${photo.getURL()}'>
+            <img class='ordinary_attachment photo_attachment_big photo_attachment ${!additional.no_viewers ? 'photo_viewer_open' : ''} outliner' data-full='${photo.getFullSizeURL()}' loading='lazy' data-photoid='${photo.getId()}' src='${photo.getFullSizeURL()}'>
             `
         )
-    } else if(attachments.length == 1 && attachments[0].type == 'video') {
+    } else if(is_ordinary && attachments[0].type == 'video') {
         let video = new Video(attachments[0].video)
         
         attachms.querySelector('.ordinary_attachments').insertAdjacentHTML('beforeend',

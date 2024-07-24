@@ -907,18 +907,18 @@ window.langs.push({
         'search_params_posts_likes_any': 'Любое количество',
 
         'search_params_posts_attachments_not_select': 'Неважно',
-        'search_params_posts_attachments_photo': 'Фотография (photo)',
-        'search_params_posts_attachments_video': 'Видеозапись (video)',
-        'search_params_posts_attachments_audio': 'Аудиозапись (audio)',
-        'search_params_posts_attachments_graffiti': 'Граффити (graffiti)',
-        'search_params_posts_attachments_note': 'Заметка (note)',
-        'search_params_posts_attachments_poll': 'Опрос (poll)',
-        'search_params_posts_attachments_link': 'Ссылка (link)',
-        'search_params_posts_attachments_file': 'Файл (doc)',
-        'search_params_posts_attachments_album': 'Фотоальбом (album)',
-        'search_params_posts_attachments_article': 'Статья (article)',
-        'search_params_posts_attachments_wikipage': 'Вики-страница (page)',
-        'search_params_posts_attachments_none': 'Без вложений (none)',
+        'search_params_posts_attachments_photo': 'Фотография',
+        'search_params_posts_attachments_video': 'Видеозапись',
+        'search_params_posts_attachments_audio': 'Аудиозапись',
+        'search_params_posts_attachments_graffiti': 'Граффити',
+        'search_params_posts_attachments_note': 'Заметка',
+        'search_params_posts_attachments_poll': 'Опрос',
+        'search_params_posts_attachments_link': 'Ссылка',
+        'search_params_posts_attachments_file': 'Файл',
+        'search_params_posts_attachments_album': 'Фотоальбом',
+        'search_params_posts_attachments_article': 'Статья',
+        'search_params_posts_attachments_wikipage': 'Вики-страница',
+        'search_params_posts_attachments_none': 'Без вложений',
 
         'search_params_posts_type_none': 'Любые посты',
         'search_params_posts_type_copies': 'Только копии',
@@ -1010,6 +1010,15 @@ window.langs.push({
 
     'notifications': {
         'notifications': 'Уведомления',
+        'viewed': 'Просмотрено',
+    },
+
+    'notes': {
+        'notes': 'Заметки',
+        'note': 'Заметка',
+
+        'all_notes': 'Все заметки',
+        'friends_notes': 'Заметки друзей',
     },
 
     'errors': {
@@ -1077,5 +1086,8 @@ window.langs.push({
 
         'notifications_old_error': 'Похоже, ты используешь токен, который не поддерживает новый формат уведомлений. Лучше авторизуйся через другое приложение.',
         'error_getting_notifs': 'Ошибка получения уведомлений. Текст: $1',
+        'notes_cant_club': 'У группы не может быть заметок.',
+        'not_es_found': 'Заметок не найдено.',
+        'note_not_found': 'Заметка не найдена.',
     },
 })

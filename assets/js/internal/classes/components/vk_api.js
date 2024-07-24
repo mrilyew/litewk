@@ -7,6 +7,11 @@ class VkApi {
     async call(method, params = [], force = true) {
         let url = new URL(this.url + method)
         url.searchParams.set('v', window.consts.VK_API_VERSION)
+
+        if(window.main_url.hasParam('v_override')) {
+            url.searchParams.set('v', window.main_url.getParam('v_override'))
+        }
+
         url.searchParams.set('access_token', this.token)
         url.searchParams.set('lang', window.lang.lang_info.short_name)
 

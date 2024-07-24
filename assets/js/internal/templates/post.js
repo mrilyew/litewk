@@ -41,7 +41,7 @@ window.templates.post = (post, additional_options = {}) => {
     let template = ``
     template += 
     `
-    <div class='post main_info_block' data-type='post' data-postid='${post.getId()}'>
+    <div class='post main_info_block dropdown_root' data-type='post' data-postid='${post.getId()}'>
         <div class='post_hidden_by_default post_restore_block'>
             ${_('wall.post_has_deleted')}
         </div>
@@ -80,7 +80,7 @@ window.templates.post = (post, additional_options = {}) => {
                         </b>
 
                         ${owner.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-                        `<div class='image_status nopadding' data-id='${owner.getId()}' title='${owner.getImageStatus().name}'>
+                        `<div class='image_status' data-id='${owner.getId()}' title='${owner.getImageStatus().name}'>
                             <img src='${owner.getImageStatusURL()}'>
                         </div>` : ``}
 

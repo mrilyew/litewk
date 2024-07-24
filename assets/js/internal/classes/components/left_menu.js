@@ -97,7 +97,7 @@ window.default_left_menu = [
         'name': '_navigation.my_notes',
         'href': '#notes',
         'new_page': false,
-        'disabled': true,
+        'disabled': false,
         'hidden': false,
     },
     {

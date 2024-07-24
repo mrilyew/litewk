@@ -23,5 +23,13 @@ window.page_class = new class {
         }
 
         await window.main_classes['wall'].nextPage()
+        setTimeout(async () => {
+            await window.vk_api.call('notifications.markAsViewed')
+            $('.navigation #_notifications .counter').remove()
+
+            /*try {
+                $('#viewed_mark')[0].style.display = 'none'
+            } catch(e) {}*/
+        }, 5000)
     }
 }

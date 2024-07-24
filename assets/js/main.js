@@ -171,12 +171,12 @@ window.main_class = new class {
             `
         }
                 
-        if(counters.notifications_with_pushes && $('.navigation #_notifications')[0]) {
+        if(counters.menu_notifications_badge && $('.navigation #_notifications')[0]) {
             $('.navigation #_notifications')[0].innerHTML += `
-                <span class='counter'>${counters.notifications_with_pushes}</span>
+                <span class='counter'>${counters.menu_notifications_badge}</span>
             `
 
-            document.title = `(${counters.notifications_with_pushes}) ` + document.title
+            //document.title = `(${counters.menu_notifications_badge}) ` + document.title
         }
                     
         if(counters.videos && $('.navigation #_videos')[0]) {

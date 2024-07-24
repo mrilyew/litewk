@@ -67,6 +67,8 @@ class ApiNotification extends Hasable {
     {
         let root = rooter ? rooter : this.info.action
         switch(root.type) {
+            case 'hide_item':
+                return {'url': 'javascript:void(0)', 'blank': false}
             case 'custom':
                 const url = root.url
 
@@ -97,13 +99,14 @@ class ApiNotification extends Hasable {
 
         buttons.forEach(btn => {
             if(btn.action.context) {
-                return
+                console.log(btn)
+                //return
             }
 
             const url = this.getURL(btn.action)
             buttons_html += `
                 <object>
-                    <a href='${url.url}' ${url.blank ? `target='_blank'` : ''}>
+                    <a href='${url.url}' ${url.blank ? `target='_blank'` : ''} ${btn.action.context ? `class='btn_with_context'` : ''} id='${this.getId()}'>
                         <input type='button' ${btn.destructive ? `id='_destructive'` : ''} class='button_${btn.style}' value='${Utils.escape_html(btn.label)}'>
                     </a>
                 </object>
@@ -111,6 +114,26 @@ class ApiNotification extends Hasable {
         })
 
         return buttons_html
+    }
+
+    getActionButtons() 
+    {
+        const action_buttons = this.info.action_buttons
+        let action_html = ``
+
+        action_buttons.left.forEach(btn => {
+            action_html += `
+                <p>${Utils.escape_html(btn.label)}</p>
+            `
+        })
+
+        action_buttons.right.forEach(btn => {
+            action_html += `
+                <p>${Utils.escape_html(btn.label)}</p>
+            `
+        })
+
+        return action_html
     }
 
     getAttachments() 
@@ -132,6 +155,6 @@ class ApiNotification extends Hasable {
             }
         })
 
-        return window.templates.attachments(compatible_attachments)
+        return window.templates.attachments(compatible_attachments, {'no_viewers': 1})
     }
 }
