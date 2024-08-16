@@ -1,12 +1,11 @@
-window.page_class = new class {
+window.pages['notifications_page']  = new class {
     async render_page() {
         document.title = _(`notifications.notifications`)
         let tab = window.main_class['hash_params'].section ?? 'def'
         let method = 'notifications.get'
         let method_params = {'count': 10, 'mark_as_viewed_after': 1}
         
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-            `
+        u('.page_content').html(`
             <div class='layer_two_columns default_wrapper newsfeed_wrapper'>
                 <div class='bordered_block'>
                     <div class='notifications_insert notifications_list flex_column'></div>
@@ -23,13 +22,13 @@ window.page_class = new class {
         }
 
         await window.main_classes['wall'].nextPage()
-        setTimeout(async () => {
+        /*setTimeout(async () => {
             await window.vk_api.call('notifications.markAsViewed')
             $('.navigation #_notifications .counter').remove()
 
             /*try {
                 $('#viewed_mark')[0].style.display = 'none'
-            } catch(e) {}*/
-        }, 5000)
+            } catch(e) {}
+        }, 5000)*/
     }
 }

@@ -1,4 +1,4 @@
-window.page_class = new class {
+window.pages['search_page'] = new class {
     async render_page() {
         document.title = _('search.search')
           
@@ -25,7 +25,7 @@ window.page_class = new class {
             }
 
             sections_list += `
-                <a href='#search/${el}?query=${window.main_url.getParam('query') ?? ''}' ${section == el ? 'class=\'selected\'' : ''}>${_(`search.search_${el}_section`)}</a>
+                <a href='#search/${el}?q=${window.main_url.getParam('q') ?? ''}' ${section == el ? 'class=\'selected\'' : ''}>${_(`search.search_${el}_section`)}</a>
             `
         })
 
@@ -34,16 +34,16 @@ window.page_class = new class {
                 if(window.site_params.get('internal.use_execute', '1') == '0') {
                     SearchClass = UserListView
                     method = 'users.search'
-                    method_params.q = window.main_url.getParam('query') ?? ''
+                    method_params.q = window.main_url.getParam('q') ?? ''
 
                     break
                 }
 
                 method = 'execute'
                 method_params.code = `
-                    var user_results = API.users.search({"q": "${window.main_url.getParam('query') ?? ''}", "count": 5, "fields": "${window.Utils.typical_fields}"});
-                    var clubs_results = API.groups.search({"q": "${window.main_url.getParam('query') ?? ''}", "count": 5, "fields": "${window.Utils.typical_group_fields}"});
-                    var videos_results = API.video.search({"q": "${window.main_url.getParam('query') ?? 'видео'}", "count": 5});
+                    var user_results = API.users.search({"q": "${window.main_url.getParam('q') ?? ''}", "count": 5, "fields": "${window.Utils.typical_fields}"});
+                    var clubs_results = API.groups.search({"q": "${window.main_url.getParam('q') ?? ''}", "count": 5, "fields": "${window.Utils.typical_group_fields}"});
+                    var videos_results = API.video.search({"q": "${window.main_url.getParam('q') ?? 'видео'}", "count": 5});
                     return {
                         "users": user_results,
                         "clubs": clubs_results,
@@ -54,71 +54,13 @@ window.page_class = new class {
             case 'users':
                 SearchClass = UserListView
                 method = 'users.search'
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
 
                 if(window.main_url.getParam('group_id')) {
                     method_params.group_id = window.main_url.getParam('group_id')
                 }
 
-                if(window.main_url.hasParam('sp_cityid')) {
-                    method_params.city = window.main_url.getParam('sp_cityid')
-                }
-
-                if(window.main_url.hasParam('sp_age_from')) {
-                    method_params.age_from = window.main_url.getParam('sp_age_from')
-                }
-                
-                if(window.main_url.hasParam('sp_age_to')) {
-                    method_params.age_to = window.main_url.getParam('sp_age_to')
-                }
-                                
-                if(window.main_url.hasParam('sp_birth')) {
-                    let splitted_date = window.main_url.getParam('sp_birth').split('-')
-
-                    method_params.birth_year = splitted_date[0]
-                    method_params.birth_month = splitted_date[1]
-                    method_params.birth_day = splitted_date[2]
-                }
-                                                
-                if(window.main_url.hasParam('sp_gender')) {
-                    method_params.sex = window.main_url.getParam('sp_gender')
-                }
-
-                if(window.main_url.hasParam('sp_hometown')) {
-                    method_params.hometown = window.main_url.getParam('sp_hometown')
-                }
-                
-                if(window.main_url.hasParam('sp_has_photo')) {
-                    method_params.has_photo = window.main_url.getParam('sp_has_photo')
-                }
-                                
-                if(window.main_url.hasParam('sp_has_online')) {
-                    method_params.online = window.main_url.getParam('sp_has_online')
-                }
-                                                
-                if(window.main_url.hasParam('sp_sort')) {
-                    method_params.sort = window.main_url.getParam('sp_sort')
-                }
-                                                                
-                if(window.main_url.hasParam('sp_country')) {
-                    method_params.country = window.main_url.getParam('sp_country')
-                }
-                                                                               
-                if(window.main_url.hasParam('sp_university')) {
-                    method_params.university = window.main_url.getParam('sp_university')
-                }
-                                                                                               
-                if(window.main_url.hasParam('sp_relation')) {
-                    method_params.status = window.main_url.getParam('sp_relation')
-                }
-                                                                                                               
-                if(window.main_url.hasParam('sp_school')) {
-                    method_params.school = window.main_url.getParam('sp_school')
-                }
-                                                                                                                               
-                if(window.main_url.hasParam('sp_religion')) {
-                    method_params.religion = window.main_url.getParam('sp_religion')
-                }
+                method_params = Utils.applyUsersSearchParams(window.main_url, method_params)
 
                 if(window.main_url.hasParam('from_list')) {
                     let us_info = new User
@@ -157,88 +99,13 @@ window.page_class = new class {
                     method_params.from_list = window.main_url.getParam('from_list')
                 }
 
-                params_html = `
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_city')}</b>
-                        <input type='text' value='${window.main_url.getParam('sp_cityid') ?? ''}' data-setname='cityid' placeholder='${_('search.search_params_user_city_id')}'>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_sort')}</b>
-                        <select data-setname='sort'>
-                            <option value='0' ${window.main_url.getParam('sp_sort') != '1' ? 'selected' : ''}>${_('search.search_params_user_sort_popularity')}</option>
-                            <option value='1' ${window.main_url.getParam('sp_sort') == '1' ? 'selected' : ''}>${_('search.search_params_user_sort_regdate')}</option>
-                        </select>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_relation')}</b>
-                        <select data-setname='relation'>
-                            <option value='0' ${window.main_url.getParam('sp_relation', '0') == '0' ? 'selected' : ''}>${_('relation.not_picked_small')}</option>
-                            <option value='1' ${window.main_url.getParam('sp_relation', '0') == '1' ? 'selected' : ''}>${_('relation.single')}</option>
-                            <option value='2' ${window.main_url.getParam('sp_relation', '0') == '2' ? 'selected' : ''}>${_('relation.meets')}</option>
-                            <option value='3' ${window.main_url.getParam('sp_relation', '0') == '3' ? 'selected' : ''}>${_('relation.engaged')}</option>
-                            <option value='4' ${window.main_url.getParam('sp_relation', '0') == '4' ? 'selected' : ''}>${_('relation.married')}</option>
-                            <option value='5' ${window.main_url.getParam('sp_relation', '0') == '5' ? 'selected' : ''}>${_('relation.complicated')}</option>
-                            <option value='6' ${window.main_url.getParam('sp_relation', '0') == '6' ? 'selected' : ''}>${_('relation.active')}</option>
-                            <option value='7' ${window.main_url.getParam('sp_relation', '0') == '7' ? 'selected' : ''}>${_('relation.inlove')}</option>
-                        </select>
-                    </div>
-                    <div class='search_param ager'>
-                        <b class='nobold'>${_('search.search_params_user_age')}</b>
-
-                        <div class='flex_row' style='gap: 6px;'>
-                            <input type='text' value='${window.main_url.getParam('sp_age_from') ?? ''}' data-setname='age_from' placeholder='${_('search.search_params_user_from')}'>
-                            <input type='text' value='${window.main_url.getParam('sp_age_to') ?? ''}' data-setname='age_to' placeholder='${_('search.search_params_user_to')}'>
-                        </div>
-                    </div>
-                    <div class='search_param ager'>
-                        <b class='nobold'>${_('search.search_params_user_birthday')}</b>
-
-                        <input type='date' value='${window.main_url.getParam('sp_birth') ?? ''}' data-setname='birth'>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_gender')}</b>
-
-                        <label>
-                            <input type='radio' value='0' name='sp_gender' ${window.main_url.getParam('sp_gender') == 0 || !window.main_url.hasParam('sp_gender') ? 'checked' : ''} data-setname='gender'>
-                            ${_('search.search_params_user_gender_any')}
-                        </label>
-
-                        <label>
-                            <input type='radio' value='2' name='sp_gender' ${window.main_url.getParam('sp_gender') == 2 ? 'checked' : ''} data-setname='gender'>
-                            ${_('search.search_params_user_gender_male')}
-                        </label>
-
-                        <label>
-                            <input type='radio' value='1' name='sp_gender' ${window.main_url.getParam('sp_gender') == 1 ? 'checked' : ''} data-setname='gender'>
-                            ${_('search.search_params_user_gender_female')}
-                        </label>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_hometown')}</b>
-
-                        <input type='text' placeholder='${_('search.search_params_user_hometown')}' value='${window.main_url.hasParam('sp_hometown') ? window.main_url.getParam('sp_hometown') : ''}' data-setname='hometown'>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_user_additional')}</b>
-
-                        <div>
-                            <label>
-                                <input type='checkbox' value='1' ${window.main_url.getParam('sp_has_photo') == 1 ? 'checked' : ''} data-setname='has_photo'>
-                                ${_('search.search_params_user_has_photo')}
-                            </label>
-                            <label>
-                                <input type='checkbox' value='1' ${window.main_url.getParam('sp_has_online') == 1 ? 'checked' : ''} data-setname='has_online'>
-                                ${_('search.search_params_user_has_online')}
-                            </label>
-                        </div>
-                    </div>
-                `
+                params_html = window.templates.search_users_params()
 
                 break
             case 'groups':
                 SearchClass = ClubListView
                 method = 'groups.search'
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
 
                 if(window.main_url.hasParam('sp_type')) {
                     method_params.type = window.main_url.getParam('sp_type')
@@ -305,156 +172,32 @@ window.page_class = new class {
                 SearchClass = Post
                 method = 'newsfeed.search'
                 tabs_html = ''
-                method_params.q = window.main_url.getParam('query') ?? ''
-                            
-                if(window.main_url.hasParam('sp_attachment')) {
-                    switch(window.main_url.getParam('sp_attachment')) {
-                        default:
-                            break
-                        case '1':
-                            method_params.q += ' has:photo'
-                            break
-                        case '2':
-                            method_params.q += ' has:video'
-                            break
-                        case '3':
-                            method_params.q += ' has:audio'
-                            break
-                        case '4':
-                            method_params.q += ' has:graffiti'
-                            break
-                        case '5':
-                            method_params.q += ' has:note'
-                            break
-                        case '6':
-                            method_params.q += ' has:poll'
-                            break
-                        case '7':
-                            method_params.q += ' has:link'
-                            break
-                        case '8':
-                            method_params.q += ' has:doc'
-                            break
-                        case '9':
-                            method_params.q += ' has:album'
-                            break
-                        case '10':
-                            method_params.q += ' has:article'
-                            break
-                        case '12':
-                            method_params.q += ' has:page'
-                            break
-                        case '11':
-                            method_params.q += ' has:none'
-                            break
-                    }
-                }
+                method_params.q = window.main_url.getParam('q') ?? ''
+                method_params = Utils.applyPostsSearchParams(window.main_url, method_params)
 
-                if(window.main_url.hasParam('sp_type')) {
-                    switch(window.main_url.getParam('sp_type')) {
-                        default:
-                            break
-                        case 'copy':
-                            method_params.q += ' type:copy'
-                            break
-                    }
-                }
-
-                if(window.main_url.hasParam('sp_link')) {
-                    method_params.q += ' url:' + window.main_url.getParam('sp_link')
-                }
-                
-                if(window.main_url.hasParam('sp_exclude')) {
-                    let words = window.main_url.getParam('sp_exclude').split(' ')
-
-                    words.forEach(word => {
-                        method_params.q += ' -' + word
-                    })
-                }
-                                
-                if(window.main_url.hasParam('sp_likes')) {
-                    if(parseInt(window.main_url.getParam('sp_likes')) > 0) {
-                        method_params.q += ' likes:' + window.main_url.getParam('sp_likes')
-                    }
-                }
-
-                if(window.main_url.hasParam('sp_show_trash')) {
-                    if(window.main_url.getParam('sp_show_trash') == '1') {
-                        method_params.q += ' rate:10'
-                    }
-                }
-
-                params_html = `
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_posts_type')}</b>
-                        <select data-setname='type'>
-                            <option value='none' ${window.main_url.getParam('sp_type', 'none') == 'none' ? 'selected' : ''}>${_('search.search_params_posts_type_none')}</option>
-                            <option value='copy' ${window.main_url.getParam('sp_type', 'none') == 'copy' ? 'selected' : ''}>${_('search.search_params_posts_type_copies')}</option>
-                        </select>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_posts_attachments')}</b>
-                        <select data-setname='attachment'>
-                            <option value='0' ${window.main_url.getParam('sp_attachment', '0') == '0' ? 'selected' : ''}>${_('search.search_params_posts_attachments_not_select')}</option>
-                            <option value='1' ${window.main_url.getParam('sp_attachment', '0') == '1' ? 'selected' : ''}>${_('search.search_params_posts_attachments_photo')}</option>
-                            <option value='2' ${window.main_url.getParam('sp_attachment', '0') == '2' ? 'selected' : ''}>${_('search.search_params_posts_attachments_video')}</option>
-                            <option value='3' ${window.main_url.getParam('sp_attachment', '0') == '3' ? 'selected' : ''}>${_('search.search_params_posts_attachments_audio')}</option>
-                            <option value='4' ${window.main_url.getParam('sp_attachment', '0') == '4' ? 'selected' : ''}>${_('search.search_params_posts_attachments_graffiti')}</option>
-                            <option value='5' ${window.main_url.getParam('sp_attachment', '0') == '5' ? 'selected' : ''}>${_('search.search_params_posts_attachments_note')}</option>
-                            <option value='6' ${window.main_url.getParam('sp_attachment', '0') == '6' ? 'selected' : ''}>${_('search.search_params_posts_attachments_poll')}</option>
-                            <option value='7' ${window.main_url.getParam('sp_attachment', '0') == '7' ? 'selected' : ''}>${_('search.search_params_posts_attachments_link')}</option>
-                            <option value='8' ${window.main_url.getParam('sp_attachment', '0') == '8' ? 'selected' : ''}>${_('search.search_params_posts_attachments_file')}</option>
-                            <option value='9' ${window.main_url.getParam('sp_attachment', '0') == '9' ? 'selected' : ''}>${_('search.search_params_posts_attachments_album')}</option>
-                            <option value='10' ${window.main_url.getParam('sp_attachment', '0') == '10' ? 'selected' : ''}>${_('search.search_params_posts_attachments_article')}</option>
-                            <option value='12' ${window.main_url.getParam('sp_attachment', '0') == '12' ? 'selected' : ''}>${_('search.search_params_posts_attachments_wikipage')}</option>
-                            <option value='11' ${window.main_url.getParam('sp_attachment', '0') == '11' ? 'selected' : ''}>${_('search.search_params_posts_attachments_none')}</option>
-                        </select>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_posts_link')}</b>
-                        <input type='text' placeholder='${_('search.search_params_posts_link')}' data-setname='link' value='${window.main_url.getParam('sp_link', '')}'>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_posts_exclude')}</b>
-                        <input type='text' placeholder='${_('search.search_params_posts_exclude')}' data-setname='exclude' value='${window.main_url.getParam('sp_exclude', '')}'>
-                    </div>
-                    <div class='search_param'>
-                        <b class='nobold'>${_('search.search_params_posts_likes')}</b>
-                        <select data-setname='likes'>
-                            <option value='0' ${!window.main_url.hasParam('sp_likes', '0') ? 'selected' : ''}>${_('search.search_params_posts_likes_any')}</option>
-                            <option value='10' ${window.main_url.getParam('sp_likes', '0') == '10' ? 'selected' : ''}>${_('search.search_params_posts_likes_not_lesser', 10)}</option>
-                            <option value='100' ${window.main_url.getParam('sp_likes', '0') == '100' ? 'selected' : ''}>${_('search.search_params_posts_likes_not_lesser', 100)}</option>
-                            <option value='1000' ${window.main_url.getParam('sp_likes', '0') == '1000' ? 'selected' : ''}>${_('search.search_params_posts_likes_not_lesser', 1000)}</option>
-                        </select>
-
-                        <label>
-                            <input type='checkbox' value='1' ${window.main_url.getParam('sp_show_trash') == 1 ? 'checked' : ''} data-setname='show_trash'>
-                            ${_('search.search_params_posts_show_trash')}
-                        </label>
-                    </div>
-                `
+                params_html = window.templates.search_posts_params(false)
 
                 break
             case 'audios':
                 SearchClass = Audio
                 method = 'audio.search'
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
                 break
             case 'videos':
                 SearchClass = VideoListView
                 method = 'video.search'
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
                 break
             case 'photos':
                 SearchClass = PhotoListView
                 method = 'photos.search'
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
                 break
             case 'docs':
                 SearchClass = Doc
                 method = 'docs.search'
                 method_params.return_tags = 1
-                method_params.q = window.main_url.getParam('query') ?? ''
+                method_params.q = window.main_url.getParam('q') ?? ''
 
                 if(window.main_url.hasParam('sp_my')) {
                     method_params.search_own = '1'
@@ -507,14 +250,13 @@ window.page_class = new class {
 
         document.title = _(`search.search_${section}_section`) + ' | ' + _('search.search')
 
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-            `
+        u('.page_content').html(`
                 <div class='default_wrapper layer_two_columns'>
                     <div>
                         ${tabs_html}
 
                         <div class='flex_row flex_row_sticky flex_nowrap' id='_global_search' style='margin-bottom: 10px;'>
-                            <input type='text' placeholder='${_('search.search')}' value='${window.main_url.getParam('query') ?? ''}'>
+                            <input type='text' placeholder='${_('search.search')}' value='${window.main_url.getParam('q') ?? ''}'>
                             <input type='button' style='margin-left: 5px;' value='${_('wall.search')}'>
                         </div>
 
@@ -542,7 +284,7 @@ window.page_class = new class {
                         </div>
 
                         ${params_html ? `<div class='layer_two_columns_params'>
-                            <div class='search_params'>
+                            <div class='search_params' id='_search_params_appender'>
                                 ${params_html}
                             </div>
                         </div>` : ''}
@@ -567,53 +309,53 @@ window.page_class = new class {
     
             await window.main_classes['wall'].nextPage()
 
-            let tab_dom = $(`.layer_two_columns_up_panel a[data-section='${section}']`)
-            if(tab_dom[0] && method != 'newsfeed.search') {
-                tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
+            let tab_dom = u(`.layer_two_columns_up_panel a[data-section='${section}']`)
+            if(tab_dom.nodes[0] && method != 'newsfeed.search') {
+                tab_dom.nodes[0].innerHTML = tab_dom.nodes[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
             }
 
-            $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
+            u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
         } else {
             let results = await window.vk_api.call(method, method_params, false)
             results = results.response
 
             if(results.users.count > 0) {
-                $('#_global_users h4')[0].innerHTML += ` (${results.users.count})`
+                u('#_global_users h4').nodes[0].innerHTML += ` (${results.users.count})`
             } else {
-                $('#_global_users').remove()
+                u('#_global_users').remove()
             }
             
             if(results.clubs.count > 0) {
-                $('#_global_groups h4')[0].innerHTML += ` (${results.clubs.count})`
+                u('#_global_groups h4').nodes[0].innerHTML += ` (${results.clubs.count})`
             } else {
-                $('#_global_groups').remove()
+                u('#_global_groups').remove()
             }
 
             if(results.videos.count > 0) {
-                $('#_global_videos h4')[0].innerHTML += ` (${results.videos.count})`
+                u('#_global_videos h4').nodes[0].innerHTML += ` (${results.videos.count})`
             } else {
-                $('#_global_videos').remove()
+                u('#_global_videos').remove()
             }
 
             results.users.items.forEach(user => {
                 let ob_j = new UserListView
                 ob_j.hydrate(user)
 
-                $('#_global_users ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
+                u('#_global_users ._global_search_insert').append(ob_j.getTemplate())
             })
 
             results.clubs.items.forEach(club => {
                 let ob_j = new ClubListView
                 ob_j.hydrate(club)
 
-                $('#_global_groups ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
+                u('#_global_groups ._global_search_insert').append(ob_j.getTemplate())
             })
 
             results.videos.items.forEach(vid => {
                 let ob_j = new VideoListView
                 ob_j.hydrate(vid)
 
-                $('#_global_videos ._global_search_insert')[0].insertAdjacentHTML('beforeend', ob_j.getTemplate())
+                u('#_global_videos ._global_search_insert').append(ob_j.getTemplate())
             })
         }
     }

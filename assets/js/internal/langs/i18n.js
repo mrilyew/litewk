@@ -1,10 +1,3 @@
-if(!window.lang) {
-    console.info('Language has been reset')
-
-    window.site_params.set('lang', 'qqx')
-    window.lang = window.langs.find(item => item.__short_name == 'qqx')
-}
-
 function _(string, ...args) {
     function fallback() {
         return "@" + string

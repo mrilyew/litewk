@@ -1,22 +1,15 @@
-window.page_class = new class {
+window.pages['groups_page'] = new class {
     async render_page() {
         document.title = _('groups.groups')
         let section = window.main_class['hash_params'].section ?? 'all'
 
-        let id = Number(window.main_class['hash_params'].id)
-        let us_info = null
+        let id = Number(window.main_class['hash_params'].id ?? 0)
         if(id == 0 || id == null || isNaN(id)) {
             id = window.active_account.info.id
         }
 
         let is_this = (id == window.active_account.info.id)
-        if(!is_this) {
-            us_info = new User
-            await us_info.fromId(id)
-        } else {
-            us_info = new User
-            us_info.hydrate(window.active_account.info)
-        }
+        let owner_info = await Utils.getOwnerEntityById(id)
 
         let tabs_html = `
             <a href='#groups${id}/all' data-section='all'>${_('groups.all_groups')}</a>
@@ -68,8 +61,7 @@ window.page_class = new class {
                 break
         }
 
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-        `
+        u('.page_content').html(`
             <div class='default_wrapper layer_two_columns'>
                 <div>
                     ${tabs_html != '' ? `
@@ -81,16 +73,7 @@ window.page_class = new class {
                 </div>
                 <div class='layer_two_columns_tabs bordered_block'>
                     <div>
-                        <a href='${us_info.getUrl()}' class='layer_two_columns_tabs_user_info'>
-                            <div>
-                                <img class='avatar' src='${us_info.getAvatar()}'>
-                            </div>
-
-                            <div class='layer_two_columns_tabs_user_info_name'>
-                                <b ${us_info.isFriend() ? `class='friended'` : ''}>${Utils.cut_string(us_info.getName(), 15)}</b>
-                                <span>${_('user_page.go_to_user_page')}</span>
-                            </div>
-                        </a>
+                        ${window.templates.content_pages_owner(owner_info)}
 
                         ${is_this ? `
                             <a href='#groups${id}/all' ${section == 'all' || section == 'managed' ? 'class=\'selected\'' : ''}>${_(`groups.all_groups`)}</a>
@@ -106,7 +89,7 @@ window.page_class = new class {
         `
         )
 
-        let tab_dom = $(`.layer_two_columns_up_panel a[data-section='${section}']`)
+        let tab_dom = u(`.layer_two_columns_up_panel a[data-section='${section}']`)
         tab_dom.addClass('selected')
 
         if(section == 'recommend') {
@@ -125,15 +108,15 @@ window.page_class = new class {
         await window.main_classes['wall'].nextPage()
 
         if(section == 'recents') {
-            $('.show_more').remove()
+            u('.show_more').remove()
         }
 
-        if(tab_dom[0]) {
-            tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
+        if(tab_dom.nodes[0]) {
+            tab_dom.nodes[0].innerHTML = tab_dom.nodes[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
         if(section != 'recents' && section != 'recommend') {
-            $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
+            u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
         }
     }
 }

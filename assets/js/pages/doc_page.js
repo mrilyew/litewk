@@ -1,6 +1,10 @@
-window.page_class = new class {
+if(!window.pages) {
+    window.pages = {}
+}
+
+window.pages['doc_page'] = new class {
     async render_page() {
-        document.title = _('docs.doc')
+        main_class.changeTitle(_('docs.doc'))
 
         let owner_id = Number(window.main_class['hash_params'].owner)
         let item_id = Number(window.main_class['hash_params'].id)
@@ -8,13 +12,13 @@ window.page_class = new class {
         let content_html = ``
 
         window.main_class['doc'] = new Doc
-        window.main_class['doc'].hydrate(doc_api.response[0])
+        window.main_class['doc'].hydrate(doc_api[0])
 
         if(!window.main_class['doc'].info) {
             main_class.add_onpage_error(_('errors.doc_not_found'))
         }
 
-        document.title = window.main_class['doc'].getTitle()
+        main_class.changeTitle(window.main_class['doc'].getTitle())
 
         switch(window.main_class['doc'].getType()) {
             default:
@@ -37,8 +41,7 @@ window.page_class = new class {
                 break
         }
 
-        $('body .page_content')[0].insertAdjacentHTML('beforeend', 
-        `
+        u('body .page_content').html(`
             <div class='document_single_view'>
                 <div class='document_upper_panel'>
                     <a data-ignore='1' href='javascript:void(0)' id='_titler'>${window.main_class['doc'].getTitle()}</a>
@@ -60,7 +63,7 @@ window.page_class = new class {
     }
 
     execute_buttons() {
-        $('.document_single_view #_titler').on('click', (e) => {
+        u('.document_single_view #_titler').on('click', (e) => {
             let msg = new MessageBox(_('docs.doc'), `
                 <table class='straight_table'>
                     <tbody>
@@ -98,16 +101,16 @@ window.page_class = new class {
 
             msg.getNode().style.width = '250px'
 
-            $('#_onclickcloseme').on('click', () => {
+            u('#_onclickcloseme').on('click', () => {
                 msg.close()
             })
         })
 
-        $('.document_single_view').on('click', '#_download_doc', (e) => {
+        u('.document_single_view').on('click', '#_download_doc', (e) => {
             Utils.download_file_by_link(window.main_class['doc'].getURL(), window.main_class['doc'].getTitleWithExt())
         })
         
-        $('.document_single_view').on('click', '#_save_doc', async (e) => {
+        u('.document_single_view').on('click', '#_save_doc', async (e) => {
             e.target.classList.add('stopped')
 
             let result = await window.vk_api.call('docs.add', {'owner_id': window.main_class['doc'].info.owner_id, 'doc_id': window.main_class['doc'].info.id, 'access_key': window.main_class['doc'].info.access_key})
@@ -119,7 +122,7 @@ window.page_class = new class {
             e.target.setAttribute('id', '_delete_doc_')
         })
                 
-        $('.document_single_view').on('click', '#_delete_doc_', async (e) => {
+        u('.document_single_view').on('click', '#_delete_doc_', async (e) => {
             e.target.classList.add('stopped')
             await window.vk_api.call('docs.delete', {'owner_id': window.active_account.info.id, 'doc_id': window.tmp_doc})
         

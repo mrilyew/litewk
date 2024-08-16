@@ -1,0 +1,19 @@
+:root {
+    --ultrawhite: #ffffff;
+    --black: #000000;
+    --background-color: #1a0000;
+    --elements-background-color: #2d0000;
+    --elements-background-color-opacity: rgba(45, 0, 0, 0.8);
+    --elements-border-color: #ff3333;
+    --elements-contrast-color: #4d0000;
+    --text-color: #ff9999;
+    --links-color: #ff6666;
+    --accent-color: #ff1a1a;
+    --editing-color: rgb(255, 165, 0);
+    --friendly-color: #cc0000;
+    --friendly-hover-color: #ff0000;
+    --error-color: #ff4d4d;
+    --icons-stroke: 1.4px;
+
+    --main-bg: linear-gradient(138deg, var(--black) 0%, rgb(153, 0, 0) 100%);
+}

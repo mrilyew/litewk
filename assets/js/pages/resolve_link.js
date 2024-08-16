@@ -1,4 +1,4 @@
-window.page_class = new class {
+window.pages['resolve_link']  = new class {
     async render_page() {
         let text = window.main_url.getParam('id') ?? window.main_class['hash_params'].id
 
@@ -8,18 +8,24 @@ window.page_class = new class {
         
         let link_start = window.main_url.origin + window.main_url.pathname
         let link = null
-        
+
         if(!text) {
             Utils.not_found_not_specified()
+            return
         }
 
         text = Utils.cut_vk(text)
 
         if(text.indexOf('https://') != -1 || text.indexOf('http://') != -1) {
+            if(window.site_params.get('ux.navigation_away_enable', '1') == '0') {
+                window.location.assign(text)
+                return
+            }
+
             let res = await window.vk_api.call('utils.checkLink', {'url': text})
             
-            if(res.response.status != 'not_banned') {
-                $('.page_content')[0].insertAdjacentHTML('beforeend', `
+            if(res.status != 'not_banned') {
+                u('.page_content').append(`
                     <div class="onpage_error" style='width: 400px;'>
                         ${_('navigation.suspicious_link')}
 
@@ -30,11 +36,11 @@ window.page_class = new class {
                     </div>
                 `)
 
-                $('#__awayno').on('click', (e) => {
+                u('#__awayno').on('click', (e) => {
                     window.router.route(link_start + '#id0')
                 })
 
-                $('#__awayes').on('click', (e) => {
+                u('#__awayes').on('click', (e) => {
                     window.open(text, '_blank')
                 })
             } else {
@@ -84,8 +90,8 @@ window.page_class = new class {
                 let res = await window.vk_api.call('utils.resolveScreenName', {'screen_name': text})
                 let page = ''
     
-                if(!res.response.type) {
-                    $('.page_content')[0].insertAdjacentHTML('beforeend', `
+                if(!res.type) {
+                    u('.page_content').append(`
                         <div class="onpage_error" style='width: 400px;'>
                             ${_('navigation.not_found_shortcode')}
         
@@ -96,17 +102,17 @@ window.page_class = new class {
                         </div>
                     `)
         
-                    $('#__gono').on('click', (e) => {
+                    u('#__gono').on('click', (e) => {
                         history.back()
                     })
         
-                    $('#__goyes').on('click', (e) => {
+                    u('#__goyes').on('click', (e) => {
                         window.open('https://vk.com/' + text, '_blank')
                     })
                     return
                 }
 
-                switch(res.response.type) {
+                switch(res.type) {
                     case 'user':
                         page = 'id'
                         break
@@ -121,7 +127,7 @@ window.page_class = new class {
                         break
                 }
     
-                link = link_start + `#${page}${res.response.object_id}`
+                link = link_start + `#${page}${res.object_id}`
             }
         }
         

@@ -1,35 +1,34 @@
-window.page_class = new class {
+if(!window.pages) {
+    window.pages = {}
+}
+
+window.pages['debug_page'] = new class {
     async render_page(section = null) 
     {
         if(section == null) {
             section = window.main_class['hash_params'].section ?? 'api'
         }
 
-        document.title = _('debug.debug_title_' + section)
-        $('.page_content')[0].innerHTML = `
+        main_class.changeTitle(_('debug.' + section))
+        u('.page_content').html(`
             <div class='default_wrapper'>
                 <div class='bordered_block'>
                     <div class='settings_tabs tabs'>
-                        <a data-ignore='1' data-section='api' ${section == 'api' ? `class='selected'` : ''}>${_('debug.api')}</a>
-                        <a data-ignore='1' data-section='cache' ${section == 'cache' ? `class='selected'` : ''}>${_('debug.debug_title_cache')}</a>
-                        <a data-ignore='1' data-section='router' ${section == 'router' ? `class='selected'` : ''}>${_('debug.debug_title_router')}</a>
+                        <a href='#debug/api' ${section == 'api' ? `class='selected'` : ''}>${_('debug.api')}</a>
+                        <a href='#debug/cache' ${section == 'cache' ? `class='selected'` : ''}>${_('debug.cache')}</a>
+                        <a href='#debug/router' ${section == 'router' ? `class='selected'` : ''}>${_('debug.router')}</a>
+                        <a href='#debug/sandbox' ${section == 'sandbox' ? `class='selected'` : ''}>${_('debug.sandbox')}</a>
+                        <a href='#debug/others' ${section == 'others' ? `class='selected'` : ''}>${_('debug.others')}</a>
                     </div>
+                    <div class='debug_wrapper'></div>
                 </div>
             </div>
-        `
-    
-        $('.tabs a').on('click', (e) => {
-            e.preventDefault()
-
-            location.hash = '#debug/' + e.target.dataset.section
-            Utils.replace_state(location.href)
-            this.render_page(e.target.dataset.section)
-        })
+        `)
     
         switch(section) {
             default:
             case 'api':
-                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
+                u('.page_content .debug_wrapper').html(`
                     <div class='settings_block'>
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('debug.settings_api_test')}</b></p>
@@ -48,28 +47,28 @@ window.page_class = new class {
                     </div>
                 `)
                 
-                $('.settings_block #_send').on('click', async (e) => {
+                u('.settings_block #_send').on('click', async (e) => {
                     if(!window.vk_api) {
                         Utils.add_error(_('not_authorized'), 'no_token', 5000, 'error')
                         return
                     }
     
-                    let res = await window.vk_api.call($('#_methodName')[0].value, JSON.parse($('#_methodParams')[0].value), false)
+                    let res = await window.vk_api.call(u('#_methodName').nodes[0].value, JSON.parse(u('#_methodParams').nodes[0].value), false)
                     
-                    $('#_result')[0].value = JSON.stringify(res, null, 4)
+                    u('#_result').nodes[0].value = JSON.stringify(res, null, 4)
                 })
     
-                $('.settings_block #_clear').on('click', async (e) => {
-                    $('#_result')[0].value = ''
+                u('.settings_block #_clear').on('click', async (e) => {
+                    u('#_result').nodes[0].value = ''
                 })
     
-                $('.settings_block #_unspace').on('click', async (e) => {
-                    $('#_result')[0].value = $('#_result')[0].value.replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '').replace(/\n\r/g, '')
+                u('.settings_block #_unspace').on('click', async (e) => {
+                    u('#_result').nodes[0].value = u('#_result').nodes[0].value.replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '').replace(/\n\r/g, '')
                 })
 
                 break
             case 'cache':
-                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
+                u('.page_content .debug_wrapper').html(`
                     <div class='settings_block'>
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('debug.settings_cache')}</b></p>
@@ -78,14 +77,28 @@ window.page_class = new class {
                                 <input type='button' name='_import_localstorage' value='${_('debug.settings_localstorage_import')}'>
                             </div>
                         </div>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('debug.settings_cache_indexeddb')}</b></p>
+                            <div class='settings_caches'>
+                                <input type='button' name='_clear_indexeddb' value='${_('debug.settings_cache_indexeddb_clear')}'>
+                            </div>
+                        </div>
                     </div>
                 `)
 
-                $(`.settings_block input[name='_clear_cache']`).on('click', async (e) => {
-                    localStorage.removeItem(e.target.dataset.tab)
+                u(`.settings_block input[name='_clear_indexeddb']`).on('click', async (e) => {
+                    const ___msg = new MessageBox(_('messagebox.warning'), _('debug.settings_cache_indexeddb_clear_warning'), [_('messagebox.no'), _('messagebox.yes')], [
+                        () => {
+                            ___msg.close()
+                        }, async () => {
+                            ___msg.close()
+                            window.cache.clearAllStores()
+                            window.main_class.newNotification(_('debug.settings_cache_indexeddb_clear_notif'))
+                        }
+                    ])
                 })
 
-                $(`.settings_block input[name='_export_localstorage']`).on('click', async (e) => {
+                u(`.settings_block input[name='_export_localstorage']`).on('click', async (e) => {
                     let encoded_localstorage = JSON.stringify(localStorage)
 
                     let tmp_a = document.createElement("a")
@@ -97,8 +110,8 @@ window.page_class = new class {
                     tmp_a = null
                 })
                     
-                $(`.settings_block input[name='_import_localstorage']`).on('click', async (e) => {
-                    let localstorage_import = JSON.parse(prompt(_('debug.settings_localstorage_enter')))
+                u(`.settings_block input[name='_import_localstorage']`).on('click', async (e) => {
+                    const localstorage_import = JSON.parse(prompt(_('debug.settings_localstorage_enter')))
 
                     if(!localstorage_import) {
                         return
@@ -114,7 +127,7 @@ window.page_class = new class {
                 })
                 break
             case 'router':
-                $('.page_content .bordered_block')[0].insertAdjacentHTML('beforeend', `
+                u('.page_content .debug_wrapper').html(`
                     <div class='settings_block'>
                         <div class='settings_sublock'>
                             <p class='settings_title'><b>${_('debug.goto_route')}</b></p>
@@ -129,14 +142,61 @@ window.page_class = new class {
                     </div>
                 `)
 
-                $('.settings_block #_restart_app').on('click', async (e) => {
+                u('.settings_block #_restart_app').on('click', async (e) => {
                     window.router.restart()
                 })
 
-                $('.settings_block #_gotoroute').on('change', (e) => {
+                u('.settings_block #_gotoroute').on('change', (e) => {
                     window.router.route('#' + e.target.value)
                 })
                 
+                break
+            case 'sandbox':
+                u('.page_content .debug_wrapper').html(`
+                    <div class='settings_block'>
+                        <div class='settings_sublock'>
+                            <p class='settings_title'><b>${_('debug.sandbox')}</b></p>
+
+                            <div class='flex_row flex_nowrap'>
+                                <textarea type='text' id='_runtemplate' placeholder='return window.templates.paginator(10, 1)'>${window.site_params.get('debug.sandbox_saved', window.consts.DEBUG_SANDBOX_DEFAULT_CODE)}</textarea>
+                                <input type='button' id='_runtemplatebutton' value='Run' title="better run \nfaster than ma g'n">
+                            </div>
+                        </div>
+                        <div id='_template_insert'></div>
+                    </div>
+                `)
+
+                u('#_runtemplatebutton').on('click', async (e) => {
+                    const template_code = u('#_runtemplate').nodes[0].value
+                    const AsyncFunc = Object.getPrototypeOf(async function(){}).constructor
+                    const result = new AsyncFunc(template_code)()
+                    
+                    try {
+                        u('#_template_insert').html(await result)
+                    } catch(e) {
+                        u('#_template_insert').html(e)
+                    }
+                })
+
+                u('#_runtemplate').on('input', (e) => {
+                    window.site_params.set('debug.sandbox_saved', e.target.value)
+                })
+
+                break
+            case 'others':
+                u('.page_content .debug_wrapper').html(`
+                <div class='settings_block'>
+                    <div class='settings_sublock'>
+                        <p class='settings_title'><b>${_('settings_ui.settings_custom_js')}</b></p>
+                        <span style='margin: -6px 0px 7px 0px;display: block;'>${_('settings_ui.settings_custom_js_tip')}</span>
+                        <textarea id='_custom_js' placeholder='${_('settings.please_enter')}'>${window.site_params.get('ui.custom_js') ?? ''}</textarea>
+                    </div>
+                </div>`)
+                
+                u('#_custom_js').on('input', (e) => {
+                    window.site_params.set('ui.custom_js', e.target.value)
+                })
+
                 break
         }
     }

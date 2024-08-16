@@ -1426,8 +1426,6 @@ body.dimmed > .dimmer {
     box-sizing: content-box;
 }
 
-
-
 /* Newsfeed */
 
 .wall_wrapper_newsfeed_params {
@@ -1445,8 +1443,6 @@ body.dimmed > .dimmer {
 }
 
 /* Friends */
-
-
 
 .friends_search_fuck_block {
     display: flex;   

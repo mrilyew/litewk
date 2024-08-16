@@ -1,4 +1,4 @@
-window.page_class = new class {
+window.pages['note_page']  = new class {
     async render_page() {
         document.title = _('notes.note')
 
@@ -8,17 +8,16 @@ window.page_class = new class {
         let content_html = ``
 
         let note = new Note
-        note.hydrate(note_api.response)
+        note.hydrate(note_api)
 
-        if(!note_api.response) {
+        if(!note_api) {
             main_class.add_onpage_error(_('errors.note_not_found'))
             return
         }
 
         document.title = note.getTitle()
 
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-        `
+        u('.page_content').append(`
             <div>
                 ${note.getText()}
             </div>

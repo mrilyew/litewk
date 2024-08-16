@@ -1,6 +1,10 @@
-window.page_class = new class {
+if(!window.pages) {
+    window.pages = {}
+}
+
+window.pages['docs_page'] = new class {
     async render_page() {
-        document.title = _('docs.docs')
+        main_class.changeTitle(_('docs.docs'))
         
         let section  = Number(window.main_url.getParam('section') ?? 0)
         let owner_id = Number(window.main_class['hash_params'].owner ?? window.active_account.info.id)
@@ -12,9 +16,10 @@ window.page_class = new class {
 
         let tabs = document.querySelector('#_tabsinsert')
         let method = 'docs.get'
-        let method_params = {'owner_id': owner_id, 'search_type': 1, 'count': window.Utils.default_count_more, 'type': null, 'return_tags': 1}
+        let method_params = {'owner_id': owner_id, 'search_type': 1, 'count': window.Utils.default_count_more, 'return_tags': 1}
 
         if(section > 0 && section < 9) {
+            console.log(method_params.type)
             method_params.type = section
         }
 
@@ -24,7 +29,7 @@ window.page_class = new class {
             method_params.q = window.main_url.getParam('query')
         }
 
-        $('.page_content')[0].innerHTML = `
+        u('.page_content').html(`
             <div class='default_wrapper layer_two_columns'>
                 <div>   
                     <div class='layer_two_columns_up_panel bordered_block' id='insert_paginator_here_bro'>
@@ -52,9 +57,9 @@ window.page_class = new class {
                     ` : ''}
                 </div>
             </div>
-        `
+        `)
 
-        window.main_classes['wall'] = new Docs('.docs_insert')
+        window.main_classes['wall'] = new Docs(Doc, '.docs_insert')
         window.main_classes['wall'].setParams(method, method_params)
         window.main_classes['wall'].clear()
 
@@ -68,7 +73,7 @@ window.page_class = new class {
             return
         }
 
-        $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
+        u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
         
         if(!tabs) {
             let tabs = null
@@ -89,7 +94,6 @@ window.page_class = new class {
                     ${owner_id < 0 ? `return {"items": tabs.items, "group": group.groups[0]};` : ''}
                     ${owner_id > 0 ? `return {"items": tabs.items};` : ''}
                 `,'owner_id': owner_id})
-                tabs = tabs.response
             } else {
                 let result_tabs = await window.vk_api.call('docs.getTypes', {'owner_id': owner_id})
     
@@ -110,7 +114,7 @@ window.page_class = new class {
                     })
                 }
                 
-                result_tabs.response.items.forEach(tab => [
+                result_tabs.items.forEach(tab => [
                     tabs.items.push(tab)
                 ])
             }
@@ -119,7 +123,7 @@ window.page_class = new class {
                 let club = new Club
                 club.hydrate(tabs.group)
     
-                $('#_tabsinsert')[0].parentNode.insertAdjacentHTML('afterbegin', `
+                u('#_tabsinsert').nodes[0].parentNode.insertAdjacentHTML('afterbegin', `
                     <a href='${club.getUrl()}' class='layer_two_columns_tabs_user_info'>
                         <div>
                             <img class='avatar' src='${club.getAvatar()}'>
@@ -134,7 +138,7 @@ window.page_class = new class {
             }
     
             tabs.items.forEach(tab => {
-                $('#_tabsinsert')[0].insertAdjacentHTML('beforeend', `
+                u('#_tabsinsert').nodes[0].insertAdjacentHTML('beforeend', `
                     <a href='${is_this ? `#docs` : '#docs' + owner_id}?section=${tab.id}' ${section == tab.id ? 'class=\'selected\'' : ''}>
                         ${Utils.escape_html(tab.name)} <span class='counter_additional'>${tab.count}</span>
                     </a>
@@ -144,7 +148,7 @@ window.page_class = new class {
     }
 
     execute_buttons() {
-        $('#_docs_root').on('change', '.layer_two_columns_local_search_block input', async (e) => {
+        u('#_docs_root').on('change', '.layer_two_columns_local_search_block input', async (e) => {
             window.main_url.setParam('query', e.target.value)
             Utils.replace_state(window.main_url)
 

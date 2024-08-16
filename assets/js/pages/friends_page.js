@@ -1,37 +1,31 @@
-window.page_class = new class {
-    async render_page() {
-        document.title = _('friends.friends')
-        
-        let section = window.main_class['hash_params'].section ?? 'all'
+if(!window.pages) {
+    window.pages = {}
+}
 
-        let id = Number(window.main_class['hash_params'].id)
-        let us_info = new User
+window.pages['friends_page'] = new class {
+    async render_page() {
+        main_class.changeTitle(_('friends.friends'))
+        
+        const section = window.main_class['hash_params'].section ?? 'all'
+        let id = Number(window.main_class['hash_params'].id ?? 0)
+
         if(id == 0 || id == null || isNaN(id)) {
             id = window.active_account.info.id
         }
 
-        let is_this = (id == window.active_account.info.id)
-
-        if(!is_this) {
-            await us_info.fromId(id)
-        } else {
-            us_info.hydrate(window.active_account.info)
-        }
-
+        const is_this = (id == window.active_account.info.id)
+        const owner_info = await Utils.getOwnerEntityById(id)
+        
         let tabs_html = `
             <a href='#friends${id}/all' data-section='all'>${_('friends.all_friends')}</a>
             <a href='#friends${id}/online' data-section='online'>${_('friends.online_friends')}</a>
             ${!is_this ? `<a href='#friends${id}/mutual' data-section='mutual'>${_('friends.mutual_friends')}</a>` : ''}
         `
 
-        if(id == 0 || id == null) {
-            id = window.active_account.info.id
-        }
-
         let method = 'friends.get'
         let wall_params = {'user_id': id, 'count': 10, 'extended': 1, 'fields': window.Utils.typical_fields}
 
-        if(id == window.active_account.info.id) {
+        if(is_this) {
             wall_params.order = 'hints'
         }
 
@@ -137,8 +131,7 @@ window.page_class = new class {
                 break
         }
 
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-            `
+        u('.page_content').html(`
                 <div class='default_wrapper layer_two_columns'>
                     <div>
                         ${tabs_html != '' ? `
@@ -150,16 +143,7 @@ window.page_class = new class {
                     </div>
                     <div class='layer_two_columns_tabs bordered_block'>
                         <div>
-                            <a href='${us_info.getUrl()}' class='layer_two_columns_tabs_user_info'>
-                                <div>
-                                    <img class='avatar' src='${us_info.getAvatar()}'>
-                                </div>
-
-                                <div class='layer_two_columns_tabs_user_info_name'>
-                                    <b ${us_info.isFriend() ? `class='friended'` : ''}>${Utils.cut_string(us_info.getName(), 15)}</b>
-                                    <span>${_('user_page.go_to_user_page')}</span>
-                                </div>
-                            </a>
+                            ${window.templates.content_pages_owner(owner_info)}
 
                             ${is_this ? `
                                 <a href='#friends/all' ${section == 'all' || section == 'online' ? 'class=\'selected\'' : ''}>${_(`friends.all_friends`)}</a>
@@ -184,8 +168,7 @@ window.page_class = new class {
             `
         )
 
-        let tab_dom = $(`.layer_two_columns_up_panel a[data-section='${section}']`)
-
+        let tab_dom = u(`.layer_two_columns_up_panel a[data-section='${section}']`)
         tab_dom.addClass('selected')
         
         window.main_classes['wall'] = new Friends(UserListView, '.friends_insert')
@@ -198,8 +181,8 @@ window.page_class = new class {
 
         let val = await window.main_classes['wall'].nextPage()
 
-        if(tab_dom[0]) {
-            tab_dom[0].innerHTML = tab_dom[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
+        if(tab_dom.nodes[0]) {
+            tab_dom.nodes[0].innerHTML = tab_dom.nodes[0].innerHTML + ` (${window.main_classes['wall'].objects.count})`
         }
 
         if(val == 'ERR') {
@@ -210,18 +193,17 @@ window.page_class = new class {
             main_class.add_onpage_error(_('errors.friends_not_found', id))
             return
         } else {
-            $('#insert_paginator_here_bro')[0].insertAdjacentHTML('beforeend', window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
+            u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, (Number(window.main_url.getParam('page') ?? 1))))
         }
 
         let friends_lists = await window.vk_api.call('friends.getLists', {'user_id': id}, false)
         friends_lists = friends_lists.response
 
         if(friends_lists.count > 0) {
-            $('.wall_wrapper_newsfeed_params')[0].style.display = 'block'
+            u('.wall_wrapper_newsfeed_params').nodes[0].style.display = 'block'
 
             friends_lists.items.forEach(list => {
-                $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
-                    `
+                u('#__insertlists').append(`
                     <a href='#friends${id}/list?section_id=${list.id}' ${Number(window.main_url.getParam('section_id')) == list.id ? 'class=\'selected\'' : ''}>${list.name}</a>
                     `
                 )

@@ -6,7 +6,7 @@ window.langs.push({
     'lang_info': {
         'native_name': 'qqx',
         'eng_name': 'Show localization keys',
-        'author': 'universe',
+        'author': 'i18n',
         'short_name': 'qqx',
     },
 })

@@ -48,6 +48,37 @@ window.langs.push({
         'suspicious_link': 'Ссылка, по мнению ВК, подозрительная. <br> Всё равно хочешь перейти?',
         'not_found_shortcode': 'По данному шорткоду ничего не найдено. Хочешь перейти в ВК?',
         'all': 'Все',
+        'loading': 'Загрузка...',
+    },
+
+    'common': {
+        'show_next': 'Показать полностью...',
+        'report': 'Пожаловаться',
+    },
+
+    'reports': {
+        'report': 'Пожаловаться',
+        'additional_comment_desc': 'Опишите причину жалобы',
+        'additional_comments': 'Комментарий (необязательно)',
+        'report_user_desc': 'Что вам кажется недопустимым на странице $1?',
+        'report_club_desc': 'Что вам кажется недопустимым в этой группе?',
+        'report_post_desc': 'Что вам кажется недопустимым в этом материале?',
+        'report_was_sent': 'Жалоба была отправлена.',
+        'report_was_not_sent': 'Произошла ошибка при отправке жалобы.',
+
+        'spam': 'Спам',
+        'fraud': 'Мошенничество',
+        'insult': 'Оскорбления',
+        'adversiment': 'Реклама',
+        'porner': 'Откровенное изображение',
+        'cpu': 'ЦП',
+        'extremism': 'Экстремизм',
+        'violence': 'Насилие',
+        'drugs': 'Наркотики',
+        'adult_materials': 'Материалы для взрослых',
+        'insult_single': 'Оскорбление',
+        'suicide_commits': 'Призывы к суициду',
+        'deception': 'Обман',
     },
 
     'pagination': {
@@ -67,6 +98,11 @@ window.langs.push({
         'month_10_gen': 'октября',
         'month_11_gen': 'ноября',
         'month_12_gen': 'декабря',
+        'date_formatted_default_year_time': '$1.$2.$3 в $4:$5',
+        'date_formatted_default_no_year': '$1.$2 в $3:$4',
+        'date_formatted_default_seconds_year_time': '$1.$2.$3 в $4:$5:$6',
+        'date_formatted_default_seconds_no_year_time': '$1.$2 в $3:$4:$5',
+        'date_formatted_default_seconds_no_year': '$1.$2 в $3',
         'date_formatted_month': '$1 $2 $3 г. в $4',
         'date_formatted_month_no_year': '$1 $2 в $3',
         'age_zero': '0 лет',
@@ -77,10 +113,12 @@ window.langs.push({
 
     'settings': {
         'settings': 'Настройки',
-        'settings_ui': 'Внешний вид',
-        'settings_ux': 'Поведение',
+        'settings_tweaks': 'CSS',
+        'settings_navigation': 'Навигация',
+        'settings_ux': 'Основное',
         'settings_auth': 'Авторизация',
         'settings_language': 'Язык',
+        'settings_themes': 'Темы',
         'settings_accounts': 'Аккаунты',
         'settings_debug': 'Отладка',
         'settings_about': 'О сайте',
@@ -91,12 +129,6 @@ window.langs.push({
         'settings_custom_css': 'Собственный CSS',
         'settings_custom_js': 'Собственный JS',
         'settings_custom_js_tip': 'Применится после перезагрузки страницы.',
-        'settings_date_format': 'Формат даты',
-        'settings_date_format_default': 'DD.MM.YYYY в HH:MM',
-        'settings_date_format_day_month': 'DD mmmm ?(YYYY г.) в HH:MM',
-
-        'settings_ui_other': 'Прочее',
-        'settings_hide_image_statuses': 'Скрывать эмодзи у имени',
 
         'settings_ui_tweaks': 'Твики',
         'settings_ui_left_menu': 'Меню навигации',
@@ -120,6 +152,11 @@ window.langs.push({
 
         'settings_ui_i18n_tip': `Символ '_' в начале означает, что будет использоваться локализированная строка.`,
         'settings_ui_anchor_tip': `Отвечает за счётчик у пункта меню.`,
+
+        'themes': 'Темы оформления',
+        'css_settings': 'Настройки CSS',
+        'install_theme': 'Установить',
+        'from_author': 'от $1',
     },
 
     'settings_ui_tweaks': {
@@ -127,39 +164,72 @@ window.langs.push({
         'transitions_everywhere': 'Плавные переходы везде',
         'round_avatars': 'Круглые аватарки',
         'highlight_friends': 'Подсвечивать друзей зелёным цветом',
-        'hide_onliner': `Скрыть отображение статуса "онлайн" у постов и комментариев`,
+        'hide_onliner': `Скрыть отображение статуса "онлайн" у записей и комментариев`,
 
         'hide_counters': 'Скрыть счётчики в меню навигации',
         'hide_image_status': 'Скрывать графические статусы',
-
-        'show_cover_on_up': 'Показывать обложку над страницей',
-        'show_cover_from_name': 'Показывать обложку над именем',
-        'show_cover_background': 'Показывать обложку на фоне',
-        'show_cover_no': 'Не показывать',
     },
     
     'settings_ux': {
-        'settings_save_hash_progress': 'Сохранять прогресс прокрутки страницы',
-        'settings_scrolling': 'Скроллинг',
-        'settings_auto_scroll': 'Автопрокрутка',
-        'settings_send_online': 'Пробуждать аккаунт в онлайн каждые 5 минут',
-        
-        'settings_default_sort': 'Сортировка комментариев по умолчанию',
-        'settings_online_status': 'Пробуждение в онлайн',
-        'settings_use_proxy': 'Использовать allorigins.win (на ваш риск)',
-        'settings_show_registration_date': 'Показывать дату регистрации пользователя (используется allorigins.win)',
-        'settings_friends_block_sort': 'Сортировка в блоке друзей',
-        'settings_friends_block_sort_rating': 'По общительности',
-        'settings_friends_block_sort_random': 'Случайно',
+        'settings_ux_date_format': 'Вид даты',
+        'settings_ux_date_format_default': 'DD.MM.YYYY в HH:MM',
+        'settings_ux_date_format_default_seconds': 'DD.MM.YYYY в HH:MM:SS',
+        'settings_ux_date_format_day_month': 'DD mmmm ?(YYYY г.) в HH:MM',
+        'settings_ux_date_format_day_month_seconds': 'DD mmmm ?(YYYY г.) в HH:MM:SS',
 
-        'settings_send_online_none': 'Не пробуждать аккаунт в онлайн',
-        'settings_user': 'Страница пользователя',
-        'settings_send_online_method_call': 'После любого действия',
-        'settings_send_online_timeout': 'Каждые 5 минут',
-        'settings_format_emojis': 'Заменять текстовые эмодзи на Twemoji',
-        'better_my_page': `Вместо "Моя Страница" показывать информацию об аккаунте`,
-        'hide_back_button': `Скрыть кнопку "Вернуться"`,
-        'settings_use_execute': 'Использовать execute по возможности (рекомендуется)',
+        'settings_ux_online_status': 'Пробуждение в онлайн',
+        'settings_ux_online_status': 'Пробуждение в онлайн',
+        'settings_ux_send_online_none': 'Не пробуждать аккаунт в онлайн',
+        'settings_ux_send_online_method_call': 'Пробуждать при любом действии',
+        'settings_ux_send_online_timeout': 'Каждые 5 минут',
+        'settings_ux_send_online_warn': 'Некоторые действия (создание поста, отправка сообщения) пробудят твой аккаунт в онлайн вне зависимости от настройки.',
+
+        'settings_ux_scrolling': 'Скроллинг',
+        'settings_ux_scrolling_save_progress': 'Сохранять прогресс прокрутки в URL',
+        'settings_ux_scrolling_auto': 'Автопрокрутка',
+        'settings_ux_update_paginators': 'Обновлять пагинатор при подгрузке следующей страницы',
+        'settings_ux_previous_page_deletion': 'Удалять предыдущую страницу при прогрузке следующей',
+
+        'settings_ux_navigation': 'Навигация',
+        'settings_ux_navigation_better_my_page': `Вместо "Моя Страница" показывать имя профиля`,
+        'settings_ux_navigation_hide_back': `Скрывать кнопку "Назад"`,
+        'settings_ux_navigation_save_pages': `Сохранение и загрузка ранее посещённых страниц (работает нестабильно)`,
+        'settings_ux_navigation_away_enable': 'Проверять ссылки на небезопасность',
+        'settings_ux_navigation_update_counters': 'Обновлять счётчики в меню',
+        'settings_ux_navigation_live_notifications': 'Живые уведомления (нужен прокси-сервер)',
+        'settings_ux_navigation_edit': 'Редактирование меню навигации',
+
+        'settings_ux_content_settings': 'Настройки контента',
+        'settings_ux_content_settings_comment_sort_default': 'Сортировка комментариев:',
+        'settings_ux_content_settings_format_emojis': 'Заменять текстовые эмодзи на Twemoji',
+        'settings_ux_content_settings_show_lottie_stickers': 'Поддержка анимированных стикеров',
+        'settings_ux_content_shortify_text': 'Сокращать текст',
+        
+        'settings_ux_user': 'Профиль пользователя',
+        'settings_ux_user_friends_block_sort': 'Сортировка друзей в блоке:',
+        'settings_ux_user_friends_block_sort_rating': 'По общительности',
+        'settings_ux_user_friends_block_sort_random': 'Случайно',
+        'settings_ux_user_show_register': 'Показывать дату регистрации',
+
+        'settings_ux_cover': 'Обложки',
+
+        'settings_ux_cover_on_up': 'Показывать обложку над страницей',
+        'settings_ux_cover_from_name': 'Показывать обложку над именем',
+        'settings_ux_cover_background': 'Показывать обложку на фоне информации',
+        'settings_ux_cover_body_background': 'Показывать обложку на фоне страницы',
+        'settings_ux_cover_no': 'Не показывать',
+
+        'settings_ux_proxy': 'Прокси',
+        'settings_ux_proxy_url': 'Ссылка на прокси',
+        'settings_ux_proxy_useragent': 'Замена UserAgent',
+        'settings_ux_use_proxy': 'Использовать прокси для всех запросов',
+
+        'settings_ux_others': 'Прочее',
+        'settings_ux_use_execute': 'Использовать execute (рекомендуется)',
+        'settings_ux_hide_waterfall': 'Скрыть сообщения о загрузке скриптов',
+
+        'settings_ux_about': 'О сайте',
+        'settings_ux_about_last_update': 'Последнее обновление: $1',
     },
 
     'settings_language': {
@@ -168,7 +238,7 @@ window.langs.push({
     },
 
     'settings_accounts': {
-        'accounts_count_zero': '0 аккаунтов',
+        'accounts_count_zero': '$1 аккаунтов',
         'accounts_count_one': '$1 аккаунт',
         'accounts_count_few': '$1 аккаунта',
         'accounts_count_other': '$1 аккаунтов',
@@ -197,6 +267,11 @@ window.langs.push({
         'settings_localstorage_import': 'Импорт LocalStorage',
         'settings_localstorage_enter': 'Ввeди содержимое LocalStorage',
 
+        'settings_cache_indexeddb': 'IndexedDB',
+        'settings_cache_indexeddb_clear': 'Очистить IndexedDB',
+        'settings_cache_indexeddb_clear_warning': 'Уверен, что хочешь это сделать?)',
+        'settings_cache_indexeddb_clear_notif': 'IndexedDB очищен.',
+
         'settings_api_test': 'Запуск методов API',
         'settings_method_name': 'Метод API',
         'settings_method_params': 'Параметры к API (в формате JSON)',
@@ -208,10 +283,11 @@ window.langs.push({
         'settings_routing': 'Роутинг',
         'settings_restart_app': 'Перезапустить приложение',
 
-        'debug_title_api': 'API',
         'api': 'VK API',
-        'debug_title_cache': 'Кэш',
-        'debug_title_router': 'Роутинг',
+        'sandbox': 'Песочница',
+        'cache': 'Кэш',
+        'router': 'Роутинг',
+        'others': 'Прочее',
         'goto_route': 'Перейти по пути',
     },
 
@@ -221,7 +297,11 @@ window.langs.push({
         'enter': 'Ввести',
         'hide': 'Скрыть',
         'save': 'Сохранить',
+        'send': 'Отправить',
         'restore': 'Восстановить',
+        'comeback': 'Вернуться',
+        'apply': 'Применить',
+        'warning': 'Предупреждение',
 
         'yes': 'Да',
         'no': 'Нет',
@@ -238,28 +318,38 @@ window.langs.push({
         'login': 'Логин',
         'password': 'Пароль',
 
-        'auth_choose_app': 'Какое приложение для авторизации будем использовать?',
+        'auth_choose_app': 'Выбери приложение для авторизации:',
         'auth_enter_token': 'Введи токен',
         'by_token': 'Использовать токен',
 
         'auth_enter_login_also': `
-        Безпарольная авторизация не поддерживается (vk не задокументировали), и 2FA тоже.
-        <br><br> 
-        С большой вероятностью появится ошибка "Access token has expired", потому что user agent не тот.
-        <br> 
-        Так же, если переусердствовать, твою страницу могут заморозить из-за "Подозрительной активности".
-        <br> 
-        А ещё, тебе придётся копировать токен вручную из-за ограничений CORS. Так что лучше используй OAuth.
-        `,
+        <ul>
+            <li>Безпарольная авторизация не поддерживается, и 2FA тоже.</li>
+            <li> Так же, если переусердствовать, твою страницу могут заморозить из-за "Подозрительной активности".</li>
+            <li>С большой вероятностью появится ошибка "Access token has expired", потому что user agent не тот.</li>
+            <li>А ещё, тебе придётся копировать токен вручную из-за ограничений CORS. Так что лучше используй OAuth.</li>
+        </ul>`,
+        
         'auth_enter_login': `
-        Безпарольная авторизация не поддерживается (vk не задокументировали), и 2FA тоже.
-        <br><br> 
-        С большой вероятностью появится ошибка "Access token has expired", потому что user agent не тот.
-        <br> 
-        Так же, если переусердствовать, твою страницу могут заморозить из-за "Подозрительной активности". Так что лучше используй OAuth.
+        <ul>
+            <li>Безпарольная авторизация не поддерживается, и 2FA тоже.</li>
+            <li>С большой вероятностью появится ошибка "Access token has expired", потому что user agent не тот.</li>
+            <li>Так же, если переусердствовать, твою страницу могут заморозить из-за "Подозрительной активности". Так что лучше используй OAuth.</li>
+        </ul>
         `,
 
-        'copy_token_from_address': 'Нужно будет скопировать токен из адресной строки и вставить в появившееся поле.',
+        'copy_token_from_address': `
+        <ul>
+            <li>После нажатия на "Авторизоваться" тебя перекинет на страницу авторизации, где тебе нужно нажать "Разрешить".</li>
+            <li>На новой странице скопируй токен: он находится между 'access_token' и '&expires_in'.</li>
+            <li>После этого вернись обратно на этот сайт и вставь токен в поле.</li>
+            <!--<li>Верить или не верить предупреждению на странице — дело твоё.</li>-->
+        </ul>`,
+        'auth_token_description': `
+        <ul>
+            <li>Токен ты можешь получить во вкладке <a href="#login/oauth">OAuth</a>.</li>
+        </ul>
+        `,
         'auth_app_vk_calls': 'Звонки ВКонтакте',
         'auth_app_vk_com': 'vk.com (не рекомендую)',
 
@@ -267,8 +357,12 @@ window.langs.push({
     },
 
     'user_page': {
+        'profile': 'Профиль',
         'edit_page': 'Редактировать',
+
         'user_avatar': 'Аватар пользователя',
+
+        'page_of_deceased': 'Страница покойного человека',
         'has_verification': 'Имеет галочку',
         'has_verification_esia': 'Подтвердил документы?',
         'has_verification_phone': 'Подтвердил номер телефона?',
@@ -284,6 +378,7 @@ window.langs.push({
         'online': 'В сети',
         'no_status': 'Нет статуса',
 
+        'info': 'Информация',
         'personal_info': 'Личная информация',
         'profile_info': 'Информация о профиле',
 
@@ -464,103 +559,103 @@ window.langs.push({
     },
 
     'counters': {
-        'albums_count_zero': '0 альбомов',
+        'albums_count_zero': '$1 альбомов',
         'albums_count_one': '$1 альбом',
         'albums_count_few': '$1 альбома',
         'albums_count_other': '$1 альбомов',
 
-        'articles_count_zero': '0 статей',
+        'articles_count_zero': '$1 статей',
         'articles_count_one': '$1 статья',
         'articles_count_few': '$1 статьи',
         'articles_count_other': '$1 статей',
 
-        'audios_count_zero': '0 аудиозаписей',
+        'audios_count_zero': '$1 аудиозаписей',
         'audios_count_one': '$1 аудиозапись',
         'audios_count_few': '$1 аудиозаписи',
         'audios_count_other': '$1 аудиозаписей',
 
-        'badges_count_zero': '0 значков',
+        'badges_count_zero': '$1 значков',
         'badges_count_one': '$1 значок',
         'badges_count_few': '$1 значка',
         'badges_count_other': '$1 значков',
 
-        'clips_count_zero': '0 вк-клипов',
+        'clips_count_zero': '$1 вк-клипов',
         'clips_count_one': '$1 вк-клип',
         'clips_count_few': '$1 вк-клипа',
         'clips_count_other': '$1 вк-клипов',
 
-        'friends_count_zero': '0 друзей',
+        'friends_count_zero': '$1 друзей',
         'friends_count_one': '$1 друг',
         'friends_count_few': '$1 друга',
         'friends_count_other': '$1 друзей',
         
-        'online_friends_count_zero': '0 друзей в сети',
+        'online_friends_count_zero': '$1 друзей в сети',
         'online_friends_count_one': '$1 друг в сети',
         'online_friends_count_few': '$1 друга в сети',
         'online_friends_count_other': '$1 друзей в сети',
 
-        'mutual_friends_count_zero': '0 общих друзей',
+        'mutual_friends_count_zero': '$1 общих друзей',
         'mutual_friends_count_one': '$1 общий друг',
         'mutual_friends_count_few': '$1 общих друга',
         'mutual_friends_count_other': '$1 общих друзей',
 
-        'gifts_count_zero': '0 подарков',
+        'gifts_count_zero': '$1 подарков',
         'gifts_count_one': '$1 подарок',
         'gifts_count_few': '$1 подарка',
         'gifts_count_other': '$1 подарков',
         
-        'groups_count_zero': '0 групп',
+        'groups_count_zero': '$1 групп',
         'groups_count_one': '$1 группа',
         'groups_count_few': '$1 группы',
         'groups_count_other': '$1 групп',
 
-        'interesting_pages_count_zero': '0 подписок',
+        'interesting_pages_count_zero': '$1 подписок',
         'interesting_pages_count_one': '$1 подписка',
         'interesting_pages_count_few': '$1 подписки',
         'interesting_pages_count_other': '$1 подписок',
         
-        'photos_count_zero': '0 фотографий',
+        'photos_count_zero': '$1 фотографий',
         'photos_count_one': '$1 фотография',
         'photos_count_few': '$1 фотографии',
         'photos_count_other': '$1 фотографий',
 
-        'topics_count_zero': '0 обсуждений',
+        'topics_count_zero': '$1 обсуждений',
         'topics_count_one': '$1 обсуждение',
         'topics_count_few': '$1 обсуждения',
         'topics_count_other': '$1 обсуждений',
 
-        'posts_on_wall_count_zero': '0 записей',
+        'posts_on_wall_count_zero': '$1 записей',
         'posts_on_wall_count_one': '$1 запись',
         'posts_on_wall_count_few': '$1 записи',
         'posts_on_wall_count_other': '$1 записей',
         
         'subscriptions_count': 'Нет подписчиков',
-        'subscriptions_count_zero': '0 подписчиков',
+        'subscriptions_count_zero': '$1 подписчиков',
         'subscriptions_count_one': '$1 подписчик',
         'subscriptions_count_few': '$1 подписчика',
         'subscriptions_count_other': '$1 подписчиков',
                 
-        'video_playlists_count_zero': '0 видеоальбомов',
+        'video_playlists_count_zero': '$1 видеоальбомов',
         'video_playlists_count_one': '$1 видеоальбом',
         'video_playlists_count_few': '$1 видеоальбома',
         'video_playlists_count_other': '$1 видеоальбомов',
                         
-        'added_videos_count_zero': '0 видеозаписей',
+        'added_videos_count_zero': '$1 видеозаписей',
         'added_videos_count_one': '$1 видеозаписей',
         'added_videos_count_few': '$1 видеозаписи',
         'added_videos_count_other': '$1 видеозаписей',
                                     
-        'followers_count_zero': '0 подписчиков',
+        'followers_count_zero': '$1 подписчиков',
         'followers_count_one': '$1 подписчик',
         'followers_count_few': '$1 подписчика',
         'followers_count_other': '$1 подписчиков',
 
-        'messages_count_zero': '0 сообщений',
+        'messages_count_zero': '$1 сообщений',
         'messages_count_one': '$1 сообщение',
         'messages_count_few': '$1 сообщения',
         'messages_count_other': '$1 сообщений',
 
-        'docs_count_zero': '0 документов',
+        'docs_count_zero': '$1 документов',
         'docs_count_one': '$1 документ',
         'docs_count_few': '$1 документа',
         'docs_count_other': '$1 документов',
@@ -600,6 +695,7 @@ window.langs.push({
 
     'groups': {
         'groups': 'Группы',
+        'club': 'Группа',
 
         'main_info': 'Основная информация',
         'is_closed': 'Группа закрыта?',
@@ -649,6 +745,7 @@ window.langs.push({
 
     'wall': {
         'wall': 'Стена',
+
         'pinned': 'закреплено',
         'search': 'Поиск',
         'edit_post': 'Редактировать',
@@ -673,17 +770,18 @@ window.langs.push({
         'suggests_posts': 'Предложенные записи',
         'postponed_posts': 'Отложенные записи',
         'search_posts': 'Поиск записей',
-        'post_has_deleted': `Пост удалён. <a href='javascript:void(0)' id='_postRestore'>Восстановить?</a>`,
-        'post_has_archived': `Пост был архивирован. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='1'>Вернуть?</a>`,
-        'post_has_unarchived': `Пост был возвращён из архива. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='0'>Архивировать?</a>`,
-        'post_has_ignored': `Пост был убран из ленты. <a href='javascript:void(0)' id='_toggleInteressness' data-val='1' data-type='$1'>Отменить?</a>`,
+        'post_has_deleted': `Запись удалена. <a href='javascript:void(0)' id='_postRestore'>Восстановить?</a>`,
+        'post_has_archived': `Запись была архивирована. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='1'>Вернуть?</a>`,
+        'post_has_unarchived': `Запись была возвращена из архива. <a href='javascript:void(0)' id='_postArchiveAction' data-ref='1' data-type='0'>Архивировать?</a>`,
+        'post_has_ignored': `Запись была убрана из ленты. <a href='javascript:void(0)' id='_toggleInteressness' data-val='1' data-type='$1'>Отменить?</a>`,
         
-        'no_posts_in_tab': 'Постов не обнаружено.',
+        'no_posts_in_tab': 'Запись не обнаружена.',
         'no_posts_in_search': 'По запросу ничего не найдено.',
         'no_comments': 'Комментариев нет.',
         'posts_invert': 'Инвертировать',
 
-        'post': 'Пост',
+        'post': 'Запись',
+        'post_from': 'Запись от $1',
         'updated_photo': 'обновлено фото',
         'updated_photo_group': 'обновили фото',
         'updated_photo_user_male': 'обновил фото',
@@ -727,6 +825,33 @@ window.langs.push({
         'sort_new_first': 'Сначала новые',
         'sort_old_first': 'Сначала старые',
         'sort_interesting_first': 'Сначала интересные',
+
+        'wall_of_x': 'Стена $1',
+        'follow_link': 'Перейти по ссылке',
+        'untitled_link': 'Безымянная ссылка',
+        'in_reply_of_post': 'в ответ на запись',
+        'middle_click_like_tip': 'Нажми правой кнопкой мыши, чтобы открыть остальные реакции.'
+    },
+
+    'polls': {
+        'poll': 'Опрос',
+        'anonymous_poll': 'Анонимный опрос',
+        'public_poll': 'Публичный опрос',
+        'ends_x': 'завершится $1',
+        'ended': 'завершился $1',
+        'many_variants': 'много вариантов',
+        'cant_revote': 'нельзя переголосовать',
+        'created': 'создан $1',
+        'vote_verb': 'Проголосовать',
+        'unvote_verb': 'Отменить голос',
+
+        'vote_as_first': 'Проголосуйте первым!',
+        'votes_count_zero': '$1 проголосовавших',
+        'votes_count_one': '$1 проголосовавший',
+        'votes_count_few': '$1 проголосовавших',
+        'votes_count_other': '$1 проголосовавших',
+
+        'only_from_friends': 'Только от друзей',
     },
 
     'newsfeed': {
@@ -735,15 +860,17 @@ window.langs.push({
         'section_smart_feed': 'Интересное',
         'section_recommend': 'Рекомендации',
         'section_friends': 'Друзья',
+        'section_only_friends': 'Именно друзья',
 
         'newsfeed_refresh': 'Обновить новости',
         'newsfeed_params': 'Параметры новостей',
+        'newsfeed_list': 'Список новостей',
         'newsfeed_lists': 'Списки новостей',
-        'newsfeed_return_banned': 'Скрытые посты',
+        'newsfeed_return_banned': 'Скрытые записи',
 
         'newsfeed_type': 'Тип новостей',
         'newsfeed_type_all': 'Все новости',
-        'newsfeed_type_posts': 'Посты',
+        'newsfeed_type_posts': 'Записи',
         'newsfeed_type_photo': 'Фотографии',
         'newsfeed_type_photo_tags': 'Отметки на фотографиях',
         'newsfeed_type_wall_photo': 'Новые фото',
@@ -764,8 +891,10 @@ window.langs.push({
 
     'photos': {
         'photo': 'Фотография',
+        'photo_from': 'Фотография от $1',
         'photos': 'Фотографии',
         'albums': 'Альбомы',
+        'album': 'Альбом',
 
         'graffiti': 'Граффити',
         'attached_link': 'Превью ссылки',
@@ -789,6 +918,11 @@ window.langs.push({
     'image_status': {
         'name': 'Статус',
         'get_status': 'Получить статус',
+    },
+
+    'subscriptions': {
+        'subscriptions': 'Подписки',
+        'subscriptions_of_x': 'Подписки $1',
     },
 
     'friends': {
@@ -819,6 +953,12 @@ window.langs.push({
     },
 
     'bookmarks': {
+        'notif_object_faved': 'Объект был добавлен в закладки.',
+        'notif_user_faved': 'Пользователь был добавлен в закладки.',
+        'notif_club_faved': 'Группа была добавлена в закладки.',
+        'notif_post_faved': 'Запись была добавлена в закладки.',
+        'notif_link_faved': 'Ссылка была добавлена в закладки.',
+
         'bookmarks': 'Закладки',
         'mark_as_viewed': 'Пометить прочитанными',
 
@@ -826,7 +966,7 @@ window.langs.push({
         'pages_bookmarks': 'Страницы',
         'user_bookmarks': 'Пользователи',
         'group_bookmarks': 'Группы',
-        'post_bookmarks': 'Посты',
+        'post_bookmarks': 'Записи',
         'article_bookmarks': 'Статьи',
         'link_bookmarks': 'Ссылки',
         'podcast_bookmarks': 'Подкасты',
@@ -837,7 +977,7 @@ window.langs.push({
         'pages_bookmarks_title': 'Страницы | Закладки',
         'user_bookmarks_title': 'Пользователи | Закладки',
         'group_bookmarks_title': 'Группы | Закладки',
-        'post_bookmarks_title': 'Посты | Закладки',
+        'post_bookmarks_title': 'Записи | Закладки',
         'article_bookmarks_title': 'Статьи | Закладки',
         'link_bookmarks_title': 'Ссылки | Закладки',
         'podcast_bookmarks_title': 'Подкасты | Закладки',
@@ -892,17 +1032,12 @@ window.langs.push({
 
         'search_params_posts_attachments': 'Вложения',
         'search_params_posts_type': 'Тип',
+        'search_params_posts_from': 'Автор',
         'search_params_posts_link': 'Содержит ссылку',
         'search_params_posts_exclude': 'Исключить слова',
         'search_params_posts_likes': 'Отметки "Нравятся"',
         'search_params_posts_show_trash': 'Показывать спам',
-
-        'search_params_posts_attachments_tip': `То же, что и "has:{тип_аттачмента}".`,
-        'search_params_posts_type_tip': `То же, что и "type:[copy|reply]".`,
-        'search_params_posts_link_tip': `То же, что и "url:{ссылка}".`,
-        'search_params_posts_exclude_tip': `То же, что и "exclude:{слова}".`,
-        'search_params_posts_likes_tip': `То же, что и "likes:{число лайков}".`,
-        'search_params_posts_rated_tip': `То же, что и "rated:{0}".`,
+        
         'search_params_posts_likes_not_lesser': 'Не меньше $1',
         'search_params_posts_likes_any': 'Любое количество',
 
@@ -914,14 +1049,18 @@ window.langs.push({
         'search_params_posts_attachments_note': 'Заметка',
         'search_params_posts_attachments_poll': 'Опрос',
         'search_params_posts_attachments_link': 'Ссылка',
-        'search_params_posts_attachments_file': 'Файл',
+        'search_params_posts_attachments_file': 'Документ',
         'search_params_posts_attachments_album': 'Фотоальбом',
         'search_params_posts_attachments_article': 'Статья',
         'search_params_posts_attachments_wikipage': 'Вики-страница',
         'search_params_posts_attachments_none': 'Без вложений',
 
-        'search_params_posts_type_none': 'Любые посты',
+        'search_params_posts_type_none': 'Любые записи',
         'search_params_posts_type_copies': 'Только копии',
+        'search_params_posts_type_replies': 'Только ответы',
+
+        'search_params_posts_from_any': 'Любой',
+        'search_params_posts_from_owner': 'Владелец стены',
 
         'search_params_docs_mine': 'Искать в своих',
         'search_params_docs_type': 'Тип документов',
@@ -932,6 +1071,7 @@ window.langs.push({
 
     'gifts': {
         'gifts': 'Подарки',
+        'gifts_of_x': 'Подарки $1',
     },
 
     'user_page_edit': {
@@ -1021,18 +1161,34 @@ window.langs.push({
         'friends_notes': 'Заметки друзей',
     },
 
+    'likes': {
+        'list_of_likers': 'Список лайкнувших',
+        'list_of_likers_type_post': 'Запись',
+        'list_of_likers_type_comment': 'Комментарий',
+        'list_of_likers_type_photo': 'Фотография',
+        'list_of_likers_type_video': 'Видео',
+        'list_of_likers_type_note': 'Заметка',
+        'list_of_likers_type_photo_comment': 'Комментарий к фото',
+        'list_of_likers_type_video_comment': 'Комментарий к видео',
+        'list_of_likers_type_topic_sitepage': 'Виджет',
+
+        'likes_tab': 'Лайкнувшие',
+        'reposts_tab': 'Поделившиеся',
+    },
+
     'errors': {
         'error': 'Ошибка',
         'not_all_fields_filled': 'Не все поля заполнены',
         'token_is_valid': 'Токен валидный. Вы будете перенаправлены на страницу через 5 секунд',
         'vk_api_error': 'VK API says: $1',
-        'post_not_found': 'Пост не найден.',
+        'post_not_found': 'Запись не найдена.',
+
         'post_access_denied': 'Нет доступа к записи.',
         'not_all_fields': 'Не все поля введены',
-        'profile_not_found': `Запрашиваемый профиль не найден. <br> Может, ты имел ввиду <a href='#club$1'>группу?</a>`,
-        'group_not_found': `Запрашиваемая группа не найдена. <br> Может, ты имел ввиду <a href='#id$1'>профиль?</a>`,
-        'wall_not_found': 'Стена не найдена,',
-        'post_not_found': `Пост не найден.`,
+        'profile_not_found': `Страница удалена либо ещё не создана.`,
+        'group_not_found': `Запрашиваемая группа не найдена.`,
+        'wall_not_found': 'Нет доступа к стене.',
+        
         'not_authorized': 'Ты не авторизовался.',
         'error_getting_wall': 'Ошибка при выполнении метода. Текст: $1',
         'error_getting_news': 'Ошибка при получении новостей. Текст: $1',
@@ -1065,6 +1221,7 @@ window.langs.push({
         'groups_recents_error': 'Недавних групп не найдено.',
 
         'search_not_found': 'По запросу ничего не найдено.',
+        'search_wall_not_found': 'По запросу ничего не найдено.',
         'no_account_with_id': 'Аккаунта с таким индексом не найдено.',
         'this_is_not_user': 'Это не пользователь.',
         'not_found_user': 'Пользователя по ссылке не найдено.',
@@ -1083,11 +1240,24 @@ window.langs.push({
         'error_downloading_file': 'Скачать файл не получится из-за ограничений браузера. Использовать allorigins?',
         'docs_load_error': `Не получится отобразить данный документ. <a target='_blank' href='$1'>Посмотреть в VK</a>`,
         'doc_not_found': 'Документ не найден.',
+        'photo_not_found': 'Фото не найдено.',
 
         'notifications_old_error': 'Похоже, ты используешь токен, который не поддерживает новый формат уведомлений. Лучше авторизуйся через другое приложение.',
         'error_getting_notifs': 'Ошибка получения уведомлений. Текст: $1',
         'notes_cant_club': 'У группы не может быть заметок.',
         'not_es_found': 'Заметок не найдено.',
         'note_not_found': 'Заметка не найдена.',
+        'account_login_error': 'Ошибка входа в аккаунт',
+        'account_login_error_desc': 'Не удалось войти в аккаунт.<br>Подробности: $1',
+
+        'wall_empty_posts': 'На стене нет ни одной записи.',
+        'tab_empty_posts': 'В этой вкладке нет записей.',
+        'poll_not_found': 'Опрос не найден.',
+        'poll_is_anonymous': 'Данный опрос анонимен.',
+        'no_voters_poll': 'За данный вариант никто не проголосовал.',
+        'poll_no_voted': 'Чтобы посмотреть результаты опроса, проголосуйте.',
+        'no_comments': 'Комментариев нет.',
+
+        'notif_object_not_faved': 'Ошибка при добавлении объекта в закладки.',
     },
 })

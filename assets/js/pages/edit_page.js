@@ -1,12 +1,16 @@
-window.page_class = new class {
+if(!window.pages) {
+    window.pages = {}
+}
+
+window.pages['edit_page'] = new class {
     async render_page(section = null) 
     {
         if(section == null) {
             section = window.main_class['hash_params'].section ?? 'main'
         }
 
-        document.title = _('user_page_edit.edit_page_' + section)
-        $('.page_content')[0].innerHTML = `
+        main_class.changeTitle(_('user_page_edit.edit_page_' + section))
+        u('.page_content').html(`
             <div class='default_wrapper'>
                 <div class='edit_page bordered_block'>
                     <div class='tabs'>
@@ -19,27 +23,26 @@ window.page_class = new class {
                     <div class='content'></div>
                 </div>
             </div>
-        `
+        `)
 
         switch(section) {
             case 'main':
-                $('.content')[0].innerHTML = `Not_done) :D`
+                u('.content').html(`Not_done) :D`)
                 break
             case 'blacklist':
                 let list = null
 
                 if(!window.black_list) {
-                    list = await window.vk_api.call('account.getBanned', {'fields': window.Utils.typical_fields + ',domain', 'count': 100})
-                    list = list.response
+                    list = await window.vk_api.call('account.getBanned', {'fields': window.consts.TYPICAL_FIELDS + ',domain', 'count': 100})
 
                     window.black_list = list
                 } else {
                     list = window.black_list
                 }
 
-                $('.content')[0].innerHTML = `
+                u('.content').html(`
                     <div class='flex_row justifier'>
-                        <b>${_('user_page_edit.accounts_in_bl', list.count)}</b>
+                        <b id='_bl_count'>${_('user_page_edit.accounts_in_bl', list.count)}</b>
 
                         <input id='_bl_add_user' style='height: 20px;padding: 0px 3px;' type='button' value='${_('user_page_edit.add')}'>
                     </div>
@@ -50,18 +53,18 @@ window.page_class = new class {
                     </div>
 
                     <div class='content_blacklist'></div>
-                `
+                `)
 
                 function insert_profiles(items) {
-                    const base = $('.content .content_blacklist')[0]
-                    base.innerHTML = ''
+                    const base = u('.content .content_blacklist')
+                    base.html('')
 
                     items.forEach(item => {
                         let user = new User
                         user.hydrate(item)
 
-                        base.insertAdjacentHTML('beforeend', `
-                            <div class='content_blacklist_item'>
+                        base.append(`
+                            <div class='content_blacklist_item' data-id='${user.getId()}'>
                                 <div class='content_blacklist_item_info'>
                                     <div class='content_blacklist_item_avatar'>
                                         <a href='${user.getUrl()}'>
@@ -81,18 +84,29 @@ window.page_class = new class {
                                         <div>
                                             ${user.has('online') ? `<span>${user.getFullOnline()}</span> | ` : ''}
     
-                                            <a data-ignore='1' href='#' id='_toggleBlacklist' data-addid='${user.getId()}' data-val='1'>${_('blacklist.remove_from_blacklist')}</a>
+                                            <a data-ignore='1' href='javascript:void(0)' id='_toggleBlacklist' data-addid='${user.getId()}' data-val='1'>${_('blacklist.remove_from_blacklist')}</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         `)
+
+                        u(`.content_blacklist_item[data-id='${user.getId()}'] #_toggleBlacklist`).on('click', async (e) => {
+                            u(`.content_blacklist_item[data-id='${user.getId()}']`).remove()
+                            window.black_list.count -= 1
+                            u('#_bl_count').html(_('user_page_edit.accounts_in_bl', window.black_list.count))
+
+                            await window.vk_api.call('account.unban', {'owner_id': user.getId()})
+
+                            const find_index = window.black_list.profiles.findIndex(el => el.id == user.getId())
+                            window.black_list.profiles = Utils.array_splice(window.black_list.profiles, find_index)
+                        })
                     })
                 }
 
                 insert_profiles(list.profiles)
 
-                $('.content_blacklist_search input[type=\'query\']').on('change', (e) => {
+                u('.content_blacklist_search input[type=\'query\']').on('change', (e) => {
                     let query = e.target.value
 
                     if(query.length < 1) {
@@ -110,13 +124,13 @@ window.page_class = new class {
 
                 break
             case 'privacy':
-                $('.content')[0].innerHTML = `Not_done) :D`
+                u('.content').html(`Not_done) :D`)
                 break
             case 'notifications':
-                $('.content')[0].innerHTML = `Not_done) :D`
+                u('.content').html(`Not_done) :D`)
                 break
         }
 
-        $(`.tabs a[data-section=${section}]`).addClass('selected')
+        u(`.tabs a[data-section=${section}]`).addClass('selected')
     }
 }

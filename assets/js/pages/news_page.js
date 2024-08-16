@@ -1,9 +1,8 @@
-window.page_class = new class {
+window.pages['news_page'] = new class {
     async render_page() {
-        let tab = window.main_class['hash_params'].section ?? 'def'
+        const tab = window.main_class['hash_params'].section ?? 'def'
         
-        $('.page_content')[0].insertAdjacentHTML('beforeend', 
-            `
+        u('.page_content').html(`
             <div class='layer_two_columns default_wrapper newsfeed_wrapper'>
                 <div>
                     <div class='newsfeed_wrapper_posts'></div>
@@ -55,6 +54,7 @@ window.page_class = new class {
 
         let method = 'newsfeed.get'
         let method_params = {'count': 10, 'fields': window.Utils.typical_fields + ',' + window.Utils.typical_groups_fields, 'extended': 1}
+        let title_sub = null
 
         if(window.main_url.getParam('news_type', 'all') != 'all') {
             method_params.filters = window.main_url.getParam('news_type', 'all')
@@ -67,33 +67,41 @@ window.page_class = new class {
         switch(tab) {
             default:
                 method = 'newsfeed.get'
+                title_sub = _('newsfeed.section_default')
+
                 break
             case 'smart':
                 method = 'newsfeed.getByType'
                 method_params.feed_type = 'top'
+                title_sub = _('newsfeed.section_smart_feed')
                 
                 break
             case 'recommend':
                 method = 'newsfeed.getRecommended'
+                title_sub = _('newsfeed.section_recommend')
+
                 break
             case 'follow':
                 method = 'newsfeed.get'
+                title_sub = _('newsfeed.section_friends')
 
                 method_params.source_ids = 'friends,following'
                 break
             case 'frien':
                 method = 'newsfeed.get'
+                title_sub = _('newsfeed.section_only_friends')
 
                 method_params.source_ids = 'friends'
                 break
             case 'custom':
                 method = 'newsfeed.get'
+                title_sub = _('newsfeed.newsfeed_list')
 
                 method_params.source_ids = 'list' + window.main_url.getParam('news_section_list')
                 break
         }
 
-        document.title = _(`newsfeed.newsfeed`)
+        main_class.changeTitle(title_sub, _(`newsfeed.newsfeed`))
         window.main_classes['wall'] = new Newsfeed('.newsfeed_wrapper_posts')
         window.main_classes['wall'].setParams(method, method_params)
         
@@ -105,8 +113,7 @@ window.page_class = new class {
 
         if(window.main_classes['wall'].lists) {
             window.main_classes['wall'].lists.items.forEach(list => {
-                $('#__insertlists')[0].insertAdjacentHTML('beforeend', 
-                    `
+                u('#__insertlists').append(`
                     <a href='#feed/custom?news_section_list=${list.id}&news_type=post' ${Number(window.main_url.getParam('news_section_list')) == list.id ? 'class=\'selected\'' : ''}>${list.title}</a>
                     `
                 )
