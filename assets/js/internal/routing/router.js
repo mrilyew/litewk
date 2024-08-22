@@ -139,7 +139,7 @@ window.router = (function() {
             window.main_url = new BetterURL(location.href)
         },
         route: async function(input_url, history_log = true, back_url = null) {
-            let url = input_url.removeAll(location.origin).removeAll(location.pathname).removePart('#')  
+            let url = input_url.removeAll(location.origin).removePart(location.pathname).removePart('#')  
 
             if(!url || url == '') {
                 if(window.active_account) {
