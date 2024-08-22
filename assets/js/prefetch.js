@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/css/layout.css',
     ]
 
-    const base = '/litewk/'
+    const base = '/'
     __addBase(base)
 
     if((localStorage.getItem('ux.hide_waterfall') ?? '0') == '0') {
