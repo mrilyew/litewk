@@ -1,0 +1,24 @@
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--elements-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--elements-color-second);
+    border: 1px solid var(--background-color);
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-color);
+}
+
+.navigation::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-corner {
+    display: none;
+}

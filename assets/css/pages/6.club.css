@@ -1,0 +1,45 @@
+/* Club page */
+
+.club_page_wrapper .club_page_grid {
+    grid-template-columns: 1fr 0fr;
+    gap: 6px;
+    display: grid;
+}
+
+/* Group history */
+
+.club_history {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.club_history .club_history_item {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+}
+
+.club_history .club_history_item .club_history_item_info {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Similar groups */
+
+#_similar_groups_block .listview_insert {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-flow: wrap;
+    gap: 8px;
+}
+
+#_similar_groups_block .listview_insert .carousel_entity_item {
+    width: 24%;
+}
+
+#_similar_groups_block .listview_insert .carousel_entity_item_content_name {
+    display: flex;
+    flex-direction: column;
+}

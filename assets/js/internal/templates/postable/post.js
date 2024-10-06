@@ -6,6 +6,7 @@ window.templates.post = (post, additional_options = {}) => {
     const owner = post.getOwner()
     const signer = post.getSigner()
     const reactions = post.getReactionSet()
+    const comment_sort = window.settings_manager.getItem('ux.default_sort').getValue()
 
     if(additional_options.added_photos == 1) {
         if(!post.info.post_source) {
@@ -43,7 +44,7 @@ window.templates.post = (post, additional_options = {}) => {
     const should_short_text = window.site_params.get('ux.shortify_text', '1') == '1' && !additional_options.force_full_text
     
     let template = u(`
-    <div class='post main_info_block dropdown_root' data-reactions='${post.getReactionsArray()}' data-type='post' data-postid='${post.getId()}'>
+    <div class='post main_info_block dropdown_root' data-type='post' data-postid='${post.getId()}'>
         <div class='post_hidden_by_default post_restore_block'>
             ${_('wall.post_has_deleted')}
         </div>
@@ -70,8 +71,8 @@ window.templates.post = (post, additional_options = {}) => {
                         </a>
                     </div>
                     <div class='post_name'>
-                        <div class='post_name_sup flex_row'>
-                            <p>
+                        <div class='post_name_sub flex flex_row'>
+                            <span>
                                 <b>
                                     <a href='${owner.getUrl()}' ${owner.isFriend() ? `class='friended'` : ''} data-back='${main_url.getHash()}'>
                                         ${owner.getName()}
@@ -84,7 +85,7 @@ window.templates.post = (post, additional_options = {}) => {
                                 </div>` : ``}
 
                             ${post.hasUpperText() ? post.getUpperText() : ''}
-                            </p>
+                            </span>
                         </div>
                         <p class='post_date'>
                             <a href='#wall${post.getId()}'>${post.getDate()}</a>
@@ -96,24 +97,7 @@ window.templates.post = (post, additional_options = {}) => {
                 ${post.isntRepost() ? 
                 `
                 <div class='post_toggle_wrap'>
-                    <svg class='posts_menu_toggle dropdown_toggle' data-onid='_actposts${post.getId()}' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.35 7.54"><g><polyline points="0.44 0.63 8.73 6.63 17.94 0.63"/></g></svg>
-                    <div class='dropdown_actions dropdown_wrapper'>
-                        <div class='dropdown_menu' id='_actposts${post.getId()}'>
-                            ${post.canEdit() ? `<p id='_postEdit'>${_('wall.edit_post')}</p>` : ''}
-                            ${post.canDelete() ? `<p id='_postDelete'>${_('wall.delete_post')}</p>` : ''}
-                            ${post.canArchive() && !post.isArchived() ? `<p id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</p>` : ''}
-                            ${post.canArchive() && post.isArchived()? `<p id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</p>` : ''}
-                            ${post.canPin() && post.isPinned() ? `<p id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</p>` : ''}
-                            ${post.canPin() && !post.isPinned() ? `<p id='_pinPost' data-act='pin'>${_('wall.pin_post')}</p>` : ''}
-                            ${post.canShut() ? `<p id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</p>` : ''}
-                            ${post.canUp() ? `<p id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</p>` : ''}
-                            ${!post.canDelete() ? `<p id='_reportPost'>${_('wall.report_post')}</p>` : ''}
-                            ${post.isFaved() ? `<p id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</p>` : ''}
-                            ${!post.isFaved() ? `<p id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</p>` : ''}
-                            <a href='https://vk.com/wall${post.getId()}' target='_blank'><p>${_('wall.go_to_vk')}</p></a>
-                            ${post.info.source_id ? `<p id='_toggleInteressness' data-val='0' data-type='${post.info.type}' data-addid='${post.getId()}'>${_('wall.not_interesting')}</p>` : ''}
-                        </div>
-                    </div>
+                    <svg class='posts_menu_toggle dropdown_toggle' id='_actposts${post.getId()}' viewBox="0 0 18.35 7.54"><g><polyline points="0.44 0.63 8.73 6.63 17.94 0.63"/></g></svg>
                 </div>` : ''}
             </div>
 
@@ -142,11 +126,11 @@ window.templates.post = (post, additional_options = {}) => {
 
             ${post.info.likes ?
             `<div class='post_bottom'>
-                <div class='post_actions' oncontextmenu='return false;'>
+                <div class='post_actions'>
                     ${window.templates._post_like(post.info.likes.user_likes == 1, post.hasLikes(), post.getLikes(), reactions, post.getId())}
-                    ${!additional_options.hide_comments && !post.needToHideComments() ? `
-                    <a href='#wall${post.getId()}' data-back='${main_url.getHash()}' class='comment'>
-                        <svg class='comment_icon' viewBox="0 0 18 17"><g><polygon id="comment" points="0 0 0 12.47 5.63 12.47 1.13 17 5.63 17 12.38 12.47 18 12.47 18 0 0 0"/><polygon points="1 1 1 11 8 11 5 14 8 14 12 11 17 11 17 1 1 1"/></g></svg>
+                    ${!post.needToHideComments() ? `
+                    <a href='${!additional_options.hide_comments_button ? `#wall${post.getId()}` : 'javascript:void(0)'}' data-back='${main_url.getHash()}' class='comment'>
+                        <svg viewBox="0 0 15.53 14.47"><polygon points="0 0 0 10.61 4.86 10.61 0.97 14.47 4.86 14.47 10.68 10.61 15.53 10.61 15.53 0 0 0"/></svg>
 
                         ${post.hasCommentsCount() ? `<span class='comments_handler'>${post.getCommentsCount()}</span>` : ''}
                     </a>` : ''}
@@ -160,6 +144,39 @@ window.templates.post = (post, additional_options = {}) => {
                     <span>${post.getViews().divideByDigit()}</span>
                 </div>` : ''}
             </div>` : ''}
+        </div>
+
+        ${additional_options.show_comments_block == 1 ? `
+        <div class='post_comments_wrapper'>
+            ${post.getCommentsCount() > 1 ? `
+            <div id='post_comment_sort' class='comment_sort'>
+                <select>
+                    <option value='desc' ${comment_sort == 'desc' ? 'selected' : ''}>${_('wall.sort_new_first')}</option>
+                    <option value='asc' ${comment_sort == 'asc' ? 'selected' : ''}>${_('wall.sort_old_first')}</option>
+                    <option value='smart' ${comment_sort == 'smart' ? 'selected' : ''}>${_('wall.sort_interesting_first')}</option>
+                </select>
+            </div>
+            
+            <div class='post_comments_wrapper_wrapper'></div>
+            ` : ''}
+        </div>` : ''}
+
+        <div data-trigger='#_actposts${post.getId()}' data-type='click' class='dropdown_actions dropdown_menu_wrapper more_actions'>
+            <div class='more_actions_body more_actions_insert'>
+                ${post.canEdit() ? `<a class='action' id='_postEdit'>${_('wall.edit_post')}</a>` : ''}
+                ${post.canDelete() ? `<a class='action' id='_postDelete'>${_('wall.delete_post')}</a>` : ''}
+                ${post.canArchive() && !post.isArchived() ? `<a class='action' id='_postArchiveAction' data-type='0'>${_('wall.archive_post')}</a>` : ''}
+                ${post.canArchive() && post.isArchived()? `<a class='action' id='_postArchiveAction' data-type='1'>${_('wall.unarchive_post')}</a>` : ''}
+                ${post.canPin() && post.isPinned() ? `<a class='action' id='_pinPost' data-act='unpin'>${_('wall.unpin_post')}</a>` : ''}
+                ${post.canPin() && !post.isPinned() ? `<a class='action' id='_pinPost' data-act='pin'>${_('wall.pin_post')}</a>` : ''}
+                ${post.canShut() ? `<a class='action' id='_changeComments' data-act='close'>${_('wall.disable_comments_post')}</a>` : ''}
+                ${post.canUp() ? `<a class='action' id='_changeComments' data-act='open'>${_('wall.enable_comments_post')}</a>` : ''}
+                ${post.canReport() ? `<a class='action' id='_reportPost'>${_('wall.report_post')}</a>` : ''}
+                ${post.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='post' data-addid='${post.getId()}'>${_('faves.remove_from_faves')}</a>` : ''}
+                ${!post.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='post' data-addid='${post.getId()}'>${_('faves.add_to_faves')}</a>` : ''}
+                <a class='action' href='https://vk.com/wall${post.getId()}' target='_blank'><span>${_('wall.go_to_vk')}</span></a>
+                ${post.info.source_id ? `<a class='action' id='_toggleInteressness' data-val='0' data-type='${post.info.type}' data-addid='${post.getId()}'>${_('wall.not_interesting')}</a>` : ''}
+            </div>
         </div>
     </div>`)
 
@@ -176,36 +193,51 @@ window.templates.post = (post, additional_options = {}) => {
 }
 
 window.templates.post_skeleton = () => {
-    let seed = Utils.random_int(0, 3)
-    let seed_html = ''
+    const seed = Utils.random_int(0, 4)
+    const seed_html = u(`<div></div>`)
 
     switch(seed) {
         default:
-            seed_html = `
-                <span>...</span>
+            seed_html.html(`
+                <span></span>
                 <div class='attachments'>
                     <div class='ordinary_attachments'>
                         <div class='filler' style='width: 30%;height: 100px;'></div>
                     </div>
                 </div>
-            `
+            `)
+
             break
         case 1:
-            seed_html = `
+            seed_html.html(`
                 <div class='attachments'>
                     <div class='ordinary_attachments'>
-                        <div class='filler' style='width: 30%;height: 100px;'></div>
-                        <div class='filler' style='width: 30%;height: 100px;'></div>
-                        <div class='filler' style='width: 30%;height: 100px;'></div>
+                        <div class='filler' style='width: ${Utils.random_int(10, 30)}%;height: 100px;'></div>
+                        <div class='filler' style='width: ${Utils.random_int(10, 50)}%;height: 100px;'></div>
+                        <div class='filler' style='width: ${Utils.random_int(10, 30)}%;height: 100px;'></div>
                     </div>
                 </div>
-            `
+            `)
+
             break
         case 2:
-            seed_html = `<div class='repost_block'>${window.templates.post_skeleton()}</div>`
-            break
+            if(seed_html.find('.repost_block').length > 0) {
+                seed_html.html(`
+                    <div class='repost_block'>${window.templates.post_skeleton()}</div>
+                `)
+                break
+            }
         case 3:
-            seed_html = `<span>...</span>`
+            seed_html.html(`<p class='filler' style='height: ${Utils.random_int(20, 100)}px;'></p>`)
+            break
+        case 4:
+            seed_html.html(`
+            <div class='attachments'>
+                <div class='ordinary_attachments'>
+                    <div class='filler' style='width: 50%;height: 100px;'></div>
+                </div>
+            </div>
+            `)
             break
     }
 
@@ -220,16 +252,16 @@ window.templates.post_skeleton = () => {
                     <div class='post_name'>
                         <div class='post_name_sup'>
                             <p>
-                                <b>...</b>
+                                <b></b>
                             </p>
                         </div>
 
-                        <p class='post_date'>...</p>
+                        <p class='post_date'></p>
                     </div>
                 </div>
             </div>
             <div class='post_content contenter'>
-                ${seed_html}
+                ${seed_html.html()}
             </div>
         </div>
     </div>

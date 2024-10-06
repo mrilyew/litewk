@@ -1,0 +1,18 @@
+.content_blacklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.content_blacklist_search {
+    padding: 5px 0px 10px 0px;
+}
+
+.content_blacklist_item_info {
+    display: flex;
+    gap: 5px;
+}
+
+.content_blacklist_item_info .content_blacklist_item_avatar img {
+    width: 40px;
+}

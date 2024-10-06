@@ -59,7 +59,7 @@ window.templates._masonry = (images, maxWidth, maxHeight) => {
     const count = formatted_images.length 
     let end = document.createElement('div')
 
-    console.log(orientations)
+    //console.log(orientations)
     switch(count) {
         // ###
         // ###

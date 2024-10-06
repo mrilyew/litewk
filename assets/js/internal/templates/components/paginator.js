@@ -31,7 +31,7 @@ window.templates.paginator = (pagesCount, activePage, stepCount = 3) => {
         temp_url.setParam('page', 1)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='1' href='${temp_url.hash}'>«</a>
+            <a data-ignore='1' class='paginator_arrow' data-page='1' href='${temp_url.hash}'>«</a>
         `
     }
 
@@ -39,7 +39,7 @@ window.templates.paginator = (pagesCount, activePage, stepCount = 3) => {
         temp_url.setParam('page', activePage - 1)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage - 1}' href='${temp_url.hash}'>‹</a>
+            <a data-ignore='1' class='paginator_arrow' data-page='${activePage - 1}' href='${temp_url.hash}'>‹</a>
         `
     }
 
@@ -55,7 +55,7 @@ window.templates.paginator = (pagesCount, activePage, stepCount = 3) => {
         temp_url.setParam('page', activePage + 1)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${activePage + 1}' href='${temp_url.hash}'>›</a>
+            <a data-ignore='1' class='paginator_arrow' data-page='${activePage + 1}' href='${temp_url.hash}'>›</a>
         `
     }
 
@@ -63,7 +63,7 @@ window.templates.paginator = (pagesCount, activePage, stepCount = 3) => {
         temp_url.setParam('page', pagesCount)
 
         template_div.querySelector('.paginator').innerHTML += `
-            <a data-ignore='1' data-page='${pagesCount}' href='${temp_url.hash}'>»</a>
+            <a data-ignore='1' data-page='${pagesCount}' class='paginator_arrow' href='${temp_url.hash}'>»</a>
         `
     }
 

@@ -13,14 +13,14 @@ window.router = (function() {
             window.black_list = null
         },
         restart: function(add, condition = '') {
-            const menu_html = u('.navigation').html()
+            const menu_html = u('.navigation_list').html()
             
             window.router.emptyPage()
             main_class.loadLayout(add)
             main_class.runTriggers()
-    
+            
             if(condition != 'ignore_menu') {
-                u('.navigation').html(menu_html)
+                u('.navigation_list').html(menu_html)
             }
         },
         hardRestart: function() {
@@ -36,7 +36,7 @@ window.router = (function() {
                 const route_formatted = route.url.escapeHtml()
                 const route_template  = route_formatted.replace(window.consts.REGEX_ROUTE_PATTERN, '([^/]+)')
                 const route_matches   = url.match(route_template)
-
+                
                 if(route_matches) {
                     const route_matches_arr = route.url.match(window.consts.REGEX_ROUTE_PATTERN)
                     
@@ -73,7 +73,7 @@ window.router = (function() {
     
                                 break
                         }
-
+                        
                         _iterator += 1
                     }
     
@@ -105,22 +105,12 @@ window.router = (function() {
         },
         __actMenu: function(hide) {
             if(hide) {
-                u('.navigation').nodes[0].style.display = 'none'
+                u('.navigation').attr('style', `display:none;`)
                 u('body').addClass('simple')
             } else {
-                u('.navigation').nodes[0].style.display = 'flex'
+                u('.navigation').attr('style', `display:flex;`)
                 u('body').removeClass('simple')
             }
-        },
-        __changePageClass: async function(page) {
-            window.page_class = window.pages[page]
-
-            if(typeof window.page_class.show_skeleton == 'function') {
-                window.scrollTo(0, 0)
-                window.page_class.show_skeleton()
-            }
-
-            await window.page_class.render_page()
         },
         pushState: function (url) {
             if(url.indexOf('#') == -1 && window.site_params.get('ux.hash_to_url', '1') == '1') {
@@ -150,19 +140,6 @@ window.router = (function() {
             }
 
             let route_parsed = this.__parseRoute(url)
-            let saved_page = SavedPage.find(url)
-            if(saved_page) {
-                let saved_url = saved_page.info.url
-                let parsed_route = this.__parseRoute(saved_url)
-                
-                if(!parsed_route || !parsed_route.route.ignore_save) {
-                    saved_page.load()
-                    this.__actMenu(parsed_route.route.hide_menu)
-                    this.__appendBackButton(back_url)
-    
-                    return
-                }
-            }
     
             this.resetPage()
             if(!route_parsed) {
@@ -177,130 +154,48 @@ window.router = (function() {
                 }
             }
 
+            this.currentRoute = route_parsed.route
             main_class['hash_params'] = route_parsed['params_matched']
             this.__actMenu(route_parsed.route.hide_menu)
-            await this.__changePageClass(route_parsed['route'].script_name)
-            
-            if(typeof window.page_class.execute_buttons == 'function') {
-                window.page_class.execute_buttons()
+
+            const controller = route_parsed['route'].script_name.split('.')
+            const controller_name = controller[0]
+            const controller_function = controller[1]
+
+            window.page_controller = window.controllers[controller_name]
+            if(!window.page_controller) {
+                main_class.addErrorWithBackButton(_('errors.broken_controller'))
+                return
             }
 
-            SavedPage.save(url)
+            if(typeof window.page_controller[controller_function + 'Skeleton'] == 'function') {
+                window.scrollTo(0, 0)
+                window.page_controller[controller_function + 'Skeleton']()
+            }
+
+            await window.page_controller[controller_function]()
+            if(typeof window.page_controller[controller_function + 'ExecuteButtons'] == 'function') {
+                window.page_class[controller_function + 'ExecuteButtons']()
+            }
     
             this.__appendBackButton(back_url)
             main_class.setupObservers()
             main_class.runTriggers()
+            window.header.checkHeader()
+
+            // Close messageboxes
+
+            if(window.messagebox_stack && window.messagebox_stack.length > 0) {
+                window.messagebox_stack.forEach(msg => {
+                    msg.close()
+                })
+            }
+
 
             window.scrollTo(0, 0)
         }
     }
 })()
-
-
-class SavedPage {
-    constructor(page) {
-        if(!page) {
-            return null
-        }
-
-        this.info = page
-    }
-
-    getInfo() {
-        return {
-            'url': this.info.url,
-            'html': this.info.html,
-            'classes': this.info.classes,
-            'scroll': this.info.scroll,
-            'temp_scroll': this.info.temp_scroll,
-            'title': this.info.title
-        }
-    }
-
-    load() {
-        console.info('Router | Page ' + this.info.url + ' has been loaded from cache.')
-
-        window.main_classes = null
-        window.main_classes = this.info.classes
-        window.temp_scroll  = this.info.temp_scroll
-        document.title      = this.info.title
-
-        window.main_class['hash_params'] = this.info.hash_params
-        this.info.url.replaceState()
-
-        u('.page_content').html(this.info.html)
-
-        main_class.setupObservers()
-        window.main_class.runTriggers()
-
-        window.scrollTo(0, this.info.scrollY)
-
-        if(typeof window.page_class.execute_buttons == 'function') {
-            window.page_class.execute_buttons()
-        }
-    }
-
-    static getAll() {
-        let pages = []
-
-        window.saved_pages.forEach(el => {
-            pages.push(new this(el))
-        })
-
-        return pages
-    }
-
-    static find(url) {
-        if(window.site_params.get('ux.savepager', '0') == '0') {
-            return null
-        }
-
-        let found_page = window.saved_pages.find(page => page.url == url)
-
-        if(!found_page || found_page == undefined) {
-            return null
-        }
-
-        return new this(found_page)
-    }
-
-    static save(input_url) {
-        if(window.site_params.get('ux.savepager', '0') == '0') {
-            return
-        }
-        
-        let url = input_url
-        if(!url) {
-            url = location.href
-        }
-
-        url = url.removeAll(location.origin).removeAll(location.pathname).removePart('#')  
-
-        let found_page = SavedPage.find(url)
-        let copied_classes = Object.assign({}, window.main_classes)
-
-        let insert = {
-            'url': url,
-            'html': u('.page_content').html(),
-            'classes': copied_classes,
-            'scroll': window.scrollY,
-            'temp_scroll': window.temp_scroll,
-            'title': document.title,
-            'hash_params': window.main_class['hash_params'],
-        }
-
-        let find_index = found_page ? window.saved_pages.findIndex(page => page.url == found_page.info.url) : -1
-        
-        if(found_page && window.saved_pages[find_index]) {
-            window.saved_pages[find_index] = insert
-        } else {
-            window.saved_pages.push(insert)
-        }
-
-        console.info('Router | Page \'' + url + '\' has been saved to cache.')
-        return true
-    }
-}
 
 class BetterURL extends URL {
     constructor(url) {

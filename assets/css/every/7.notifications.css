@@ -1,0 +1,99 @@
+@keyframes notif_appears {
+    0% {
+        margin-left: -100%;
+    }
+
+    100% {
+        margin-left: 0%;
+    }
+}
+
+@keyframes notif_disappears {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes notif_appears_reverse {
+    0% {
+        margin-left: 100%;
+    }
+
+    100% {
+        margin-left: 0%;
+    }
+}
+
+.notification_global_wrap {
+    bottom: 0;
+    position: fixed;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: hidden;
+    width: 300px;
+    z-index: 1000;
+    gap: 1px;
+}
+
+.notification_global_wrap.right {
+    right: 0;
+}
+
+.notification_global_wrap .notification_balloon {
+    background-color: var(--elements-color-opaque);
+    width: 300px;
+    min-height: 82px;
+    color: var(--links-color) !important;
+    animation-name: notif_appears;
+    animation-duration: 0.5s;
+    cursor: pointer;
+    padding: 5px 5px;
+}
+
+.notification_global_wrap .notification_balloon.mini {
+    min-height: 25px;
+}
+
+.notification_global_wrap.right .notification_balloon {
+    animation-name: notif_appears_reverse;
+}
+
+.notification_global_wrap .notification_balloon .notification_balloon_content {
+    width: 100%;
+}
+
+.notification_global_wrap .notification_balloon.disappears {
+    animation-name: notif_disappears;
+    animation-duration: 0.5s;
+}
+
+.notification_global_wrap .notification_balloon_title {
+    display: grid;
+    grid-template-columns: 1fr 0fr;
+    padding: 2px 4px 0px 4px;
+}
+
+.notification_global_wrap .notification_balloon_avatar img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.notification_global_wrap .notification_balloon_bottom {
+    gap: 6px;
+    padding: 4px 4px 4px 4px;
+}
+
+.notification_global_wrap .notification_balloon_title #close {
+    width: 12px;
+    stroke: var(--links-color);
+    padding-top: 3px;
+}
+
+.notification_global_wrap .notification_balloon_title #close:hover {
+    stroke: var(--text-color);
+}

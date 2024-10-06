@@ -6,13 +6,13 @@ window.templates.user_page = (user) => {
     const template = `
         <input id='user_info' type='hidden' data-userid='${user.getId()}' value='${user.getId()}'>
         <div class='absolute_zone_wrapper default_wrapper user_page_wrapper entity_page_wrapper'>
-            ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '0' ? window.templates.entity_page_cover_upper(user) : ''}
+            ${user.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('0') ? window.templates.entity_page_cover_upper(user) : ''}
             
             <div class='user_page_grid absolute_zone'>
                 <div class='left_block' id='_smaller_block'>
-                    <div class='bordered_block'>
-                        <img id='avatar_img' class='photo_viewer_open outliner' src='${user.getAvatar()}' data-full='${user.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
-                        <div id='_actions'>
+                    <div class='bordered_block padding_small'>
+                        <img class='avatar main_avatar photo_viewer_open clickable' src='${user.getAvatar()}' data-full='${user.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
+                        <div class='entity_actions'>
                             ${window.templates._user_page_buttons(user)}
                         </div>
                     </div>
@@ -24,12 +24,12 @@ window.templates.user_page = (user) => {
                         ${window.templates.row_block(user.info.friends_online, _('friends.friends_online'), '#friends' + user.getId() + '/online')}
                     </div>
 
-                    ${window.templates.row_list_block(user.info.subscriptions, _('friends.subscriptions'), '#subscriptions' + user.getId())}
+                    ${window.templates.row_list_block(user.info.subscriptions, _('friends.subscriptions'), 'javascript:void(0)', user.getId(), '_subs_user')}
                     ${window.templates.albums(user.info.albums, '#albums' + user.getId())}
                     ${window.templates.videos_block(user.info.videos, '#videos' + user.getId())}
                 </div>
                 <div class='right_block cover_upper' id='_bigger_block'>
-                    ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '1' ? `<div class='entity_page_cover'>
+                    ${user.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('1') ? `<div class='entity_page_cover'>
                         <picture>
                             <source srcset="${user.getCoverURL(1)}" media="(min-width: 1920px)" />
                             <source srcset="${user.getCoverURL(2)}" media="(min-width: 700px)" />
@@ -38,12 +38,12 @@ window.templates.user_page = (user) => {
                             <img src='${user.getCoverURL(1)}'>
                         </picture>
                     </div>` : ''}
-                    <div class="info_block bordered_block ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
-                        ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? `
+                    <div class="flex flex_column gap_5 padding_small bordered_block ${user.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('2') ? 'covered' : ''}">
+                        ${user.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('2') ? `
                             <div class='cover_bg' style='background-image: url(${user.getCoverURL()});'></div>
                         ` : ''}
 
-                        ${user.hasCover() && window.site_params.get('ui.cover_upper', '0') == '4' ? `
+                        ${user.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('4') ? `
                             <style>
                                 .background_fixed {
                                     background-image: url(${user.getCoverURL()});
@@ -54,26 +54,39 @@ window.templates.user_page = (user) => {
                             </style>
                         ` : ''}
                         <div class='common_info'>
-                            <div class='user_name_with_status'>
-                                ${user.getHTMLName()}
+                            <div class='common_info_with_online'>
+                                <div class='common_info_with_online_name'>
+                                    <span class='entity_name${user.isFriend() ? ' friended' : ''}'>${user.getFullName()}</span>
+                        
+                                    ${user.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
+                                    `<div class='image_status' data-id='${user.getId()}' title='${user.getImageStatus().name}'>
+                                        <img src='${user.getImageStatusURL()}'>
+                                    </div>` : ``}
 
-                                <span id='status_block'>
-                                    ${user.getTextStatus()}
+                                    ${user.isVerified() ? `
+                                        <svg class='verified_mark' viewBox="0 0 12 9.5"><polygon points="1.5 4 4 6.5 10.5 0 12 1.5 4 9.5 0 5.5 1.5 4"/></svg>
+                                    ` : ''}
+                                </div>
+    
+                                <span id='_last_online'>
+                                    ${user.isDead() ? `
+                                        <span class='underliner dead_person_mark'>
+                                            ${_('user_page.page_of_deceased')}
+                                        </span>
+                                    ` : ``}
+
+                                    <span ${user.isDead() ? `style='display:none'` : ''}>
+                                        ${user.getFullOnline()}
+                                    </span>
                                 </span>
                             </div>
 
-                            ${user.isDead() ? `
-                            <span class='dead_person_mark'>
-                                ${_('user_page.page_of_deceased')}
-                            </span>
-                            ` : ``}
-
-                            <span id='_last_online' ${user.isDead() ? `style='display:none'` : ''}>
-                                ${user.getFullOnline()}
+                            <span id='status_block'>
+                                ${user.getTextStatus()}
                             </span>
                         </div>
 
-                        <div class='additional_info'>
+                        <div class='flex flex_column additional_info'>
                             <div class='additional_info_block'>
                                 ${user.getTextStatus() != '' ?
                                 `<div class='additional_info_block_cover'>
@@ -146,12 +159,6 @@ window.templates.user_page = (user) => {
                                         </div>
                                     </div>` : ''}
                                     <div class='table_element'>
-                                        <span>${_('user_page.has_verification')}</span>
-                                        <div class='table_element_value'>
-                                            <span>${user.isVerified() ? _('user_page.user_yes') : _('user_page.user_no')}</span>
-                                        </div>
-                                    </div>
-                                    <div class='table_element'>
                                         <span>${_('user_page.has_verification_esia')}</span>
                                         <div class='table_element_value'>
                                             <span>${user.isVerifiedInEsia() ? _('user_page.user_yes') : _('user_page.user_no')}</span>
@@ -167,12 +174,6 @@ window.templates.user_page = (user) => {
                                         <span>${_('user_page.has_indexing')}</span>
                                         <div class='table_element_value'>
                                             <span>${user.isIndexing() ? _('user_page.user_yes') : _('user_page.user_no')}</span>
-                                        </div>
-                                    </div>
-                                    <div class='table_element'>
-                                        <span>${_('user_page.is_closed')}</span>
-                                        <div class='table_element_value'>
-                                            <span>${user.isClosed() ? _('user_page.user_yes') : _('user_page.user_no')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -323,7 +324,7 @@ window.templates.user_page = (user) => {
                                         <b class='title'>${_('user_page.career')}</b>
                                         <hr class='hidden_line'>
                                     </div>
-                                    <div class='insert_carerr' style='padding: 1px 3px 7px 3px;'></div>
+                                    <div class='insert_carerr'></div>
                                 </div>` : ''}
                                 ${user.hasEducation() ? `<div class='additional_info_block' id='_carrerBlock'>
                                     <div class='additional_info_block_cover'>
@@ -423,34 +424,68 @@ window.templates.user_page = (user) => {
                                     </div>
                                 </div>` : ``}
                             </div>
-                            <div class='additional_info_block'>
-                                <div class='additional_info_block_cover'>
-                                    <b class='title'>${_('user_page.counters')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-
-                                <div id='_counters'>
-                                    ${user.has('counters') && user.info.counters.albums ? `<a href='#' data-back='id${user.getId()}'>${_('counters.albums_count', user.info.counters.albums)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.audios ? `<a href='#' data-back='id${user.getId()}'>${_('counters.audios_count', user.info.counters.audios)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.badges ? `<a href='#' data-back='id${user.getId()}'>${_('counters.badges_count', user.info.counters.badges)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.friends ? `<a href='#friends${user.getId()}' data-back='id${user.getId()}'>${_('counters.friends_count', user.info.counters.friends)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.online_friends ? `<a href='#friends${user.getId()}/online' data-back='id${user.getId()}'>${_('counters.online_friends_count', user.info.counters.online_friends)}</a>` : ''}
-                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `<a href='#friends${user.getId()}/mutual' data-back='id${user.getId()}'>${_('counters.mutual_friends_count', user.info.common_count)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.gifts ? `<a href='#' data-back='id${user.getId()}'>${_('counters.gifts_count', user.info.counters.gifts)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.groups ? `<a href='#groups${user.getId()}' data-back='id${user.getId()}'>${_('counters.groups_count', user.info.counters.groups)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.pages ? `<a href='#' data-back='id${user.getId()}'>${_('counters.interesting_pages_count', user.info.counters.pages)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.photos ? `<a href='#' data-back='id${user.getId()}'>${_('counters.photos_count', user.info.counters.photos)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.posts ? `<a href='#wall${user.getId()}' data-back='id${user.getId()}'>${_('counters.posts_on_wall_count', user.info.counters.posts)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.subscriptions ? `<a href='#' data-back='id${user.getId()}'>${_('counters.subscriptions_count', user.info.counters.subscriptions)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.video_playlists ? `<a href='#' data-back='id${user.getId()}'>${_('counters.video_playlists_count', user.info.counters.video_playlists)}</a>` : ''}
-                                    ${user.has('counters') && user.info.counters.videos ? `<a href='#' data-back='id${user.getId()}'>${_('counters.added_videos_count', user.info.counters.videos)}</a>` : ''}
-                                    ${user.has('followers_count') && user.info.followers_count ? `<a href='#friends${user.getId()}/followers' data-back='id${user.getId()}'>${_('counters.followers_count', user.info.followers_count)}</a>` : ''}
+                            <div class='additional_info_block marginic'>
+                                <div class='additional_info_block_counters'>
+                                    ${user.has('counters') && user.info.counters.audios ? `
+                                        <a href='#audios${user.getId()}' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.audios}</b>
+                                            <span>${_('counters.audios_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.online_friends ? `
+                                        <a href='#friends${user.getId()}/online' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.online_friends}</b>
+                                            <span>${_('counters.online_friends')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('common_count') && user.info.common_count && user.info.common_count > 0 ? `
+                                        <a href='#friends${user.getId()}/mutual' data-back='id${user.getId()}'>
+                                            <b>${user.info.common_count}</b>
+                                            <span>${_('counters.mutual_friends')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.friends ? `
+                                        <a href='#friends${user.getId()}' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.friends}</b>
+                                            <span>${_('counters.friends')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.videos ? `
+                                        <a href='#videos${user.getId()}' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.videos}</b>
+                                            <span>${_('counters.videos')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.groups ? `
+                                        <a href='#groups${user.getId()}' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.groups}</b>
+                                            <span>${_('counters.groups_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.posts ? `
+                                        <a href='#wall${user.getId()}' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.posts}</b>
+                                            <span>${_('counters.posts_on_wall_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('counters') && user.info.counters.subscriptions ? `
+                                        <a href='#' data-back='id${user.getId()}'>
+                                            <b>${user.info.counters.subscriptions}</b>
+                                            <span>${_('counters.subscriptions_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${user.has('followers_count') && user.info.followers_count ? `
+                                        <a href='#friends${user.getId()}/followers' data-back='id${user.getId()}'>
+                                            <b>${user.info.followers_count}</b>
+                                            <span>${_('counters.followers_count')}</span>
+                                        </a>
+                                    ` : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    ${window.templates.photo_status(user.info.main_photos)}
+                    ${window.templates.photo_status(user.info.main_photos, '#id' + user.getId(), '#photos' + user.getId())}
                     
                     <div class='wall_inserter'>
                         ${user.isDeactivatedPeacefully() ? `
@@ -511,49 +546,20 @@ window.templates.user_page = (user) => {
 window.templates.user_page_skeleton = () => {
     return `
         <div id='_skeleton' class='default_wrapper user_page_wrapper user_page_wrapper_skeleton entity_page_wrapper'>
-            ${window.site_params.get('ui.cover_upper', '0') == '0' ? `<div class='entity_page_cover filler skeleton_cover'></div>` : ''}
+            ${window.settings_manager.getItem('ui.cover_upper').isEqual('0') ? `<div class='entity_page_cover filler skeleton_cover'></div>` : ''}
 
             <div class='user_page_grid'>
                 <div class='left_block'>
                     <div class='bordered_block'>
-                        <div class='filler skeleton_avatar'></div>
-
-                        <div class='empty_space' style='height: 50px;'></div>
+                        <div class='filler skeleton_avatar' style='height: 215px;'></div>
                     </div>
 
                     <div class='entity_row bordered_block'>
-                        <div class='entity_row_title'>
-                            <b>...</b>
-                        </div>
-                        
-                        <div class='entity_row_grid'>
-                            <div class='entity_row_insert_item entity_row_horizont'>
-                                <div>
-                                    <div class='filler'></div>
-                                </div>
-                
-                                <span>...</span>
-                            </div>
-                            <div class='entity_row_insert_item'>
-                                <div>
-                                    <div class='filler'></div>
-                                </div>
-                
-                                <span>...</span>
-                            </div>
-                            <div class='entity_row_insert_item'>
-                                <div>
-                                    <div class='filler'></div>
-                                </div>
-                
-                                <span>...</span>
-                            </div>
-                        </div>
+                        <div class='filler' style='height: 215px;'></div>
                     </div>
                     <div class='entity_row bordered_block'>
-                        <div class='entity_row_title'></div>
                         <div class='filler' style='height: 100px;'></div>
-                        <div class='filler' style='height: 100px;margin-top: 3px;'></div>
+                        <div class='filler' style='height: 100px;margin-top: 5px;'></div>
                     </div>
                     <div class='entity_row bordered_block'>
                         <div class='entity_row_title'></div>
@@ -562,50 +568,13 @@ window.templates.user_page_skeleton = () => {
                         <div class='filler' style='height: 100px;margin-top: 3px;'></div>
                     </div>
                     <div class='entity_row bordered_block'>
-                        <div id='entity_row_insert' class='entity_row_list'>
-                            <div class='entity_row_insert_item'>
-                                <a href='javascript:void(0)'>
-                                    <div class='filler'></div>
-                                </a>
-                
-                                <div class='entity_row_insert_item_info'>
-                                    <a href='javascript:void(0)'>...</a>
-                                    <p>...</p>
-                                </div>
-                            </div>
-                            <div class='entity_row_insert_item'>
-                                <a href='javascript:void(0)'>
-                                    <div class='filler'></div>
-                                </a>
-                
-                                <div class='entity_row_insert_item_info'>
-                                    <a href='javascript:void(0)'>...</a>
-                                    <p>...</p>
-                                </div>
-                            </div>
-                        </div>
+                        <div class='filler' style='height: 100px;'></div>
                     </div>
                 </div>
                 <div class='right_block cover_upper'>
                     ${window.site_params.get('ui.cover_upper', '0') == '1' ? `<div class='filler skeleton_cover'></div>` : ''}
                     
-                    <div class="info_block bordered_block ${window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
-                        <div class='common_info'>
-                            <div class='user_name_with_status'>
-                                <div class='user_info_with_name'>
-                                    <span class='user_name'>${_('navigation.loading')}</span>
-                                </div>
-
-                                <span id='status_block'>
-                                    ...
-                                </span>
-                            </div>
-
-                            <span>
-                                ...
-                            </span>
-                        </div>
-
+                    <div class="info_block filler bordered_block ${window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
                         <div class='empty_space' style='height: 24vh;'></div>
                     </div>
 

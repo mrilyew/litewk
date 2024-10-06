@@ -1,3 +1,8 @@
 assets/images/icons
 assets/css/new
-cors_proxy/node_modules
+assets/dev
+lwk-proxy-server/node_modules
+lwk-proxy-server/package-lock.json
+vkapi_docs
+lwk-proxy-server/local.crt
+lwk-proxy-server/local.key

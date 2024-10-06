@@ -8,7 +8,6 @@ class Audio extends PostLike {
     }
 
     getTemplate() {
-        console.log(this)
         return `Audio: 
             ${this.getName()}<br>
         `

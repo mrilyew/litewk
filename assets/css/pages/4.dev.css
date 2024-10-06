@@ -1,0 +1,167 @@
+.dev_page {
+    max-width: 100%;
+}
+
+.dev_page h1 {
+    border-bottom: 1px solid var(--elements-color-second);
+    font-size: 16px;
+    font-weight: normal;
+    padding: 0px 0px 17px 0px;
+    margin: 20px 0px 10px 0px;
+}
+
+.dev_page h1:first-of-type {
+    margin: 0px 0px 10px 0px;
+}
+
+.dev_page h2 {
+    margin: 10px 0px;
+    font-size: 15px;
+}
+
+.dev_page h3 {
+    margin: 7px 0px;
+    font-size: 14px;
+}
+
+.dev_page h4 {
+    margin: 7px 0px;
+    font-size: 13px;
+}
+
+.dev_page code {
+    color: var(--background-color);
+    background: var(--links-color);
+    padding: 0px 3px;
+    margin: 0px 2px;
+    text-wrap: wrap;
+}
+
+.dev_page pre code {
+    background: var(--elements-color-second);
+    color: var(--text-color);
+    border: 1px solid var(--links-color);
+    padding: 9px 9px 9px 9px;
+    display: block;
+    text-wrap: wrap;
+}
+
+.dev_page blockquote {
+    background: var(--elements-color-diff2);
+    border: 1px solid var(--links-color);
+    padding: 9px 9px 9px 9px;
+    margin: 8px 0px 8px 0px;
+}
+
+.dev_page table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin: 7px 0px;
+    border: 1px solid var(--elements-color-second);
+}
+
+.dev_page table thead {
+    background: var(--elements-color-second);
+}
+
+.dev_page table thead th {
+    padding: 9px 10px;
+    text-align: left;
+}
+
+.dev_page table td {
+    padding: 6px 6px;
+    width: 20%;
+}
+
+.dev_page #_error_codes td:first-child {
+    width: 3%;
+}
+
+.dev_page td:first-child {
+    vertical-align: baseline;
+}
+
+.dev_page .markdown_image {
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.dev_wrapper .dev_wrapper_subcontent {
+    gap: 10px;
+}
+
+.dev_wrapper .layer_two_columns_tabs {
+    width: 240px;
+    overflow: scroll;
+    max-height: 90vh;
+}
+
+.dev_wrapper #docums_menu_insert {
+    overflow: auto;
+}
+
+.dev_wrapper .sub_tabs {
+    display: none;
+    padding-left: 10px;
+}
+
+.dev_wrapper .sub_tabs.shown {
+    display: block;
+}
+
+.dev_wrapper .rsp a {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.dev_wrapper .rsp svg {
+    width: 10px;
+    fill: var(--links-color);
+}
+
+.dev_wrapper .rsp.arrowed > a > #down_icon, .dev_wrapper .rsp > a > #up_icon {
+    display: none;
+}
+
+.dev_wrapper .rsp.arrowed > a > #up_icon {
+    display: block;
+}
+
+#execution {
+    display: flex;
+    min-height: 110px;
+    background: var(--elements-color);
+    border: 1px solid var(--links-color);
+    max-height: 1005px;
+    overflow: hidden;
+}
+
+#execution #execution_params {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#execution .left_panel {
+    width: 20vw;
+    padding: 6px 6px;
+}
+
+#execution .left_panel input {
+    width: 100%;
+    margin-top: 2px;
+}
+
+#execution .right_panel {
+    background: var(--elements-color-lighter);
+    width: 100%;
+    padding: 6px 6px;
+    max-height: 100%;
+    overflow: auto;
+}
+
+.json_padder {
+    padding-left: 10px;
+}

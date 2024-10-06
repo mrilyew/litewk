@@ -31,15 +31,3 @@ window.templates.content_pages_owner = (owner_info, subtext = _('user_page.go_to
     `
 }
 
-window.templates.content_pages_owner_skeleton = () => {
-    return `
-    <a class='layer_two_columns_tabs_user_info'>
-        <div class='avatar filler'></div>
-
-        <div class='layer_two_columns_tabs_user_info_name'>
-            <b>...</b>
-            <span>${_('user_page.go_to_user_page')}</span>
-        </div>
-    </a>
-    `
-}

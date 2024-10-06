@@ -1,25 +1,37 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    function __logToWaterfall(text) {
-        if((localStorage.getItem('ux.hide_waterfall') ?? '0') == '0') {
-            document.querySelector('#_insertlogs').insertAdjacentHTML('beforeend', text)
+    function __logToWaterfall(text, increment = true) {
+        if(localStorage.getItem('ux.hide_waterfall') == '1') {
+            return
         }
 
-        window.scrollBy(0, 1000)
+        if(document.querySelector('#lwk_loader_status_name')) {
+            document.querySelector('#lwk_loader_status_name').innerHTML = text
+        }
+
+        if(increment) {
+            i += 1
+            const percent = (i / load_length) * 100
+    
+            document.querySelector('#lwk_loader_status_bar').style.width = percent + '%'
+            document.querySelector('#lwk_loader_display_hs').style.transform = `rotate(${Math.round(Math.random() * (180 - 0) + 0)}deg) scale(${Math.round(Math.random() * (150 - 80) + 50)}%)`
+        }
     }
 
     function __insertScript(url, toBody = false) {
         return new Promise(function (resolve, reject) {
             let script = document.createElement('script')
             script.src = url
-            script.async = 'true'
+            //script.async = 'true'
+
+            __logToWaterfall(`Loading script "${url}"`, false)
 
             script.onerror = () => {
-                __logToWaterfall(`<p style='color:red'>Loader | Did not loaded script "${url}".</p>`)
-                reject()
+                __logToWaterfall(`Did not loaded script "${url}"`)
+                resolve(true)
             }
 
             script.onload = async () => {
-                __logToWaterfall(`<p>Loader | Loaded script "${url}"</p>`)
+                __logToWaterfall(`Loaded script "${url}"`)
                 resolve(true)
             }
 
@@ -31,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }) 
     }
 
-    function __insertStyle(url, from = null) {
+    function __insertStyle(url, from = null, toBody = false) {
         return new Promise((resolve, reject) => {
             const link = document.createElement('link')
             link.rel = 'stylesheet'
@@ -41,16 +53,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             link.onload = async () => {
-                __logToWaterfall(`<p>Loader | Loaded style "${url}"</p>`)
+                __logToWaterfall(`Loaded style "${url}`)
                 resolve(true)
             }
 
             link.onerror = () => {
-                __logToWaterfall(`<p style='color:red'>Loader | Did not loaded style "${url}".</p>`)
+                __logToWaterfall(`Did not loaded style "${url}"`)
                 reject()
             }
 
-            document.head.appendChild(link)
+            if(!toBody) {
+                document.head.appendChild(link)
+            } else {
+                document.body.appendChild(link)
+            }
         })
     }
 
@@ -64,22 +80,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     const libs_list = [
         'https://cdn.jsdelivr.net/npm/umbrellajs',
         'https://momentjs.com/downloads/moment.js',
+        'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
     ]
+
+    if(localStorage.getItem('ux.twemojify') ?? '1' == '1') {
+        libs_list.push('https://unpkg.com/twemoji@latest/dist/twemoji.min.js')
+    }
+
+    if(localStorage.getItem('ui.lottie_sticker_animations') == '1') {
+        libs_list.push('https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js')
+    }
 
     const scripts_list = [
         /* Lists */
         'assets/js/internal/lists/themes.js',
         'assets/js/internal/lists/routes.js',
         'assets/js/internal/lists/consts.js',
-        'assets/js/internal/lists/tweaks.js',
 
         /* Storage */
         'assets/js/internal/storage/site_params.js',
         'assets/js/internal/storage/index_db.js',
 
         /* Site logic */
+        'assets/js/internal/elements/header.js',
         'assets/js/internal/elements/left_menu.js',
+        'assets/js/internal/elements/dropdown.js',
         'assets/js/internal/components/accounts.js',
+        'assets/js/internal/components/settings.js',
         'assets/js/internal/components/notificator.js',
         'assets/js/internal/misc/utils.js',
         'assets/js/internal/routing/router.js',
@@ -110,21 +137,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/js/internal/api/uncategorized/sticker.js',
         'assets/js/internal/api/uncategorized/notification.js',
         'assets/js/internal/api/uncategorized/dummy.js',
+        'assets/js/internal/api/uncategorized/documentation.js',
+        'assets/js/internal/api/uncategorized/image_status.js',
 
         /* Api helpers */
-        'assets/js/internal/scrolling/ApiListViews.js',
         'assets/js/internal/scrolling/CommonListViews.js',
-        'assets/js/internal/scrolling/SearchListView.js',
-        'assets/js/internal/scrolling/newsfeed/NewsfeedListViews.js',
-        'assets/js/internal/scrolling/BookmarksListView.js',
-        'assets/js/internal/scrolling/WallListView.js',
-        'assets/js/internal/scrolling/CommentsListView.js',
-        'assets/js/internal/scrolling/FriendsListView.js',
-        'assets/js/internal/scrolling/RecomGroupsListView.js',
-        'assets/js/internal/scrolling/DocsListView.js',
-        'assets/js/internal/scrolling/GroupHistoryListView.js',
-        'assets/js/internal/scrolling/NotificationsListView.js',
-        'assets/js/internal/scrolling/VotersListView.js',
+        'assets/js/internal/scrolling/GroupHistory.js',
+        'assets/js/internal/scrolling/SimilarGroups.js',
+        'assets/js/internal/scrolling/Newsfeed.js',
+        'assets/js/internal/scrolling/Bookmarks.js',
 
         /* Languages */
         'assets/js/internal/langs/ru.js',
@@ -140,16 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/js/internal/templates/user_page/user_page_subtemplates/school_template.js',
         'assets/js/internal/templates/user_page/user_page_subtemplates/univer_template.js',
         'assets/js/internal/templates/user_page/user_page_subtemplates/work_template.js',
-        'assets/js/internal/templates/user_page/user_page_subtemplates/user_page_buttons.js',
-        'assets/js/internal/templates/entity_subblocks/photo_status.js',
-        'assets/js/internal/templates/entity_subblocks/row_block.js',
-        'assets/js/internal/templates/entity_subblocks/subscriptions.js',
-        'assets/js/internal/templates/entity_subblocks/gifts_block.js',
-        'assets/js/internal/templates/entity_subblocks/albums.js',
-        'assets/js/internal/templates/entity_subblocks/videos.js',
-        'assets/js/internal/templates/entity_subblocks/group_links.js',
-        'assets/js/internal/templates/entity_subblocks/group_board_block.js',
-        'assets/js/internal/templates/entity_subblocks/docs.js',
+        'assets/js/internal/templates/user_page/user_page_subtemplates/entity_page_buttons.js',
         'assets/js/internal/templates/postable/note.js',
 
         'assets/js/internal/templates/user_page/user_page.js',
@@ -167,6 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/js/internal/templates/components/wall_tabs.js',
         'assets/js/internal/templates/components/content_pages_owner.js',
         'assets/js/internal/templates/components/sticker.js',
+        'assets/js/internal/templates/components/entity_subblocks.js',
         'assets/js/internal/templates/components/entity_page_cover.js',
         'assets/js/internal/templates/components/album.js',
         'assets/js/internal/templates/components/group_topic.js',
@@ -176,7 +189,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/js/internal/templates/components/docs/html_preview.js',
         'assets/js/internal/templates/components/poll.js',
         'assets/js/internal/templates/settings/common.js',
+        'assets/js/internal/templates/settings/content.js',
         'assets/js/internal/templates/settings/nav_edit.js',
+        'assets/js/internal/templates/settings/ui.js',
 
         'assets/js/internal/templates/components/attached_link/attached_link_playlist.js',
         'assets/js/internal/templates/components/attached_link/attached_link_vertical.js',
@@ -200,6 +215,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         /* JS Events */
         'assets/js/internal/events/CommonEvents.js',
+        'assets/js/internal/events/DevEvents.js',
+        'assets/js/internal/events/Settings.js',
         'assets/js/internal/events/FaveEvents.js',
         'assets/js/internal/events/EntityEvents.js',
         'assets/js/internal/events/WallEvents.js',
@@ -208,52 +225,72 @@ document.addEventListener('DOMContentLoaded', async () => {
         'assets/js/internal/events/NewsfeedEvents.js',
         'assets/js/internal/events/GroupsEvents.js',
         'assets/js/internal/events/PollsEvents.js',
+        'assets/js/internal/events/Navigation.js',
 
         'assets/js/internal/events/viewers/PhotoViewer.js',
 
         /* Pages */
-        'assets/js/pages/auth_page.js',
-        'assets/js/pages/club_page.js',
-        'assets/js/pages/debug_page.js',
-        'assets/js/pages/doc_page.js',
-        'assets/js/pages/docs_page.js',
-        'assets/js/pages/edit_page.js',
-        'assets/js/pages/faves_page.js',
-        'assets/js/pages/friends_page.js',
-        'assets/js/pages/gifts_page.js',
-        'assets/js/pages/groups_page.js',
-        'assets/js/pages/likes_page.js',
-        'assets/js/pages/news_page.js',
-        'assets/js/pages/note_page.js',
-        'assets/js/pages/notes_page.js',
-        'assets/js/pages/notifications_page.js',
-        'assets/js/pages/post_page.js',
-        'assets/js/pages/photo_page.js',
-        'assets/js/pages/poll_voters_page.js',
-        'assets/js/pages/resolve_link.js',
-        'assets/js/pages/search_page.js',
-        'assets/js/pages/subscriptions_page.js',
-        'assets/js/pages/settings_page.js',
-        'assets/js/pages/user_page.js',
-        'assets/js/pages/wall_page.js',
+        'assets/js/pages/DebugController.js',
+        'assets/js/pages/DocumentationController.js',
+        'assets/js/pages/EditController.js',
+        'assets/js/pages/FriendsController.js',
+        'assets/js/pages/GroupsController.js',
+        'assets/js/pages/NewsController.js',
+        'assets/js/pages/SearchController.js',
+        'assets/js/pages/SettingsController.js',
+        'assets/js/pages/UserController.js',
+        'assets/js/pages/UtilsController.js',
+        'assets/js/pages/WallController.js',
 
         /* And finally, */
         'assets/js/main.js'
     ]
 
     const styles_list = [
-        'assets/css/layout.css',
+        'assets/css/every/1.palette.css',
+        'assets/css/every/2.tags.css',
+        'assets/css/every/3.tailwind.css',
+        'assets/css/every/4.scrollbars.css',
+        'assets/css/every/5.animations.css',
+        'assets/css/every/6.messagebox.css',
+        'assets/css/every/7.notifications.css',
+        'assets/css/every/8.dropdown.css',
+        'assets/css/every/9.viewers.css',
+        'assets/css/every/10.wall.css',
+        'assets/css/every/11.wtf.css',
+
+        'assets/css/pages/1.loader.css',
+        'assets/css/pages/2.layout.css',
+        'assets/css/pages/3.settings.css',
+        'assets/css/pages/4.dev.css',
+        'assets/css/pages/5.user.css',
+        'assets/css/pages/6.club.css',
+        'assets/css/pages/7.settings.css',
     ]
 
-    const base = '/'
-    __addBase(base)
+    window.controllers = {}
+    window.templates = {}
+    
+    let load_length = libs_list.length + scripts_list.length + styles_list.length
+    let i = 0
+    
+    __addBase('/')
 
-    if((localStorage.getItem('ux.hide_waterfall') ?? '0') == '0') {
-        document.body.insertAdjacentHTML('beforeend', `<div id='_insertlogs'></div>`)
+    if(localStorage.getItem('ux.hide_waterfall') != '1') {
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id='lwk_loader' class='flex flex_column justify_space_between'>
+            <div id='lwk_loader_display' class='flex justify_center align_center'>
+                <div class='flex flex_column align_center'>
+                    <img id='lwk_loader_display_hs' src='assets/images/hs.svg'>
+                    <p id='lwk_name' class='text_big align_center_text'>LiteWK</p>
+                </div>
+            </div>
+            <div id='lwk_loader_status' class='relative flex flex_row align_center justify_center'>
+                <div class='absolute' id='lwk_loader_status_bar'></div>
+                <span id='lwk_loader_status_name'>Loaded file -</span>
+            </div>
+        </div>`)
     }
-
-    const libs_promises = libs_list.map(src => __insertScript(src, false))
-    await Promise.all(libs_promises)
 
     // тут про тему
 
@@ -266,11 +303,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 theme = null
             }
             
-            __logToWaterfall(`<p style='color:pink'>Found theme "${theme.id}".</p>`)
+            __logToWaterfall(`Found theme "${theme.id}"`)
         }
     } catch(e) {
         theme = null
-        __logToWaterfall(`<p style='color:red'>${e.message}.</p>`)
+        __logToWaterfall(`${e.message}`)
     }
 
     if(!theme || theme.inherits_default) {
@@ -279,13 +316,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         })
     }
 
+    for(const lib of libs_list) {
+        await __insertScript(lib)
+    }
+
     for(const scripter of scripts_list) {
         await __insertScript(scripter)
     }
 
     if(theme) {
+        i = 0
+
+        try {
+            load_length = theme.include_libs.length + theme.include_styles.length
+        } catch(e) {
+            load_length = 1
+        }
+
+        document.querySelector('#lwk_name').innerHTML = theme.en_display_name
+        document.querySelector('#lwk_loader_status_bar').style.width = '0%'
         if(theme.requires_js) {
             const libs_promises_theme = theme.include_libs.map(src => __insertScript(src, false))
+
             await Promise.all(libs_promises_theme)
 
             for(const scripter of theme.include_scripts) {
@@ -298,8 +350,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         })
     }
 
+    // hold
+    //return
+    
     u('#_prefetch_script').remove()
-    u('#_insertlogs').remove()
+    u('#lwk_loader').remove()
 
     main_class.startup()
 })

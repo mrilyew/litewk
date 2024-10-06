@@ -1,0 +1,49 @@
+@keyframes fadedown {
+    0% {
+        margin-top: -10px;
+        opacity: 0;
+    }
+
+    100% {
+        margin-top: 0px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeup {
+    0% {
+        margin-top: 10px;
+        opacity: 0;
+    }
+
+    100% {
+        margin-top: 0px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeup_reverse {
+    0% {
+        margin-top: 0px;
+        opacity: 1;
+    }
+
+    100% {
+        margin-top: 10px;
+        opacity: 0;
+    }
+}
+
+@keyframes filler_slider {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 100% 0%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}

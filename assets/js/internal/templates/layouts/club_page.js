@@ -14,23 +14,13 @@ window.templates.club_page = (club) => {
     }
 
     let template = `
-        <input id='clb_id' type='hidden' value='${club.getId()}'>
+        <input id='clb_id' type='hidden' data-clubid='${club.getId()}' value='${club.getId()}'>
         <div class='club_page_wrapper entity_page_wrapper default_wrapper'>
-            ${club.hasCover() && window.site_params.get('ui.cover_upper', '0') == '0' ? `
-                <div class='entity_page_cover'>
-                    <picture>
-                        <source srcset="${club.getCoverURL(3)}" media="(min-width: 1920px)" />
-                        <source srcset="${club.getCoverURL(4)}" media="(min-width: 700px)" />
-                        <source srcset="${club.getCoverURL(2)}" media="(min-width: 300px)" />
-                        <source srcset="${club.getCoverURL(1)}" media="(min-width: 100px)" />
-                        <img src='${club.getCoverURL(3)}'>
-                    </picture>
-                </div>
-            ` : ''}
+            ${club.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('0') ? window.templates.entity_page_cover_upper(club) : ''}
 
             <div class='club_page_grid'>
                 <div class='left_block cover_upper' id='_bigger_block'>
-                    ${club.hasCover() && window.site_params.get('ui.cover_upper', '0') == '1' ? `<div class='entity_page_cover'>
+                    ${club.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('1') ? `<div class='entity_page_cover'>
                         <picture>
                             <source srcset="${club.getCoverURL(1)}" media="(min-width: 1920px)" />
                             <source srcset="${club.getCoverURL(2)}" media="(min-width: 700px)" />
@@ -39,12 +29,8 @@ window.templates.club_page = (club) => {
                             <img src='${club.getCoverURL(1)}'>
                         </picture>
                     </div>` : ''}
-                    <div class='info_block bordered_block ${club.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}'>
-                        ${club.hasCover() && window.site_params.get('ui.cover_upper', '0') == '2' ? `
-                            <div class='cover_bg' style='background-image: url(${club.getCoverURL()});'></div>
-                        ` : ''}
-
-                        ${club.hasCover() && window.site_params.get('ui.cover_upper', '0') == '4' ? `
+                    <div class='info_block flex flex_column gap_5 padding_small bordered_block'>
+                        ${club.hasCover() && window.settings_manager.getItem('ui.cover_upper').isEqual('4') ? `
                             <style>
                                 .background_fixed {
                                     background-image: url(${club.getCoverURL()});
@@ -56,16 +42,22 @@ window.templates.club_page = (club) => {
                         ` : ''}
 
                         <div class='common_info'>
-                            <div id="name_block">
-                                <span id='name' class='entity_name'>${club.getName()}</span>
+                            <div class='common_info_with_online'>
+                                <div class='common_info_with_online_name'>
+                                    <span class='entity_name${club.isSubscribed() ? ' subbed' : ''}'>${club.getName()}</span>
+
+                                    ${club.isVerified() ? `
+                                        <svg class='verified_mark' viewBox="0 0 12 9.5"><polygon points="1.5 4 4 6.5 10.5 0 12 1.5 4 9.5 0 5.5 1.5 4"/></svg>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            <div id='status_block'>
+                                <span>${club.getTextStatus()}</span>
                             </div>
                         </div>
 
-                        <div id='status_block'>
-                            <span>${club.getTextStatus()}</span>
-                        </div>
-
-                        <div class='additional_info'>
+                        <div class='flex flex_column additional_info'>
                             <div class='additional_info_block'>
                                 <div class='additional_info_block_cover'>
                                     <b class='title'>${_('groups.main_info')}</b>
@@ -142,25 +134,73 @@ window.templates.club_page = (club) => {
                                 </div>
                             </div>` : ''}
 
-                            ${club.has('counters') ? `<div class='additional_info_block'>
-                                <div class='additional_info_block_cover'>
-                                    <b class='title'>${_('user_page.counters')}</b>
-                                    <hr class='hidden_line'>
-                                </div>
-
-                                <div id='_counters'>
-                                    ${club.has('counters') && club.info.counters.albums ? `<a href='#' data-back='club${club.getId()}'>${_('counters.albums_count', club.info.counters.albums)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.articles ? `<a href='#' data-back='club${club.getId()}'>${_('counters.articles_count', club.info.counters.articles)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.clips ? `<a href='#' data-back='club${club.getId()}'>${_('counters.clips_count', club.info.counters.clips)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.docs ? `<a href='#docs-${club.getId()}' data-back='club${club.getId()}'>${_('counters.docs_count', club.info.counters.docs)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.photos ? `<a href='#' data-back='club${club.getId()}'>${_('counters.photos_count', club.info.counters.photos)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.topics ? `<a href='#' data-back='club${club.getId()}'>${_('counters.topics_count', club.info.counters.topics)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.video_playlists ? `<a href='#' data-back='club${club.getId()}'>${_('counters.video_playlists_count', club.info.counters.video_playlists)}</a>` : ''}
-                                    ${club.has('counters') && club.info.counters.videos ? `<a href='#' data-back='club${club.getId()}'>${_('counters.added_videos_count', club.info.counters.videos)}</a>` : ''}
-                                    ${club.has('members_count') && club.info.members_count ? `<a href='#search/users?group_id=${club.getId()}' data-back='club${club.getId()}'>${_('counters.followers_count', club.info.members_count)}</a>` : ''}
+                            ${club.has('counters') ? `<div class='additional_info_block marginic'>
+                                <div class='additional_info_block_counters'>
+                                    ${club.has('counters') && club.info.counters.audios ? `
+                                        <a href='#audios${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.audios}</b>
+                                            <span>${_('counters.audios_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.albums ? `
+                                        <a href='#albums${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.albums}</b>
+                                            <span>${_('counters.albums_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.articles ? `
+                                        <a href='#articles${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.articles}</b>
+                                            <span>${_('counters.articles_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.clips ? `
+                                        <a href='#clips${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.clips}</b>
+                                            <span>${_('counters.clips_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.docs ? `
+                                        <a href='#docs${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.docs}</b>
+                                            <span>${_('counters.docs_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.photos ? `
+                                        <a href='#albums${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.photos}</b>
+                                            <span>${_('counters.photos_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.topics ? `
+                                        <a href='#albums${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.topics}</b>
+                                            <span>${_('counters.topics_count')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('counters') && club.info.counters.videos ? `
+                                        <a href='#videos${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.counters.videos}</b>
+                                            <span>${_('counters.videos')}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${club.has('members_count') && club.info.members_count ? `
+                                        <a href='#search/users?group_id=${club.getRealId()}' data-back='id${club.getId()}'>
+                                            <b>${club.info.members_count}</b>
+                                            <span>${_('counters.followers_count')}</span>
+                                        </a>
+                                    ` : ''}
                                 </div>
                             </div>` : ''}
                         </div>
+                    </div>
+                    <div class='entity_row bordered_block padding_small hidden' id='_similar_groups_block'>
+                        <div class='entity_row_title'>
+                            <b>${_('groups.similar_groups')}</b>
+                        </div>
+
+                        <div class='filler' style='height: 80px;'></div>
+                        <div class='entity_items'></div>
                     </div>
 
                     ${window.templates.group_board_block(club.info.board, _('groups.topics'), '#board' + club.getId(), club.getId())}
@@ -170,22 +210,10 @@ window.templates.club_page = (club) => {
                 </div>
                     
                 <div class='right_block' id='_smaller_block'>
-                    <div class='bordered_block'>
-                        <object id='avatar_img' type="image/jpeg" class='photo_viewer_open outliner' data-full='${club.info.photo_max_orig}' data='${club.getAvatar()}' alt='${_('user_page.user_avatar')}'></object>
-                        <div id='_actions'>
-                            ${club.isClosed() == 0 ? `
-                                ${!club.isMember() ? `<a class='action' id='_toggleSub' data-val='0' data-addid='${club.getId()}'> ${_('groups.subscribe')}</a>` : ''}
-                                ${club.isMember() ? `<a class='action' id='_toggleSub' data-val='1' data-addid='${club.getId()}'> ${_('groups.unsubscribe')}</a>` : ''}
-                            ` : ``}
-                            ${!club.isFaved() ? `<a class='action' id='_toggleFave' data-val='0' data-type='club' data-addid='${club.getId()}'> ${_('faves.add_to_faves')}</a>` : ''}
-                            ${club.isFaved() ? `<a class='action' id='_toggleFave' data-val='1' data-type='club' data-addid='${club.getId()}'> ${_('faves.remove_from_faves')}</a>` : ''}
-                            ${!club.isClosed() && !club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='0'> ${_('user_page.subscribe_to_new')}</a>` : ''}
-                            ${!club.isClosed() && club.isSubscribed() ? `<a class='action' id='_toggleSubscribe' data-val='1'> ${_('user_page.unsubscribe_to_new')}</a>` : ''}
-                            ${club.isMember() ? `
-                                ${!club.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='0'> ${_('user_page.hide_from_feed')}</a>` : ''}
-                                ${club.isHiddenFromFeed() ? `<a class='action' id='_toggleHiddeness' data-val='1'> ${_('user_page.unhide_from_feed')}</a>` : ''}
-                            ` : ''}
-                            <a class='action' href='https://vk.com/club${club.getId()}' target='_blank'> ${_('wall.go_to_vk')}</a>
+                    <div class='bordered_block padding_small'>
+                        <img class='avatar main_avatar photo_viewer_open clickable' src='${club.getAvatar()}' data-full='${club.info.photo_max_orig}' alt='${_('user_page.user_avatar')}'>
+                        <div class='entity_actions' id='_actions'>
+                            ${window.templates._club_page_buttons(club)}
                         </div>
                     </div>
 
@@ -214,22 +242,12 @@ window.templates.club_page = (club) => {
 window.templates.club_page_skeleton = () => {
     return `
     <div id='_skeleton' class='default_wrapper club_page_wrapper club_page_wrapper_skeleton entity_page_wrapper'>
-        ${window.site_params.get('ui.cover_upper', '0') == '0' ? `<div class='entity_page_cover filler skeleton_cover'></div>` : ''}
+        ${window.settings_manager.getItem('ui.cover_upper').isEqual('0') ? `<div class='entity_page_cover filler skeleton_cover'></div>` : ''}
         <div class='club_page_grid'>
             <div class='left_block cover_upper'>
-                ${window.site_params.get('ui.cover_upper', '0') == '1' ? `<div class='filler skeleton_cover'></div>` : ''}
+                ${window.settings_manager.getItem('ui.cover_upper').isEqual('1') ? `<div class='filler skeleton_cover'></div>` : ''}
                 
-                <div class="info_block bordered_block ${window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
-                    <div class='common_info'>
-                        <div id="name_block">
-                            <span id='name' class='entity_name'>${_('navigation.loading')}</span>
-                        </div>
-
-                        <span id='status_block'>
-                            ...
-                        </span>
-                    </div>
-
+                <div class="info_block filler bordered_block ${window.site_params.get('ui.cover_upper', '0') == '2' ? 'covered' : ''}">
                     <div class='empty_space' style='height: 24vh;'></div>
                 </div>
 
@@ -255,44 +273,15 @@ window.templates.club_page_skeleton = () => {
             </div>
             <div class='right_block'>
                 <div class='bordered_block'>
-                    <div class='filler skeleton_avatar'></div>
-
-                    <div class='empty_space' style='height: 50px;'></div>
+                    <div class='filler skeleton_avatar' style='height: 215px;'></div>
                 </div>
 
                 <div class='entity_row bordered_block'>
-                    <div class='entity_row_title'>
-                        <b>...</b>
-                    </div>
-                    
-                    <div class='entity_row_grid'>
-                        <div class='entity_row_insert_item entity_row_horizont'>
-                            <div>
-                                <div class='filler'></div>
-                            </div>
-            
-                            <span>...</span>
-                        </div>
-                        <div class='entity_row_insert_item'>
-                            <div>
-                                <div class='filler'></div>
-                            </div>
-            
-                            <span>...</span>
-                        </div>
-                        <div class='entity_row_insert_item'>
-                            <div>
-                                <div class='filler'></div>
-                            </div>
-            
-                            <span>...</span>
-                        </div>
-                    </div>
+                    <div class='filler' style='height: 215px;'></div>
                 </div>
                 <div class='entity_row bordered_block'>
-                    <div class='entity_row_title'></div>
                     <div class='filler' style='height: 100px;'></div>
-                    <div class='filler' style='height: 100px;margin-top: 3px;'></div>
+                    <div class='filler' style='height: 100px;margin-top: 5px;'></div>
                 </div>
                 <div class='entity_row bordered_block'>
                     <div class='entity_row_title'></div>
@@ -301,30 +290,24 @@ window.templates.club_page_skeleton = () => {
                     <div class='filler' style='height: 100px;margin-top: 3px;'></div>
                 </div>
                 <div class='entity_row bordered_block'>
-                    <div id='entity_row_insert' class='entity_row_list'>
-                        <div class='entity_row_insert_item'>
-                            <a href='javascript:void(0)'>
-                                <div class='filler'></div>
-                            </a>
-            
-                            <div class='entity_row_insert_item_info'>
-                                <a href='javascript:void(0)'>...</a>
-                                <p>...</p>
-                            </div>
-                        </div>
-                        <div class='entity_row_insert_item'>
-                            <a href='javascript:void(0)'>
-                                <div class='filler'></div>
-                            </a>
-            
-                            <div class='entity_row_insert_item_info'>
-                                <a href='javascript:void(0)'>...</a>
-                                <p>...</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class='filler' style='height: 100px;'></div>
                 </div>
             </div>
         </div>
     </div>`
+}
+
+window.templates.club_page_carousel = (club) => {
+    return `
+    <div class='carousel_entity_item'>
+        <div class='carousel_entity_item_content'>
+            <img src='${club.getAvatar()}'>
+
+            <div class='carousel_entity_item_content_name'>
+                <a href='${club.getUrl()}'>${club.getName()}</a>
+                <span>${club.getActivity()}</span>
+            </div>
+        </div>
+    </div>
+    `
 }

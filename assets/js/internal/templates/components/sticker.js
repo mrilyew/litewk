@@ -1,7 +1,7 @@
 window.templates.sticker_attachment = (sticker) => {
     const uid = sticker.getId() + '_' + Utils.random_int(0, 10000)
     const htmloutput = `
-    <div data-uid='${uid}' class='list_attachment sticker_attachment'>
+    <div data-uid='${uid}' class='list_attachment${sticker.isAnimated() ? ' animable' : ''} sticker_attachment'>
         <div class='sticker'>
             <img src='${sticker.getURL()}' loading='lazy'>
         </div>

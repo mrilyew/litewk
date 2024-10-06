@@ -17,7 +17,11 @@ window.templates.work_template = (work) => {
                 <a href='#club${club_object.getId()}'>
                     <img class='avatar outliner' src='${club_object.info.photo_100}'>
                 </a>
-            </div>` : ''}
+            </div>` : `
+            <div class='left_avatar avatar'>
+                <div class='filler_standart'></div>
+            </div>
+            `}
 
             <div class='right_info'>
                 ${club_object ? `<a href='#club${work.group_id}'><b>${club_object.getName()}</b></a>` : `<b>${Utils.escape_html(work.company)}</b>`}

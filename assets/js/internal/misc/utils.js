@@ -183,7 +183,7 @@ window.Utils = new class {
         }
 
         let appendix = '#away?id='
-        if(window.site_params.get('ux.navigation_away_enable', '1') == '0') {
+        if(!window.settings_manager.getItem('ux.navigation_away_enable').isChecked()) {
             appendix = '#'
         }
 
@@ -222,7 +222,7 @@ window.Utils = new class {
 
     format_emojis(text)
     {
-        if(window.site_params.get('ux.twemojify', '1') == '0') {
+        if(window.settings_manager.getItem('ux.twemojify').getValue() == '0') {
             return text
         }
 
@@ -866,5 +866,99 @@ window.Utils = new class {
         }
 
         return create_class
+    }
+
+    applyAnimation(umb, name, timeout = 200)
+    {
+        umb.nodes[0].style.animationDuration = `${timeout}ms`
+
+        if(umb.hasClass('animated')) {
+            umb.nodes[0].style.animationName = name + '_reverse'
+            setTimeout(() => {
+                umb.removeClass('animated')
+
+                setTimeout(() => {
+                    umb.nodes[0].style.animationDuration = ''
+                    umb.nodes[0].style.animationName = ''
+                }, 20)
+            }, timeout - 20)
+        } else {
+            umb.nodes[0].style.animationName = name
+            umb.addClass('animated')
+        }
+    }
+
+    checkHeader() {
+        // has scrollbar
+        if(document.body.scrollHeight > document.body.clientHeight) {
+            u('.header').attr('style', `padding: 10px calc(10% - 9px) 10px calc(10% + 1px);`)
+            return
+        }
+
+        u('.header').attr('style', `padding: 10px 10% 10px 10%;`)
+    }
+
+    formatJson(json) {
+        if(typeof json == 'object') {
+            let html = `<div class='json_collapsable'>`
+            html += `<div class='json_content'>`
+
+            const {...keys} = json
+
+            for(let key in keys) {
+                if(typeof json[key] == 'function') {
+                    continue
+                }
+
+                if(typeof json[key] == 'object') {
+                    html += `<div class='json_padder'>${key}: { <div class='json_nested json_padder'>${window.Utils.formatJson(json[key])}</div> } </div>`
+                } else {
+                    html += `<div class='json_padder'>${key}: "${json[key]}"</div>`
+                }
+            }
+
+            html += `</div></div>`
+            return html
+        } else {
+            return String(json)
+        }
+    }
+
+    async request(url, jsonp = true, formdata = null, headers = {}) {
+        const call_time = Date.now()
+
+        try {
+            let result = null
+
+            if(jsonp) {
+                result = JSON.parse(await Utils.jsonp(url))
+            } else {
+                let results = null
+                if(!formdata) {
+                    results = await fetch(url)
+                } else {
+                    results = await fetch(url, {
+                        body: new URLSearchParams([...formdata.entries()]),
+                        mode: "cors",
+                        headers: {
+                            ...headers,
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        method: 'POST',
+                    })
+                }
+
+                result = await results.json()
+            }
+    
+            if(result.contents) {
+                result = JSON.parse(result.contents)
+            }
+    
+            console.info(`XHR | Called ${url}, timestamp ${call_time}, result: `, result)
+            return result
+        } catch(e) {
+            throw e
+        }
     }
 }

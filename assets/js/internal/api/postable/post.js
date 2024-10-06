@@ -1,5 +1,7 @@
 
 class Post extends PostLike {
+    type = 'post'
+    
     hydrate(info, profiles, groups, reaction_sets) {
         this.info = info
         this.profiles = profiles
@@ -14,6 +16,10 @@ class Post extends PostLike {
 
     getId() {
         return this.info.owner_id + '_' + this.info.id
+    }
+    
+    getWallId() {
+        return this.info.owner_id
     }
 
     getGeo() {
@@ -227,6 +233,18 @@ class Post extends PostLike {
 
     canUp() {
         return this.info.comments && this.info.comments.can_open == 1
+    }
+
+    canReport() {
+        if(!window.active_account) {
+            return false
+        }
+
+        if(this.info.from_id && this.info.from_id > 0) {
+            return this.info.from_id != window.active_account.info.id
+        }
+
+        return !this.canDelete()
     }
 
     hasRepost() {

@@ -69,7 +69,8 @@ window.templates._settings_nav = () => {
                             </label>
                         </div>
                     </div>
-            </table>
+                </div>
+            </div>
         </div>
 
         <div id='__movement_buttons' style='display:none;'>

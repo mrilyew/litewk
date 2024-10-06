@@ -26,11 +26,24 @@ class Hasable {
         
         this.info.caching_time = moment().unix()
 
-        window.cache.add('users', this.info)
+        window.cache.add(this.table, this.info)
+    }
+
+    async findInCache(search_data, ignore_timeout = false) {
+        const find_item = await window.cache.findItem(this.table, search_data)
+        if(!find_item || find_item.caching_time < (moment().unix() - window.consts.INDEX_DB_CACHE_LIFETIME) && !ignore_timeout) {
+            return null
+        }
+
+        return find_item
     }
 
     getStringInfo() {
         return JSON.stringify(this.info)
+    }
+
+    _getInternalType() {
+        return this.type
     }
 }
 

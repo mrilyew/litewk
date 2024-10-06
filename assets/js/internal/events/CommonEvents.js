@@ -12,7 +12,7 @@ u(document).on('click', 'a', async (e) => {
             window.edit_mode = false
             u('#__menupostedit').addClass('hidden')
             u('.navigation').removeClass('editing')
-            u('.navigation').html(window.left_menu.getHTML())
+            u('.navigation_list').html(window.left_menu.getHTML())
         }
     }
 
@@ -20,12 +20,33 @@ u(document).on('click', 'a', async (e) => {
         return
     }
 
-    if(target.dataset.ignore == '1' || !target.href || target.href.indexOf(location.origin) == -1) {
+    if(Number(target.dataset.ignore) == 1) {
+        e.preventDefault()
         return
     }
 
-    e.preventDefault()
+    if(!target.href || target.href.indexOf(location.origin) == -1) {
+        return
+    }
+
     await window.router.route(target.href, true, target.dataset.back)
+})
+
+u(document).on('change', `input[type='checkbox']`, (e) => {
+    if(e.target.checked) {
+        e.target.closest('.undommed_checkbox').classList.add('undommed_checkbox_checked')
+    } else {
+        e.target.closest('.undommed_checkbox').classList.remove('undommed_checkbox_checked')
+    }
+})
+
+u(document).on('change', `input[type='radio']`, (e) => {
+    const label = e.target.closest('.undommed_radio')
+    label.parentNode.querySelectorAll('.undommed_radio').forEach(el => {
+        el.classList.remove('undommed_radio_checked')
+    })
+
+    label.classList.toggle('undommed_radio_checked')
 })
 
 /*window.addEventListener("focus", () => {
@@ -65,7 +86,12 @@ window.addEventListener('popstate', async (e) => {
 })
 
 u(document).on('click', '.menu_up_hover_click', (e) => {
-    if(scrollY > 1000) {
+    let main_scroll = scrollY
+    if(u('.dimmed').length > 0) {
+        main_scroll = u('.fullscreen_dimmer').nodes[0].scrollTop
+    }
+
+    if(main_scroll > 1000) {
         window.temp_scroll = scrollY
 
         // smooth effect like как в вк
@@ -96,8 +122,13 @@ u(document).on('click', '.menu_up_hover_click', (e) => {
     u(document).trigger('scroll')
 })
 
-u(document).on('scroll', () => {
-    if(scrollY < 1000) {
+function _handleScroll() {
+    let main_scroll = scrollY
+    if(u('.dimmed').length > 0) {
+        main_scroll = u('.fullscreen_dimmer').nodes[0].scrollTop
+    }
+
+    if(main_scroll < 1000) {
         if(window.back_button) {
             u('#up_panel').addClass('back') 
             u('#up_panel').removeClass('hidden')
@@ -109,9 +140,17 @@ u(document).on('scroll', () => {
             }
         }
     } else {
-        u('#up_panel').removeClass('hidden').removeClass('down')
-        u('#up_panel').removeClass('back').addClass('to_up')
+        u('#up_panel').removeClass('hidden').removeClass('down').removeClass('back').addClass('to_up')
     }
+}
+
+u(document).on('scroll', () => {
+    _handleScroll()
+})
+
+u(document).on('scroll', '*', (e) => {
+    console.log(e)
+    _handleScroll()
 })
 
 u(document).on('input', 'textarea', (e) => {
@@ -126,6 +165,8 @@ u(document).on('input', 'textarea', (e) => {
 
 u(document).on('keydown', 'textarea', (e) => {
     if(e.keyCode == 9) {
+        e.preventDefault()
+        
         let v = e.target.value, s = e.target.selectionStart, end = e.target.selectionEnd
         e.target.value = v.substring(0, s) + '    ' + v.substring(end)
         e.target.selectionStart = e.target.selectionEnd = s + 4
@@ -135,29 +176,8 @@ u(document).on('keydown', 'textarea', (e) => {
     return
 })
 
-u(document).on('click', '.dropdown_toggle', (e) => {
-    let target = e.target
-
-    if(target.tagName != 'svg') {
-        target = target.closest('svg')
-    }
-
-    let dropdown = u('#' + target.dataset.onid).nodes[0]
-    let root = dropdown.closest('.dropdown_root')
-
-    u('.dropdown_menu.visible').removeClass('visible')
-    u('.__dropdown_toggled').removeClass('__dropdown_toggled')
-    
-    if(!dropdown) {
-        return
-    }
-
-    dropdown.classList.add('visible')
-    root.classList.toggle('__dropdown_toggled')
-})
-
-u(document).on('click', 'body > *, .dropdown_menu p', (e) => {
-    if(e.target.getAttribute('class') && e.target.getAttribute('class').indexOf('dropdown') != -1 || e.target.classList.contains('dropdown_toggle')) {
+u(document).on('click', 'body > *', (e) => {
+    if(e.target.closest('.dropdown_root')) {
         return
     }
 
@@ -186,7 +206,6 @@ u(document).on('click', '.show_more', async (e) => {
     //showMoreObserver.unobserve(u('.show_more')[0])
 
     e.target.setAttribute('data-clicked', '0')
-    SavedPage.save(location.href)
 })
 
 u(document).on('click', '.paginator a', async (e) => {
@@ -213,17 +232,15 @@ u(document).on('click', '.paginator a', async (e) => {
     const page = Number(e.target.dataset.page) - 1
 
     window.main_classes['wall'].clear()
-    await window.main_classes['wall'].page(page)
+    await window.main_classes['wall'].setPage(page)
 
-    const temper_url = new BetterURL(e.target.href)
-    temper_url.setParam('page', page)
-    
-    Utils.push_state(temper_url.href)
+    window.main_url.setParam('p', page)
+    Utils.push_state(window.main_url.href)
 
     u('.paginator').remove()
-    window.main_classes['wall'].createNextPage()
+    window.main_classes['wall'].createNextPageButton()
 
-    u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].getPagesCount(), window.main_classes['wall'].getPage()))
+    u('#paginator_here').append(window.templates.paginator(window.main_classes['wall'].getPagesCount(), window.main_classes['wall'].getPage()))
 })
 
 u(document).on('change', '#__enterpage', async (e) => {
@@ -244,7 +261,7 @@ u(document).on('change', '#__enterpage', async (e) => {
     u('.paginator').remove()
     window.main_classes['wall'].createNextPage()
 
-    u('#insert_paginator_here_bro').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, Number(window.main_url.getParam('page'))))
+    u('#paginator_here').append(window.templates.paginator(window.main_classes['wall'].objects.pagesCount, Number(window.main_url.getParam('page'))))
 })
 
 u(document).on('click', '#__comeback', (e) => {

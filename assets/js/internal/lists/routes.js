@@ -1,7 +1,7 @@
 window.routes = [
     {
         'url': 'id{int|id}',
-        'script_name': 'user_page'
+        'script_name': 'UserController.UserPage'
     },
     {
         'url': 'search/{string|section}',
@@ -9,86 +9,54 @@ window.routes = [
     },
     {
         'url': 'groups{int|id}/{string|section}',
-        'script_name': 'groups_page'
-    },
-    {
-        'url': 'subscriptions{int|id}',
-        'script_name': 'subscriptions_page'
-    },
-    {
-        'url': 'gifts{int|id}',
-        'script_name': 'gifts_page'
+        'script_name': 'GroupsController.GroupsList'
     },
     {
         'url': 'groups{int|id}',
-        'script_name': 'groups_page'
+        'script_name': 'GroupsController.GroupsList'
     },
     {
         'url': 'groups',
-        'script_name': 'groups_page'
+        'script_name': 'GroupsController.GroupsList'
     },
     {
         'url': 'groups/{string|section}',
-        'script_name': 'groups_page'
+        'script_name': 'GroupsController.GroupsList'
     },
     {
         'url': 'event{int|id}',
-        'script_name': 'club_page'
+        'script_name': 'GroupsController.GroupPage'
     },
     {
         'url': 'public{int|id}',
-        'script_name': 'club_page'
+        'script_name': 'GroupsController.GroupPage'
     },
     {
         'url': 'group{int|id}',
-        'script_name': 'club_page'
+        'script_name': 'GroupsController.GroupPage'
     },
     {
         'url': 'club{int|id}',
-        'script_name': 'club_page'
-    },
-    {
-        'url': 'login/{string|section}',
-        'script_name': 'auth_page'
-    },
-    {
-        'url': 'login',
-        'script_name': 'auth_page'
-    },
-    {
-        'url': 'fave/{string|section}',
-        'script_name': 'faves_page'
-    },
-    {
-        'url': 'fave',
-        'script_name': 'faves_page'
-    },
-    {
-        'url': 'bookmarks/{string|section}',
-        'script_name': 'faves_page'
-    },
-    {
-        'url': 'bookmarks',
-        'script_name': 'faves_page'
+        'script_name': 'GroupsController.GroupPage'
     },
     {
         'url': 'settings/{string|section}',
-        'script_name': 'settings_page',
+        'script_name': 'SettingsController.Settings',
         'ignore_save': true,
     },
     {
         'url': 'settings',
-        'script_name': 'settings_page',
+        'script_name': 'SettingsController.Settings',
         'ignore_save': true,
     },
     {
         'url': 'debug/{string|section}',
-        'script_name': 'debug_page',
+        'script_name': 'DebugController.Debug',
         'ignore_save': true,
     },
     {
         'url': 'debug',
-        'script_name': 'debug_page',
+        'script_name': 'DebugController.Debug',
         'ignore_save': true,
     },
     {
@@ -113,31 +81,27 @@ window.routes = [
     },
     {
         'url': 'feed/{string|section}',
-        'script_name': 'news_page'
+        'script_name': 'NewsController.News'
     },
     {
         'url': 'feed',
-        'script_name': 'news_page'
-    },
-    {
-        'url': '{string|type}/{int|owner_id}_{int|item_id}/likes',
-        'script_name': 'likes_page'
+        'script_name': 'NewsController.News'
     },
     {
         'url': 'wall{int|owner_id}_{int|post_id}',
-        'script_name': 'post_page'
+        'script_name': 'WallController.Post'
     },
     {
         'url': 'wall{int|owner_id}/{string|section}',
-        'script_name': 'wall_page'
+        'script_name': 'WallController.Wall'
     },
     {
         'url': 'wall{int|owner_id}',
-        'script_name': 'wall_page'
+        'script_name': 'WallController.Wall'
     },
     {
         'url': 'away',
-        'script_name': 'resolve_link',
+        'script_name': 'UtilsController.Away',
         'ignore_save': true,
         'dont_pushstate': false,
     },
@@ -147,60 +111,25 @@ window.routes = [
     },
     {
         'url': 'edit/{string|section}',
-        'script_name': 'edit_page',
+        'script_name': 'EditController.Edit',
         'ignore_save': true
     },
     {
         'url': 'edit',
-        'script_name': 'edit_page'
+        'script_name': 'EditController.Edit'
     },
     {
-        'url': 'note{int|owner}_{int|id}',
-        'script_name': 'note_page',
+        'url': 'dev/query',
+        'script_name': 'DocumentationController.SearchPage',
     },
     {
-        'url': 'notes{int|owner}',
-        'script_name': 'notes_page',
-    },
-    {
-        'url': 'notes',
-        'script_name': 'notes_page',
-    },
-    {
-        'url': 'doc{int|owner}_{int|id}',
-        'script_name': 'doc_page',
-        'hide_menu': true,
-    },
-    {
-        'url': 'docs{int|owner}',
-        'script_name': 'docs_page',
-    },
-    {
-        'url': 'docs',
-        'script_name': 'docs_page',
-    },
-    {
-        'url': 'photo{int|owner}_{int|id}',
-        'script_name': 'photo_page',
-    },
-    {
-        'url': 'error/{int|error}',
-        'script_name': 'error_page',
-        'ignore_save': true,
-        'dont_pushstate': true,
-    },
-    {
-        'url': 'poll{int|owner_id}_{int|poll_id}',
-        'script_name': 'poll_voters_page',
+        'url': 'dev',
+        'script_name': 'DocumentationController.DocumentationPage',
     },
     {
         'url': '{string|id}',
-        'script_name': 'resolve_link',
+        'script_name': 'UtilsController.Away',
         'ignore_save': true,
         'dont_pushstate': true,
-    },
-    {
-        'url': '',
-        'script_name': 'user_page',
     },
 ]

@@ -31,12 +31,6 @@ window.templates.comment = (object) => {
                             ${object.isAuthor() ? `<span class='comment_op'>OP</span>` : ''}
                             ${object.info.reply_to_comment ? `${_('wall.reply_to_comment', window.main_url.href + '#_comment_'  + object.info.id)}` : ''}
                         </div>
-                        
-                        <div class='comment_upper_actions'>
-                            ${!object.canDelete() ? `<div class='icons1' id='_reportComment'></div>` : ''}
-                            ${object.canEdit() ? `<div class='icons1' id='_commentEdit'></div>` : ''}
-                            ${object.canDelete() ? `<div class='icons1' id='_commentDelete'></div>` : ''}
-                        </div>
                     </div>
 
                     <div class='comment_content contenter'>

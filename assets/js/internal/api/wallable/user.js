@@ -1,4 +1,7 @@
 class User extends Faveable {
+    type = 'user'
+    table = 'users'
+
     constructor() {
         super()
         this.info = {
@@ -15,7 +18,7 @@ class User extends Faveable {
     }
 
     async fromId(id = 0, need_blocks = false, wall_default = 'all') {
-        const find_item = await window.cache.findItem('users', id)
+        const find_item = await this.findInCache(id)
         
         if(find_item) {
             if(need_blocks) {
@@ -30,7 +33,7 @@ class User extends Faveable {
         }
 
         let info = null
-        if(!window.use_execute) {
+        if(!window.use_execute()) {
             info = await window.vk_api.call('users.get', {'user_ids': id, 'fields': window.consts.USER_FULL_FIELDS})
             info = info[0]
 
@@ -83,59 +86,64 @@ class User extends Faveable {
                 'cities': [],
             }
 
-            info.additional.groups = await window.vk_api.call('groups.getById', {'group_ids': groups_to_insert}, false)
-            
-            if(info.additional.groups) {
-                if(info.additional.groups.response) {
-                    info.additional.groups = info.additional.groups.response.groups
-                }
+            if(groups_to_insert != '') {
+                info.additional.groups = await window.vk_api.call('groups.getById', {'group_ids':  groups_to_insert}, false)
+                info.additional.groups = info.additional.groups.groups
+            } else {
+                info.additional.groups = []
             }
 
             info.additional.users = await window.vk_api.call('users.get', {'user_ids': users_to_insert}, false)
-            info.additional.users = info.additional.users.response
-            info.additional.cities = await window.vk_api.call('database.getCitiesById', {'city_ids': cities_to_insert}, false)
-            
-            if(info.additional.cities) {
-                info.additional.cities = info.additional.cities.response
-            }
-            
+            info.additional.cities = await window.vk_api.call('database.getCitiesById', {"city_ids": cities_to_insert});
             if(need_blocks) {
                 info.main_photos = (await window.vk_api.call('photos.getAll', {"owner_id": info.id, "count": 6, "skip_hidden": 1, 'extended': 1, 'photo_sizes': 1}, false))
                 
-                if(info.main_photos) {
-                    info.main_photos = info.main_photos.response
-                    info.main_photos.count = info.main_photos.items.length
-                }
-                
-                info.friends = (await window.vk_api.call('friends.get', {"user_id": info.id, "count": 6, "order": window.site_params.get('ux.friends_block_sort', 'hints'), 'fields': window.consts.TYPICAL_FIELDS}, false)).response
-                info.friends_online = (await window.vk_api.call('friends.getOnline', {"user_id": info.id, "count": 6, "order": 'random', 'extended': 1, 'fields': window.consts.TYPICAL_FIELDS}, false))
-                
                 try {
-                    if(info.friends_online) {
-                        info.friends_online = info.friends_online.response
-                        info.friends_online = {
-                            'count': info.friends_online.total_count,
-                            'items': info.friends_online.profiles
+                    info.friends = (await window.vk_api.call('friends.get', {"user_id": info.id, "count": 6, "order": 'random', 'fields': window.consts.TYPICAL_FIELDS}, false)).response
+                } catch(e) {}
+                
+                if(window.active_account) {
+                    info.friends_online = (await window.vk_api.call('friends.getOnline', {"user_id": info.id, "count": 6, "order": 'random', 'extended': 1, 'fields': window.consts.TYPICAL_FIELDS}, false))
+                
+                    try {
+                        if(info.friends_online) {
+                            info.friends_online = info.friends_online.response
+                            info.friends_online = {
+                                'count': info.friends_online.total_count,
+                                'items': info.friends_online.profiles
+                            }
                         }
+                    } catch(e) {}
+                } else {
+                    info.friends_online = null
+                }
+
+                try {
+                    info.subscriptions = (await window.vk_api.call('users.getSubscriptions', {"user_id": info.id, "extended": 1, 'count': 6, "fields": window.consts.TYPICAL_FIELDS + ',' + window.consts.TYPICAL_GROUPS_FIELDS}, false))
+                    if(info.subscriptions) {
+                        info.subscriptions = info.subscriptions.response
                     }
                 } catch(e) {}
 
-                info.subscriptions = (await window.vk_api.call('users.getSubscriptions', {"user_id": info.id, "extended": 1, 'count': 6, "fields": window.consts.TYPICAL_FIELDS + ',' + window.consts.TYPICAL_GROUPS_FIELDS}, false))
+                try {
+                    info.gifts = (await window.vk_api.call('gifts.get', {"user_id": info.id, 'count': 3}, false)).response
+                } catch(e) {}
                 
-                if(info.subscriptions) {
-                    info.subscriptions = info.subscriptions.response
-                }
+                try {
+                    info.videos = (await window.vk_api.call('video.get', {"owner_id": info.id, 'count': 2}, false))
+                    if(info.videos) {
+                        info.videos = info.videos.response
+                    }
+                } catch(e) {}
 
-                info.gifts = (await window.vk_api.call('gifts.get', {"user_id": info.id, 'count': 6}, false)).response
-                info.videos = (await window.vk_api.call('video.get', {"owner_id": info.id, 'count': 2}, false))
+                if(window.active_account) {
+                    info.albums = (await window.vk_api.call('photos.getAlbums', {"owner_id": info.id, 'count': 2, 'need_covers': '1'}, false))
 
-                if(info.videos) {
-                    info.videos = info.videos.response
-                }
-                info.albums = (await window.vk_api.call('photos.getAlbums', {"owner_id": info.id, 'count': 2, 'need_covers': '1'}, false))
-
-                if(info.albums) {
-                    info.albums = info.albums.response
+                    if(info.albums) {
+                        info.albums = info.albums.response
+                    }
+                } else {
+                    info.albums = null
                 }
             }
 
@@ -208,7 +216,7 @@ class User extends Faveable {
                 additional_arrays.groups = API.groups.getById({"group_ids": groups_to_insert, "fields": "${window.consts.TYPICAL_GROUPS_FIELDS}"}).groups;
                 additional_arrays.users = API.users.get({"user_ids": users_to_insert, "fields": "${window.consts.TYPICAL_FIELDS}"});
                 additional_arrays.cities = API.database.getCitiesById({"city_ids": cities_to_insert});
-
+                
                 user.additional = additional_arrays;
                 user.posts = API.wall.get({"owner_id": user.id, "count": 10, 'extended': 1, "filter": "${wall_default}", "fields": "${window.consts.TYPICAL_FIELDS}"});
 
@@ -222,7 +230,7 @@ class User extends Faveable {
                     };
 
                     user.subscriptions = API.users.getSubscriptions({"user_id": user.id, "count": 6, "extended": 1, "fields": "${Utils.typical_fields + ',' + Utils.typical_group_fields}"});
-                    user.gifts = API.gifts.get({"user_id": user.id, "count": 6});
+                    user.gifts = API.gifts.get({"user_id": user.id, "count": 3});
                     user.videos = API.video.get({"owner_id": user.id, "count": 2});
                     user.albums = API.photos.getAlbums({"owner_id": user.id, "count": 2, "need_covers": 1});
                 ` : ''}
@@ -349,6 +357,10 @@ class User extends Faveable {
 
     async getRegistrationDate()
     {
+        if(this.info.reg_date) {
+            return Utils.short_date(this.info.reg_date, true)
+        }
+        
         const path = `${window.site_params.get('internal.proxy_url', 'https://api.allorigins.win/get?url=')}${encodeURIComponent('https://vk.com/foaf.php?id='+this.getId())}`
         const parser = new DOMParser()
 
@@ -366,7 +378,10 @@ class User extends Faveable {
         if(date) {
             const js_date = moment(date, 'YYYY.MM.DDThh:mm:ss')
             
-            return Utils.short_date(js_date.unix(), true)
+            this.info.reg_date = js_date.unix()
+            this.cacheEntity(true)
+            
+            return Utils.short_date(this.info.reg_date, true)
         } else {
             return '01.01.1970'
         }
@@ -378,6 +393,10 @@ class User extends Faveable {
 
     getCoverURL(size = null) {
         const base = this.getCover()
+        if(!base || !base.images) {
+            return ''
+        }
+
         base.images = base.images.sortByHeight()
 
         if(!size || size > 4) {
@@ -419,17 +438,12 @@ class User extends Faveable {
         return this.getFirstNameCase(caser) + ' ' + this.getLastNameCase(caser)
     }
 
-    getHTMLName() {
-        return `
-        <div class='user_info_with_name'>
-            <span class='user_name ${this.isFriend() ? ' friended' : ''}'>${this.getFullName()}</span>
-
-            ${this.has('image_status') && window.site_params.get('ui.hide_image_statuses') != '1' ? 
-            `<div class='image_status' data-id='${this.getId()}' title='${this.getImageStatus().name}'>
-                <img src='${this.getImageStatusURL()}'>
-            </div>` : ``}
-        </div>
-        `
+    getPhone() {
+        return this.info.phone
+    }
+    
+    getVotes() {
+        return this.info.votes ?? 0
     }
 
     getTextStatus() {
@@ -454,7 +468,7 @@ class User extends Faveable {
 
     getAvatar(mini = false) {
         if(mini) {
-            return this.info.photo_50
+            return this.info.photo_50 ?? this.info.photo_200
         } else {
             return this.info.photo_200
         }
@@ -665,7 +679,7 @@ class User extends Faveable {
     }
 
     isFriend() {
-        if(this.getId() == window.active_account.info.id) {
+        if(this.getId() == (window.active_account ? window.active_account.info.id : 0)) {
             return true
         }
 
@@ -697,7 +711,7 @@ class User extends Faveable {
     }
 
     isIndexing() {
-        return !this.info.is_no_index
+        return this.info.no_index != 'vk_users_only'
     }
 
     isHiddenFromFeed() {
@@ -722,6 +736,14 @@ class User extends Faveable {
 
     isDead() {
         return this.info.is_dead
+    }
+
+    isFollowersModeOn() {
+        return this.info.is_followers_mode_on
+    }
+
+    isPrivate() {
+        return false
     }
 
     hasContacts() {
@@ -768,6 +790,10 @@ class User extends Faveable {
         return this.info.can_see_all_posts == 1
     }
 
+    canWrite() {
+        return this.info.can_write_private_message == 1
+    }
+
     static async addFriend(user_id, follow = false) {
         const result = await window.vk_api.call('friends.add', {'user_id': user_id, 'follow': Number(follow)})
 
@@ -778,5 +804,17 @@ class User extends Faveable {
         const result = await window.vk_api.call('friends.delete', {'user_id': user_id})
 
         return result
+    }
+
+    async subscribe() {
+        await User.addFriend(this.getRealId())
+        
+        return true
+    }
+
+    async unsubscribe() {
+        await User.deleteFriend(this.getRealId())
+        
+        return true
     }
 }

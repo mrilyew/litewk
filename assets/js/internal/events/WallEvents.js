@@ -20,10 +20,6 @@ u(document).on('click', '.post #_postArchiveAction', async (e) => {
     const post = e.target.closest('.post')
     const post_id = post.dataset.postid.split('_')
     const un      = Number(e.target.dataset.type) == 1
-
-    // Кто ищет по гитхабу (github git). VK API (vkontakte api vkapi) 
-    // wall.archive — добавить запись в архив
-    // wall.reveal — вернуть из архива (archive вконтакте функция 2019 незадокументированно)
     
     try {
         await window.vk_api.call(`wall.${un ? 'reveal' : 'archive'}`, {'owner_id': post_id[0], 'post_id': post_id[1]})
@@ -116,24 +112,31 @@ u(document).on('click', '.dropdown_menu #_postDelete', async (e) => {
 })
 
 u(document).on('change', '#post_comment_sort select', async (e) => {
-    main_url.setParam('comment_sort', e.target.value)
+    const handler = e.target.dataset.handler
+    const sort = e.target.value
+    window.main_url.setParam('comment_sort', sort)
     Utils.replace_state(window.main_url)
     
-    window.main_classes['wall'].changeSort(e.target.value)
+    window.main_classes[handler].clear()
+    window.main_classes[handler].changeSort(sort)
+    window.main_classes[handler].nextPage()
 })
 
 u(document).on('change', '#thread_comment_sort select', async (e) => {
-    const result = null
+    let result = null
     const comm_block = e.target.closest('.main_comment_block')
+    const oid = comm_block.dataset.ownerid
     const cid = comm_block.dataset.cid
     
     comm_block.setAttribute('data-sort', e.target.value)
     comm_block.setAttribute('data-offset', 10)
-    comm_block.querySelector('.comments_thread_insert_block').innerHTML = ''
+    const comments_insert = u(comm_block.querySelector('.comments_thread_insert_block'))
+    comments_insert.html('')
 
     try {
-        result = await window.vk_api.call('wall.getComments', {'owner_id': comm_block.dataset.ownerid, 'comment_id': cid, 'offset': 0, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.Utils.typical_fields, 'sort': e.target.value})
+        result = await window.vk_api.call('wall.getComments', {'owner_id': oid, 'comment_id': cid, 'offset': 0, 'count': 10, 'need_likes': 1, 'extended': 1, 'fields': window.consts.TYPICAL_USERS_GROUPS_FIELDS, 'sort': e.target.value})
     } catch(e) {
+        console.error(e)
         return
     }
     
@@ -142,11 +145,11 @@ u(document).on('change', '#thread_comment_sort select', async (e) => {
         let comment = new Comment
         comment.hydrate(el, result.profiles, result.groups)
 
-        comm_block.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', comment.getTemplate())
+        comments_insert.append(comment.getTemplate())
     })
 
     if(result.count > 10) {
-        comm_block.querySelector('.comments_thread_insert_block').insertAdjacentHTML('beforeend', `<span id='shownextcomms'>${_('wall.show_next_comments')}</span>`)
+        comments_insert.append(`<span id='shownextcomms'>${_('wall.show_next_comments')}</span>`)
     }
 })
 
@@ -177,9 +180,10 @@ u(document).on('click', '.comments_thread_insert_block #shownextcomms', async (e
     }
 })
 
-u(document).on('click', '.wall_select_block .wall_section', (e) => {
-    if(e.target.classList.contains('selected') || e.target.classList.contains('selectd')) {
+u(document).on('click', '.wall_select_block .wall_section', async (e) => {
+    if(e.target.matches('.selected')) {
         if(window.main_url.getParam('section') != 'search') {
+            window.router.route(e.target.href)
             return
         }
     }
@@ -188,21 +192,24 @@ u(document).on('click', '.wall_select_block .wall_section', (e) => {
 
     u('.wall_select_block a.selected').removeClass('selected')
     u(e.target).addClass('selected')
-        
+
     const section = u('.wall_select_block a.selected').attr('data-section')
     window.main_classes['wall'].setSection(section)
+    window.main_classes['wall'].clear()
+    await window.main_classes['wall'].nextPage()
+
     window.main_url.deleteParam('q')
     window.main_url.setParam('section', section)
 
     Utils.push_state(window.main_url)
+    window.main_class.undom()
 })
 
-u(document).on('change', `.wall_select_block input[type='query']`, (e) => {
+u(document).on('change', `.wall_select_block input[type='search']`, (e) => {
     e.preventDefault()
-
-    window.main_classes['wall'].objects.page = -1
-    window.main_classes['wall'].error_empty_message = _('errors.search_wall_not_found')
+    
     window.main_classes['wall'].search(e.target.value)
+    window.main_class.undom()
 })
 
 u(document).on('click', '.wall_block .searchIcon, .wall_block .searchIcon_clicked', (e) => {
@@ -217,7 +224,7 @@ u(document).on('click', '.wall_block .searchIcon, .wall_block .searchIcon_clicke
     wall_block.toggleClass('shown_search')
 
     if(wall_block.hasClass('shown_search')) {
-        u(`input[type='query']`).nodes[0].focus()
+        u(`#_search_layer input[type='search']`).nodes[0].focus()
     }
 })
 

@@ -74,31 +74,6 @@ u(document).on('click', '#_toggleFriend', async (e) => {
     e.target.classList.remove('stopped')
 })
 
-u(document).on('click', '#_toggleSub', async (e) => {
-    e.preventDefault()
-
-    e.target.classList.add('stopped')
-
-    const sub_status = Number(e.currentTarget.dataset.val)
-    let verb = 'join'
-
-    if(sub_status == 1) {
-        verb = 'leave'
-    }
-
-    const result = await window.vk_api.call('groups.'+verb, {'group_id': e.target.dataset.addid})
-
-    if(sub_status == 0) {
-        e.target.setAttribute('data-val', 1)
-        e.target.innerHTML = _('groups.unsubscribe')
-    } else {
-        e.target.setAttribute('data-val', 0)
-        e.target.innerHTML = _('groups.subscribe')
-    }
-
-    e.target.classList.remove('stopped')
-})
-
 u(document).on('click', '#_toggleHiddeness', async (e) => {
     e.preventDefault()
     e.target.classList.add('stopped')
@@ -212,33 +187,48 @@ u(document).on('click', '.image_status', async (e) => {
         status = e.target.parentNode
     }
 
-    const stats = await window.vk_api.call('status.getImagePopup', {'user_id': status.dataset.id})
-    
-    new MessageBox(_('image_status.name'), `
-        <div class='smiley_message'>
-            <div class='smiley_message_icon'>
-                <img src='${stats.popup.photo.images[2].url}'>
-            </div>
+    MessageBox.toggleCircle()
+    const stats = new ImageStatus
+    await stats.fromUserId(status.dataset.id)
 
-            <div class='smiley_message_text'>
-                <span class='smiley_message_title'>${Utils.escape_html(stats.popup.title)}</span>
-                <span class='smiley_message_text_span'>${Utils.format_text(stats.popup.text)}</span>
-
-                ${stats.popup.buttons && stats.popup.buttons.length > 0 ? `<a href='${stats.popup.buttons[0].action.url}' target='_blank'><input type='button' id='__getStatus' value='${_('image_status.get_status')}'></a>` : ''}
-                
-            </div>
+    const html = u('<div></div>')
+    html.html(`
+    <div class='smiley_message flex flex_column'>
+        <div class='smiley_message_icon'>
+            <img src='${stats.getIcon()}'>
         </div>
+
+        <div class='smiley_message_text'>
+            <span class='smiley_message_title'>${stats.getTitle()}</span>
+            <span class='smiley_message_text_span'>${stats.getDescription()}</span>
+
+            <div class='smiley_buttons flex justify_center'></div>
+        </div>
+    </div>
     `)
+
+    if(stats.hasButtons()) {
+        stats.getButtons().forEach(btn => {
+            if(btn.action.type == 'open_url') {
+                html.find('.smiley_buttons').append(`
+                    <a href='${btn.action.url}' target='_blank'><input class='primary' type='button' value='${btn.title.escapeHtml()}'></a>
+                `)
+            }
+        })
+    }
+    new MessageBox(_('image_status.name'), html.html())
+
+    MessageBox.toggleCircle()
 })
 
 u(document).on('click', '#_bl_add_user', (e) => {
     const msg = new MessageBox(_('user_page_edit.add_to_bl'), `
-        <div id='_bladd_first_frame'>
+        <div id='_bladd_first_frame' class='flex_column' style='gap: 8px;'>
             <p>${_('user_page_edit.add_to_bl_desc')}</p>
 
-            <input type='query' placeholder='${_('user_page_edit.bl_enter_search')}' style='width: 98%;' id='_blacklist_search'>
+            <input type='search' placeholder='${_('user_page_edit.bl_enter_search')}' id='_blacklist_search'>
         </div>
-    `, [_('messagebox.cancel'), _('user_page_edit.add')], [() => {
+    `, [_('messagebox.cancel'), _('user_page_edit.add') + '|primary'], [() => {
         msg.close()
     }, async () => {
         const last_btn = msg.getNode().querySelectorAll('.messagebox_buttons input')[1]
@@ -252,13 +242,13 @@ u(document).on('click', '#_bl_add_user', (e) => {
         const resolved_name = await window.vk_api.resolveScreenName(screen_name)
         
         if(resolved_name.type != 'user') {
-            const msg_a = new MessageBox(_('errors.error'), _('errors.this_is_not_user'), [_('messagebox.close')], [() => {
+            const msg_a = new MessageBox(_('errors.error'), _('errors.this_is_not_user'), [_('messagebox.close') + '|primary'], [() => {
                 last_btn.classList.remove('stopped')
                 msg_a.close()
             }])
         } else {
             if(!resolved_name.object_id) {
-                const msg_c = new MessageBox(_('errors.error'), _('errors.not_found_user'), [_('messagebox.close')], [() => {
+                const msg_c = new MessageBox(_('errors.error'), _('errors.not_found_user'), [_('messagebox.close') + '|primary'], [() => {
                     last_btn.classList.remove('stopped')
                     msg_c.close()
                 }])
@@ -267,7 +257,7 @@ u(document).on('click', '#_bl_add_user', (e) => {
             }
 
             if(Number(resolved_name.object_id) == window.active_account.info.id) {
-                let msg_d = new MessageBox(_('errors.error'), _('errors.cannot_block_yourself'), [_('messagebox.close')], [() => {
+                let msg_d = new MessageBox(_('errors.error'), _('errors.cannot_block_yourself'), [_('messagebox.close') + '|primary'], [() => {
                     last_btn.classList.remove('stopped')
                     msg_d.close()
                 }])
@@ -279,7 +269,7 @@ u(document).on('click', '#_bl_add_user', (e) => {
             msg.close()
 
             const api_user = new User
-            api_user.hydrate(user.response[0])
+            api_user.hydrate(user[0])
 
             if(api_user.info.blacklisted_by_me == 1) {
                 let msg_e = new MessageBox(_('errors.error'), _('errors.blacklisted_by_me'), [_('messagebox.close')], [() => {
@@ -295,7 +285,7 @@ u(document).on('click', '#_bl_add_user', (e) => {
                 ${_('user_page_edit.want_to_block')}
 
                 ${window.templates.user_mini(api_user)}
-            `, [_('messagebox.no'), _('messagebox.yes')], [
+            `, [_('messagebox.no'), _('messagebox.yes') + '|primary'], [
             () => {
                 msg_b.close()
                 u('#_bl_add_user').trigger('click')
@@ -329,5 +319,120 @@ u(document).on('click', '#_groups_history_full', async (e) => {
 u(document).on('click', '.dead_person_mark', (e) => {
     u(e.target).remove()
 
-    u('#_last_online').attr('style', 'display:block;')
+    u('#_last_online span').attr('style', 'display:block;')
+})
+
+u(document).on('click', '#_getAdminGroupd', async (e) => {
+    MessageBox.toggleCircle()
+
+    let groups = await window.vk_api.getAdminedGroupsByUser(e.target.dataset.id)
+    groups = groups.response
+
+    if(groups.count < 1) {
+        alert(_('user_page.admined_groups_not_found'))
+    } else {
+        const ids = []
+        groups.items.forEach(group => {
+            ids.push(group.id)
+        })
+
+        const real_groups = await window.vk_api.call('groups.getById', {'group_ids': ids.slice(0, 500).join(','), 'fields': window.consts.TYPICAL_GROUPS_FIELDS})
+        MessageBox.toggleCircle()
+
+        const msg = new MessageBox(_('user_page.admined_groups'), '', null, null, {'as_window': 1, 'no_title': 1})
+        msg.getNode().style.width = '630px'
+        const msg_body = u(msg.getNode().querySelector('.messagebox_body'))
+
+        u(msg.getNode()).find('.messagebox_title b').append(`<span class='gray'> ${real_groups.groups.length}</span>`)
+        msg_body.html(`<div class='entity_double_grid'><div class='listview_insert'></div></div>`)
+
+        const insert = msg_body.find('.entity_double_grid .listview_insert')
+        real_groups.groups.forEach(group => {
+            const club = new Club
+            club.hydrate(group)
+
+            insert.append(window.templates._subs_listview(club))
+        })
+    }
+})
+
+u(document).on('click', '#_subs_user', async (e) => {
+    MessageBox.toggleCircle()
+
+    const perPage = 24
+
+    const id = u('#user_info').attr('data-userid')
+    const subscriptions = await window.vk_api.call('users.getSubscriptions',  {"user_id": id, "extended": 1, 'count': perPage, "fields": window.consts.TYPICAL_USERS_GROUPS_FIELDS})
+   
+    const msg = new MessageBox(_('subscriptions.subscriptions'), ``, null, null, {'as_window': 1, 'no_title': 1, 'big_name': 1})
+    msg.getNode().style.width = '630px'
+    u(msg.getNode()).find('.messagebox_title b').append(`<span class='gray'> ${subscriptions.count}</span>`)
+
+    const msg_body = u(msg.getNode().querySelector('.messagebox_body'))
+    MessageBox.toggleCircle()
+
+    msg_body.html(`<div class='entity_double_grid'></div>`)
+    window.main_classes['subs'] = new Subscriptions({
+        'insertNode': '.entity_double_grid',
+        'handler': 'subs',
+        'method_params': {
+            'owner_id': id,
+        },
+        'presetPerPage': perPage,
+    })
+
+    window.main_classes['subs'].hydrateResult(subscriptions)
+})
+
+u(document).on('click', '#_sub_small_button', async (e) => {
+    const target = u(e.target)
+    const id = Number(target.attr('data-id'))
+
+    target.addClass('stopped')
+
+    let entity = null
+    if(id > 0) {
+        entity = new User
+    } else {
+        entity = new Club
+    }
+
+    await entity.fromId(Math.abs(id), false)
+
+    try {
+        if(!target.hasClass('primary')) {
+            // UNSUBSCRIBE 
+    
+            await entity.unsubscribe()
+            target.removeClass('secondary').addClass('primary').attr('value', _('users_relations.subscribe'))
+        } else {
+            // SUBSCRIBE
+            
+            await entity.subscribe()
+            target.removeClass('primary').addClass('secondary').attr('value', _('users_relations.unsubscribe'))
+        }
+    } catch(e) {
+        Utils.vklikeError(e.message)
+    }
+
+    target.removeClass('stopped')
+})
+
+u(document).on('click', '#_similarGroups', async (e) => {
+    const club_id = u('#clb_id').attr('data-clubid')
+    const block = u('#_similar_groups_block')
+    block.removeClass('hidden')
+
+    window.main_classes['similar'] = new SimilarGroups({
+        'insertNode': '#_similar_groups_block .entity_items',
+        'handler': 'similar',
+        'method_params': {
+            'club_id': club_id,
+        },
+        'presetPerPage': 30,
+    })
+
+    window.main_classes['similar'].nextPage()
+   
+    block.find('.filler').remove()
 })

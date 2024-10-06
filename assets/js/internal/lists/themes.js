@@ -59,15 +59,15 @@ window.themes = [
         'inherits_default': true,
         'requires_js': false,
         'preview': `
-            <div style='background:linear-gradient(138deg, #000000 19%, rgb(23 14 44) 100%)'>
-                <div style='background:#060709;width:37px;height:80px;border-right:1px solid #b1b1b1;'></div>
+            <div style='height: 100%;background: #141415;'>
+                <div style='position: absolute;width: 128px;height: 15px;background: #31333f;'>
+                    <span style='font-size: 10px;position: absolute;color:white;margin: 1px 0px 0px 4px;'>LiteWK Default</span>
+                </div>
+                <div style='position: absolute;top: 20px;width:37px;height:60px;border-right:1px solid #535561;height: 57px;'></div>
 
-                <div style='position: absolute;top: 3px;right: 3px;width: 83px;background: #060709;border: 1px solid #b1b1b1;'>
+                <div style='position: absolute;top: 20px;right: 3px;width: 83px;height:57px;background: #31333f;border: 1px solid #535561;'>
                     <span style='color:white'>...</span>
                 </div>
-
-                <div style='position: absolute;top: 27px;right: 57px;width: 29px;height: 51px;background: #060709;border: 1px solid #b1b1b1;'></div>
-                <div style='position: absolute;top: 27px;right: 3px;width: 52px;height: 51px;background: #060709;border: 1px solid #b1b1b1;'></div>
             </div>
         `,
         'include_styles': [],
@@ -79,15 +79,17 @@ window.themes = [
         'display_name': '_light_theme',
         'author': `<a href='https://claude.ai/' target='_blank'>Claude</a>, -`,
         'preview': `
-            <div style='background:linear-gradient(138deg, #e0e0e0 19%, rgb(255, 223, 186) 100%)'>
+            <div style='height: 100%;background:linear-gradient(138deg, #e0e0e0 19%, rgb(255, 223, 186) 100%)'>
+                <div style='position: absolute;width: 128px;height: 15px;background: #31333f;'>
+                    <span style='font-size: 10px;position: absolute;color:white;margin: 1px 0px 0px 4px;'>LiteWK Light</span>
+                </div>    
                 <div style='width:37px;height:80px;border-right:1px solid #4a4a4a;'></div>
 
-                <div style='position: absolute;top: 3px;right: 3px;width: 83px;background: #ffffff;border: 1px solid #4a4a4a;'>
-                    <span style='color:black'>...</span>
-                </div>
+                <div style='position: absolute;top: 20px;width:37px;height:60px;border-right:1px solid #535561;height: 57px;'></div>
 
-                <div style='position: absolute;top: 27px;right: 57px;width: 29px;height: 51px;background: #ffffff;border: 1px solid #4a4a4a;'></div>
-                <div style='position: absolute;top: 27px;right: 3px;width: 52px;height: 51px;background: #ffffff;border: 1px solid #4a4a4a;'></div>
+                <div style='position: absolute;top: 20px;right: 3px;width: 83px;height:57px;background: #31333f;border: 1px solid #535561;'>
+                    <span style='color:white'>...</span>
+                </div>
             </div>
         `,
 
@@ -107,15 +109,17 @@ window.themes = [
         'display_name': '_brutal_theme',
         'author': `<a href='https://claude.ai/' target='_blank'>Claude</a>`,
         'preview': `
-            <div style='background:linear-gradient(138deg, var(--black) 0%, rgb(153, 0, 0) 100%);'>
-                <div style='width:37px;height:80px;border-right:1px solid #ff3333;'></div>
+            <div style='height: 100%;background:red'>
+                <div style='position: absolute;width: 128px;height: 15px;background: #31333f;'>
+                    <span style='font-size: 10px;position: absolute;color:white;margin: 1px 0px 0px 4px;'>LiteWK Red</span>
+                </div>    
+                <div style='width:37px;height:80px;border-right:1px solid #4a4a4a;'></div>
 
-                <div style='position: absolute;top: 3px;right: 3px;width: 83px;background: #2d0000;border: 1px solid #ff3333;'>
-                    <span style='color:black'>...</span>
+                <div style='position: absolute;top: 20px;width:37px;height:60px;border-right:1px solid #535561;height: 57px;'></div>
+
+                <div style='position: absolute;top: 20px;right: 3px;width: 83px;height:57px;background: #31333f;border: 1px solid #535561;'>
+                    <span style='color:white'>...</span>
                 </div>
-
-                <div style='position: absolute;top: 27px;right: 57px;width: 29px;height: 51px;background: #2d0000;border: 1px solid #ff3333;'></div>
-                <div style='position: absolute;top: 27px;right: 3px;width: 52px;height: 51px;background: #2d0000;border: 1px solid #ff3333;'></div>
             </div>
         `,
 

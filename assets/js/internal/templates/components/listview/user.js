@@ -37,3 +37,21 @@ window.templates._user_list_view = (user) => {
     </div>
     `
 }
+
+window.templates._subs_listview = (entity) => {
+    const is_subscribed = entity.isSubscribed()
+    return `
+    <div class='entity_double_grid_item'>
+        <a href='${entity.getUrl()}' class='block entity_double_grid_item_left_part'>
+            <img loading='lazy' src='${entity.getAvatar()}'>
+        </a>
+
+        <div class='entity_double_grid_item_right_part flex flex_column'>
+            <a href='${entity.getUrl()}'><b>${entity.getName().circum(25)}</b></a>
+            <span>${entity.getTextStatus() ? entity.getTextStatus().circum(25) : _('groups.public_page')}</span>
+            <span>${_('counters.subscriptions_counter', entity.getMemberCount())}</span>
+            ${!entity.isPrivate() ? `<input type='button' class='${is_subscribed ? 'secondary' : 'primary'}' id='_sub_small_button' data-id='${entity.getRealId()}' value='${!is_subscribed ? _('users_relations.subscribe') : _('users_relations.unsubscribe')}'>` : ''}
+        </div>
+    </div>
+    `
+}

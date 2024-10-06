@@ -62,7 +62,7 @@ class IndexDBWrapper {
                 let found = false
     
                 console.info(`IndexedDB | Searching in table "${table}" by id`)
-                
+
                 request.onsuccess = (eve) => {
                     const cursor = eve.target.result
 
@@ -100,24 +100,32 @@ class IndexDBWrapper {
     }
 
     getConnection(upgradeneeded = null, success = null, error = null) {
-        const connection = indexedDB.open(this.db)
+        const connection = indexedDB.open(this.db, 2)
 
         if(upgradeneeded) {
             connection.onupgradeneeded = upgradeneeded
         } else {
             connection.onupgradeneeded = (e) => { 
                 const db = e.target.result
+                const names = db.objectStoreNames
+
                 console.info(`IndexedDB | Created DB with name "${e.target.result.name}"`)
     
-                db.createObjectStore('users', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('groups', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('posts', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('comments', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('photos', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('videos', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('audios', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('docs', {keyPath: 'id', autoIncrement: true})
-                db.createObjectStore('notes', {keyPath: 'id', autoIncrement: true})
+                if(!names.contains('users')) {
+                    db.createObjectStore('users', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('groups', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('posts', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('comments', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('photos', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('videos', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('audios', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('docs', {keyPath: 'id', autoIncrement: true})
+                    db.createObjectStore('notes', {keyPath: 'id', autoIncrement: true})
+                }
+
+                if(!names.contains('image_statuses')) {
+                    db.createObjectStore('image_statuses', {keyPath: 'id', autoIncrement: true})
+                }
             }
         }
 

@@ -1,11 +1,3 @@
-if(!window.templates) {
-    window.templates = {}
-}
-
-if(!window.templates) {
-    window.templates = {}
-}
-
 window.templates.attachments = (attachments, additional = {}) => {
     if(!attachments || attachments.length < 1) {
         return ''
@@ -46,7 +38,7 @@ window.templates.attachments = (attachments, additional = {}) => {
         const block = attachments_block.querySelector('.ordinary_attachments')
 
         attachments_block.setAttribute('style', 'text-align:center;')
-        block.classList.add('padded')
+        //block.classList.add('padded')
         block.innerHTML = entity.getFullsizeTemplate(additional)
     } 
     

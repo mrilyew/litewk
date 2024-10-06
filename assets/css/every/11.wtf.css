@@ -1,0 +1,14 @@
+.overscrolled #_smaller_block {
+    top: -50%;
+    position: absolute;
+    visibility: hidden;
+}
+
+.overscrolled #_bigger_block {
+    width: 100%;
+}
+
+.overscrolled .user_page_grid, .overscrolled .club_page_grid {
+    display: block;
+    grid-template-columns: unset;
+}

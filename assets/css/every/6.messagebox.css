@@ -1,0 +1,140 @@
+body.dimmed {
+    overflow: hidden;
+}
+
+body.dimmed > .dimmer {
+    z-index: 200;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: var(--darkness);
+    opacity: 0.8;
+}
+
+body.dimmed::-webkit-scrollbar {
+    width: 5px;
+}
+
+body.dimmed .fullscreen_dimmer {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: auto;
+    padding-bottom: 20px;
+    z-index: 300;
+}
+
+.messagebox, .messagebox * {
+    box-sizing: content-box;
+}
+
+.messagebox {
+    background: var(--elements-color);
+    outline: 1px solid var(--links-color);
+    width: fit-content;
+    z-index: 1024;
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 200px;
+}
+
+.messagebox.messagebox_window {
+    background: var(--elements-color);
+    width: fit-content;
+    z-index: 1024;
+    position: relative;
+    margin: 15px auto 0 auto;
+    min-width: 200px;
+    top: unset;
+    left: unset;
+    transform: unset;
+}
+
+.messagebox > div {
+    padding: 3px 0px 0px 6px;
+}
+
+.messagebox .messagebox_title {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    vertical-align: middle;
+    padding: 5px 12px 5px 11px;
+    color: var(--text-color);
+}
+
+.messagebox .messagebox_title {
+    background: var(--elements-color-second);
+    color: var(--text-color);
+    border-bottom: 1px ridge var(--elements-color-second);
+}
+
+.messagebox.messagebox_titleless .messagebox_title {
+    background: unset;
+    border-bottom: unset;
+}
+
+.messagebox .messagebox_title a {
+    color: var(--links-color);
+    text-decoration: none;
+}
+
+.messagebox .messagebox_title a:hover, .fullscreen_view_title a:hover {
+    text-decoration: underline;
+}
+
+.messagebox .messagebox_body {
+    min-height: 80px;
+    padding: 7px 7px;
+}
+
+.messagebox .messagebox_buttons {
+    background: var(--elements-color-lighter);
+    padding: 12px 12px;
+    display: flex;
+    justify-content: right;
+    gap: 0px 5px;
+}
+
+.messagebox #_close {
+    position: absolute;
+    right: -28px;
+    top: 10px;
+}
+
+.messagebox #_close svg {
+    stroke: var(--links-color);
+    stroke-width: 1.6px;
+    width: 12px;
+}
+
+.messagebox #_close:hover {
+    cursor: pointer;
+}
+
+.messagebox #_close:hover svg {
+    stroke: var(--text-color-hover); 
+}
+
+.auth_list_help {
+    margin-top: 10px;
+}
+
+.captcha_box {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.captcha_box img {
+    width: 200px;
+}
+
+.captcha_box input {
+    margin-top: 5px;
+}

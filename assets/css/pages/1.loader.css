@@ -1,0 +1,31 @@
+#lwk_loader {
+    width: 100%;
+    height: 100vh;
+}
+
+#lwk_loader #lwk_loader_display {
+    height: 100%;
+}
+
+#lwk_loader #lwk_loader_display > div {
+    width: 20%;
+    gap: 20px;
+}
+
+#lwk_loader #lwk_loader_display #lwk_loader_display_hs {
+    width: 60%;
+    transition: transform 100ms ease-in-out;
+}
+
+#lwk_loader #lwk_loader_status {
+    height: 30%;
+    /*border-top: 1px solid var(--elements-color);*/
+}
+
+#lwk_loader #lwk_loader_status #lwk_loader_status_bar {
+    height: 100%;
+    z-index: -1;
+    background: var(--elements-color);
+    left: 0;
+    max-width: 100%;
+}

@@ -1,18 +1,13 @@
-if(!window.templates) {
-    window.templates = {}
-}
-
 window.templates.wall = (owner_id, tabs, default_tab = 'all', has_invert = false) => {
-    let template = `
+    const template = u(`
+    <div>
         <div class="wall_block">
             <div class='wall_select_block bordered_block'>
                 <div id='_shown_layer'>
-                    <div class='tabs flexer'>
-                        <div id='_insertTabs'></div>
-                    </div>
+                    <div class='row_tabs tabs nopadding'></div>
                 </div>
                 <div id='_search_layer'>
-                    <input type='query' placeholder='${_('wall.search')}'>
+                    <input type='search' placeholder='${_('wall.search')}'>
                 </div>
                 <a data-ignore='1' href='#wall${owner_id}?section=search' class='right_side'>
                     <!--<label>
@@ -26,18 +21,16 @@ window.templates.wall = (owner_id, tabs, default_tab = 'all', has_invert = false
             </div>
             <div class='wall_block_insert'></div>
         </div>
-    `
-
-    let template_div = document.createElement('div')
-    template_div.innerHTML = template
+    </div>
+    `)
 
     tabs.forEach(el => {
-        template_div.querySelector('.wall_select_block .tabs').insertAdjacentHTML('beforeend', `
+        template.find('.wall_select_block .tabs').append(`
             <a class='wall_section ${default_tab == el ? 'selected' : ''}' href='#wall${owner_id}?section=${el}' data-ignore='1' data-section='${el}'>${_(`wall.${el}_posts`)}</a>
         `)
     })
 
-    return template_div.innerHTML
+    return template.html()
 }
 
 window.templates.wall_skeleton = () => {

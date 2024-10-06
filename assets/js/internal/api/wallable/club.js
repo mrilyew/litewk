@@ -52,7 +52,7 @@ class Club extends Faveable {
             info.contacts_users = await window.vk_api.call('users.get', {'user_ids': user_ids, 'fields': window.Utils.typical_fields})
         } else {
             info = await window.vk_api.call('execute', {'code': `
-                var club = API.groups.getById({"group_ids": "${id}", "fields": "activity,addresses,age_limits,ban_info,can_create_topic,can_message,can_post,can_suggest,can_see_all_posts,can_upload_doc,can_upload_story,can_upload_video,city,contacts,counters,country,cover,crop_photo,description,fixed_post,has_photo,is_favorite,is_hidden_from_feed,is_subscribed,is_messages_blocked,links,main_album_id,main_section,member_status,members_count,place,photo_50,photo_200,photo_max_orig,public_date_label,site,start_date,finish_date,status,trending,verified,wall,wiki_page"});
+                var club = API.groups.getById({"group_ids": "${id}", "fields": "${window.consts.CLUB_FULL_FIELDS}"});
                 club = club.groups[0];
 
                 if (!club) {
@@ -160,6 +160,10 @@ class Club extends Faveable {
     getTemplate() {
         return window.templates.club_page(this)
     }
+
+    getCarouselTemplate() {
+        return window.templates.club_page_carousel(this)
+    }
     
     getCover() {
         return this.info.cover
@@ -227,6 +231,10 @@ class Club extends Faveable {
         return this.info.deactivated_message.escapeHtml().formatHyperlinks()
     }
 
+    getMemberCount() {
+        return this.info.members_count ?? 0
+    }
+
     hasAccess() {
         return true
     }
@@ -256,7 +264,15 @@ class Club extends Faveable {
     }
     
     isSubscribed() {
+        return this.info.is_member == 1
+    }
+
+    isSubscribedToNews() {
         return this.info.is_subscribed == 1
+    }
+
+    isPrivate() {
+        return this.info.is_closed == 2
     }
 
     isThisUser() {
@@ -273,6 +289,10 @@ class Club extends Faveable {
 
     isClosed() {
         return this.info.is_closed
+    }
+
+    isPrivate() {
+        return this.info.is_closed != 0
     }
 
     isMember() {
@@ -296,4 +316,21 @@ class Club extends Faveable {
     canSeeAllPosts() {
         return false
     }
+
+    canWrite() {
+        return this.info.can_message == 1
+    }
+
+    async subscribe() {
+        const result = await window.vk_api.call('groups.join', {'group_id': this.getId()})
+
+        return result
+    }
+
+    async unsubscribe() {
+        const result = await window.vk_api.call('groups.leave', {'group_id': this.getId()})
+
+        return result
+    }
 }
+

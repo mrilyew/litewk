@@ -8,8 +8,11 @@ window.templates.relative_template = (rel) => {
     if(!rel.user) {
         return `
         <div class='avatar_namish_block avatarless'>
+            <div class='left_avatar avatar'>
+                <div class='filler_standart'></div>
+            </div>
             <div class='right_info'>
-                <p>${Utils.escape_html(rel.name)}</p>
+                <p>${rel.name.escapeHtml()}</p>
                 <p>${_('user_page.relative_' + rel.type)}</p>
             </div>
         </div>
