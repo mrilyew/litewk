@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let load_length = libs_list.length + scripts_list.length + styles_list.length
     let i = 0
     
-    __addBase('/')
+    __addBase(location.pathname)
 
     if(localStorage.getItem('ux.hide_waterfall') != '1') {
         document.body.insertAdjacentHTML('beforeend', `
